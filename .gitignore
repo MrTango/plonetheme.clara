@@ -98,3 +98,5 @@ src/plonetheme/clara/static/clara.min.css.map
 # Project specific
 *.log
 .DS_Store
+.pi/sandbox.json
+*.pid
