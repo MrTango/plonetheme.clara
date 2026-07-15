@@ -1,0 +1,135 @@
+/* clara-bridge.css — Bootstrap 5.3 token bridge (runtime half).
+ *
+ * Rebinds Bootstrap's --bs-* custom properties onto --plone-* tokens so a bare
+ * <div class="card">, <button class="btn">, <ul class="nav">… spaces and colours
+ * itself from the Clara tokens with NO utility soup on the markup, and MOVES
+ * when a token moves. See docs/clara-theming-architecture.md §6.3. The
+ * compile-time half ($primary, $spacers, … set from tokens before
+ * @import "bootstrap") lives in clara-bootstrap.scss (§6.1–6.2, §7).
+ *
+ * ── The two scopes, and WHY (wayfinder ticket 13) ──────────────────────────
+ * Bootstrap 5.3 declares its tokens in TWO places, and the bridge must answer
+ * each in the matching scope:
+ *
+ *   1. GLOBAL — declared once on `:root` (body/link/border/radius/gutter/…).
+ *      A `:root` rebind reaches these because this whole file sits in the
+ *      `components` @layer, which wins over the `bootstrap` layer at equal
+ *      (`:root`) specificity. These live in the single `:root` block below.
+ *
+ *   2. COMPONENT-SCOPED — Bootstrap re-declares a component's own tokens ON THE
+ *      COMPONENT ROOT (`.card{--bs-card-spacer-x:1rem}`, `.btn{--bs-btn-padding-x
+ *      :0.75rem}`, `.nav{…}`, `.alert{…}`, `.breadcrumb{…}`). That element-level
+ *      declaration SHADOWS any `:root` value for every descendant, so a
+ *      `:root`-only rebind of these is DEAD — the component keeps Bootstrap's
+ *      flat rem. Ticket 10's runtime proof caught this (a bare `.card-body`
+ *      computed to Bootstrap's 16px, not `--plone-space-m`). The fix: rebind
+ *      them in a COMPONENT-SCOPE block (still in the `components` layer, which
+ *      beats `bootstrap`), where the cascade can actually see them.
+ *
+ * A component token is rebound here at component scope ONLY when Bootstrap pins
+ * it to a *literal* on the component root (the padding/spacer/striped tokens
+ * below). Tokens Bootstrap sets to `var(--bs-<global>)` — every component
+ * border-radius, `.breadcrumb` divider, `.table` border, … — already resolve
+ * through the `:root` block and are deliberately NOT repeated here (repeating
+ * them would be dead duplication, and for `.btn`/`.btn-lg` would also force the
+ * size variants to be re-mapped — see the `.btn` note).
+ */
+@layer components {
+  /* ── 1. GLOBAL --bs-*: Bootstrap declares these only on :root ──────────── *
+   * The `components` layer beats `bootstrap` at equal (:root) specificity, so
+   * these take effect site-wide and every component border-radius / divider /
+   * table border that reads `var(--bs-border-radius|secondary-color|…)` follows
+   * from here — one knob, no per-component repeat. */
+  :root {
+    /* body / surface */
+    --bs-body-bg:              var(--plone-color-bg);
+    --bs-body-color:           var(--plone-color-text);
+    --bs-secondary-color:      var(--plone-color-muted);
+    --bs-border-color:         var(--plone-color-border);
+    --bs-border-width:         var(--plone-border-width);
+    --bs-border-radius:        var(--plone-radius-m);
+    --bs-border-radius-sm:     var(--plone-radius-s);
+    --bs-border-radius-lg:     var(--plone-radius-l);
+    --bs-link-color:           var(--plone-color-link);
+    --bs-body-font-size:       var(--plone-text-base);
+    --bs-body-line-height:     var(--plone-leading-body);
+
+    /* grid gutter — the inherited default for a bare consumer of
+       var(--bs-gutter-x). Note a `.row` re-declares --bs-gutter-x on ITSELF
+       (like the component tokens below), and the `.g-*` gutter utilities are
+       token-driven at compile time via the §7 $spacers remap — so the practical
+       row/col theming path is those, not this line, which only backs a stray
+       reader that inherits from :root. */
+    --bs-gutter-x:             var(--plone-space-m);
+
+    /* tables — cell padding is the ONE table token Bootstrap does NOT re-scope
+       on `.table`, so it themes correctly from :root (verified: the compiled
+       bundle declares it nowhere else). */
+    --bs-table-cell-padding-x: var(--plone-space-s);
+    --bs-table-cell-padding-y: var(--plone-space-2xs);
+  }
+
+  /* ── 2. COMPONENT-SCOPED --bs-*: Bootstrap pins a literal on the component *
+   * root, shadowing :root. Each block rebinds only those literal-pinned tokens
+   * onto --plone-* where the cascade can see them. */
+
+  /* buttons — padding is literal-pinned on `.btn` AND re-pinned by the size
+     variants (`.btn-lg`/`.btn-sm`) to larger/smaller rem. Because the
+     `components` layer beats `bootstrap` regardless of specificity, a lone
+     `.btn` rebind would ALSO override the variants and collapse every size to
+     the base — so the variants are re-mapped onto the space ramp here, keeping
+     the sm < base < lg hierarchy, now token-driven. `--bs-btn-border-radius`
+     is NOT rebound: `.btn`/`.btn-lg`/`.btn-sm` set it to var(--bs-border-radius
+     [-lg|-sm]), which already flows from the :root block. */
+  .btn {
+    --bs-btn-padding-x: var(--plone-space-s);
+    --bs-btn-padding-y: var(--plone-space-2xs);
+  }
+  .btn-lg, .btn-group-lg > .btn {
+    --bs-btn-padding-x: var(--plone-space-m);
+    --bs-btn-padding-y: var(--plone-space-xs);
+  }
+  .btn-sm, .btn-group-sm > .btn {
+    --bs-btn-padding-x: var(--plone-space-2xs);
+    --bs-btn-padding-y: var(--plone-space-3xs);
+  }
+
+  /* card — spacers are literal-pinned; border-color flows from
+     --bs-border-color-TRANSLUCENT (not the bridged --bs-border-color), so it is
+     rebound to the solid token here. border-radius flows from :root. Moved from
+     _clara-content.scss (ticket 13): the bridge owns the --bs-* mapping; content
+     keeps only the hand-written card styling Bootstrap gives no knob for. */
+  .card {
+    --bs-card-spacer-x:     var(--plone-space-m);
+    --bs-card-spacer-y:     var(--plone-space-s);
+    --bs-card-border-color: var(--plone-color-border);
+  }
+
+  /* nav — link padding is literal-pinned on `.nav`. (`.navbar-nav` deliberately
+     zeroes it for the navbar; that is a different element and is left alone.) */
+  .nav {
+    --bs-nav-link-padding-x: var(--plone-space-s);
+    --bs-nav-link-padding-y: var(--plone-space-2xs);
+  }
+
+  /* alert — padding is literal-pinned; border-radius flows from :root; the
+     colour variants (`.alert-primary` …) set their own --bs-alert-* and are
+     untouched. */
+  .alert {
+    --bs-alert-padding-x: var(--plone-space-m);
+    --bs-alert-padding-y: var(--plone-space-s);
+  }
+
+  /* breadcrumb — item gap is literal-pinned; divider colour flows from :root
+     (var(--bs-secondary-color)). */
+  .breadcrumb {
+    --bs-breadcrumb-item-padding-x: var(--plone-space-2xs);
+  }
+
+  /* table — striped fill is a literal rgba() pinned on `.table`; rebind it onto
+     a token. border-color flows from :root (var(--bs-border-color)). Moved from
+     _clara-content.scss (ticket 13). */
+  .table {
+    --bs-table-striped-bg: var(--plone-color-surface);
+  }
+}

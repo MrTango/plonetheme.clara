@@ -1,0 +1,305 @@
+// _clara-toolbar.scss — the editor-toolbar chrome, now theme-owned by Clara.
+//
+// Wayfinder ticket 14 ruled the editor-toolbar CSS a THEME responsibility (as
+// stock Plone ships barceloneta-toolbar.min.css inside the Barceloneta theme,
+// not a theme-independent layer); ticket 15 executes the move so
+// plone.pageletlayout ships zero CSS and the toolbar renders styled from Clara.
+//
+// PROVENANCE / liftability: this is the TOOLBAR DELTA of Barceloneta's
+// barceloneta-toolbar.css (plonetheme.barceloneta/theme/css/) — its own
+// --plone-toolbar-*/--plone-state-*/--plone-link-*/--plone-portlet-* tokens
+// (lines 724-767) + the #edit-zone / body.plone-toolbar-* chrome (768-983),
+// verbatim. The sheet's first ~723 lines (a full Bootstrap 5.3 :root{--bs-*}
+// dump + Reboot + .nav base) and its trailing .flex-* utilities were DROPPED:
+// Clara already compiles that exact Bootstrap 5.3.8 into @layer bootstrap, so
+// folding them in would only DUPLICATE it and — worse — the un-layered :root
+// --bs-* dump + global Reboot would shadow Clara's own :root bridge and reset.
+// The chrome reads --bs-dark/white/warning/gray-500 straight from Clara's
+// compiled Bootstrap (the bridge leaves those four at their stock values), so
+// the toolbar looks exactly as it did as the standalone bundle. Upstream can
+// reclaim the FULL sheet verbatim from plonetheme.barceloneta if the ticket-14
+// "might change in the future" call ever reverses.
+//
+// @layer components so the #edit-zone overrides of Bootstrap's own .nav-link /
+// .dropdown-* win over @layer bootstrap (later layer beats earlier, regardless
+// of specificity) — the same placement _clara-content.scss / _clara-bridge.scss
+// use. Tokens carry no name collision with Clara's --plone-* set, so their
+// layer is immaterial; they simply add the toolbar's own knobs at :root.
+
+@layer components {
+:root,
+[data-bs-theme=light] {
+  --plone-link-color: #0d6efd;
+  --plone-link-color-on-dark: #16a1e3;
+  --plone-link-color-on-grey: #086ca3;
+  --plone-link-hover-color: #024dbc;
+  --plone-portlet-list-hover-bg: #fcfcfd;
+  --plone-portlet-footer-bg: #fcfcfd;
+  --plone-portlet-list-bullet: #64bee8;
+  --plone-state-draft: #fab82a;
+  --plone-state-pending: #ccd111;
+  --plone-state-private: #c4183c;
+  --plone-state-internal: #fab82a;
+  --plone-state-internally-published: #883dfa;
+}
+
+[data-bs-theme=dark] {
+  --plone-link-color: #007bb1;
+  --plone-link-color-on-dark: #16a1e3;
+  --plone-link-color-on-grey: #086ca3;
+  --plone-link-hover-color: #024dbc;
+  --plone-portlet-list-hover-bg: #161719;
+  --plone-portlet-footer-bg: #161719;
+  --plone-portlet-list-bullet: #64bee8;
+  --plone-state-draft: #fab82a;
+  --plone-state-pending: #e2e721;
+  --plone-state-private: #f96483;
+  --plone-state-internal: #fab82a;
+  --plone-state-internally-published: #ab75ff;
+}
+
+:root {
+  --plone-toolbar-bg: var(--bs-dark);
+  --plone-toolbar-text-color: var(--bs-white);
+  --plone-toolbar-locked-color: var(--bs-warning);
+  --plone-toolbar-font: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --plone-toolbar-separator-color: var(--bs-gray-500);
+  --plone-toolbar-link-color: var(--plone-link-color);
+  --plone-toolbar-link-hover-color: var(--plone-link-hover-color);
+  --plone-toolbar-width: 220px;
+  --plone-toolbar-width-collapsed: 60px;
+  --plone-toolbar-top-height: 2.5rem;
+}
+
+/* The vendored sheet carried a full Bootstrap :root{--bs-*} dump, dropped here
+   as redundant with Clara's own compiled Bootstrap — so the toolbar tokens
+   above CONSUME Clara's --bs-* (theme-owned, ticket 14), NOT the sheet's stock
+   values. True per-#edit-zone isolation doesn't verify clean: the
+   --plone-toolbar-* tokens are declared at :root and also read by
+   body.plone-toolbar-* rules (ANCESTORS of #edit-zone), so they can't be
+   confined to #edit-zone; and re-asserting all five --bs-* at :root would
+   clobber Clara's own --bs-warning globally. So we supply only the ONE --bs-*
+   the toolbar needs that Clara's customised colour map omits: --bs-dark (the
+   toolbar background). It is a plain Bootstrap default, unused elsewhere by
+   Clara, so it neither shadows a Clara token nor leaks anything meaningful. */
+:root {
+  --bs-dark: #212529;
+}
+
+/* general collapsed dark mode */
+#edit-zone {
+  font-family: var(--plone-toolbar-font);
+  position: fixed;
+  z-index: 1040;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--plone-toolbar-bg);
+  width: var(--plone-toolbar-width);
+  color: var(--plone-toolbar-text-color);
+  border-right: none;
+}
+#edit-zone,
+#edit-zone .dropdown-menu {
+  background-color: var(--plone-toolbar-bg);
+}
+#edit-zone .dropdown-header {
+  color: var(--plone-toolbar-text-color);
+}
+#edit-zone .dropdown-menu {
+  border-radius: 0;
+  min-width: 12rem;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+#edit-zone .nav-link,
+#edit-zone .dropdown-item {
+  color: var(--plone-toolbar-text-color);
+}
+#edit-zone .nav-link:hover, #edit-zone .nav-link:focus,
+#edit-zone .dropdown-item:hover,
+#edit-zone .dropdown-item:focus {
+  background: var(--plone-toolbar-link-color);
+  color: var(--plone-toolbar-text-color);
+}
+#edit-zone .nav-link:hover .label-state-published,
+#edit-zone .nav-link:hover .label-state-external, #edit-zone .nav-link:focus .label-state-published,
+#edit-zone .nav-link:focus .label-state-external,
+#edit-zone .dropdown-item:hover .label-state-published,
+#edit-zone .dropdown-item:hover .label-state-external,
+#edit-zone .dropdown-item:focus .label-state-published,
+#edit-zone .dropdown-item:focus .label-state-external {
+  color: var(--plone-toolbar-link-hover-color) !important;
+}
+#edit-zone .toolbar-header {
+  background: var(--bs-primary);
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  height: var(--plone-toolbar-top-height);
+}
+#edit-zone .toolbar-header a {
+  color: var(--plone-toolbar-text-color);
+  cursor: pointer;
+}
+@media (max-width: 767.98px) {
+  #edit-zone .toolbar-header a {
+    display: none;
+  }
+}
+#edit-zone .label-state-published,
+#edit-zone .label-state-external {
+  color: var(--plone-link-color-on-dark) !important;
+}
+#edit-zone .label-state-internally_published {
+  color: var(--plone-state-internally-published-color) !important;
+}
+#edit-zone .label-state-pending {
+  color: var(--plone-state-pending) !important;
+}
+#edit-zone li.active .label-state-pending,
+#edit-zone .label-state-pending:hover {
+  color: var(--plone-toolbar-text-color) !important;
+}
+#edit-zone .label-state-draft,
+#edit-zone .label-state-internal {
+  color: var(--plone-state-draft) !important;
+}
+#edit-zone .label-state-private {
+  color: var(--plone-state-private) !important;
+}
+#edit-zone .personaltools-wrapper {
+  margin-top: auto;
+  border-top: solid 1px var(--plone-toolbar-separator-color);
+  padding: 0.5rem 0;
+}
+
+body.plone-toolbar-left {
+  padding-left: var(--plone-toolbar-width-collapsed);
+}
+body.plone-toolbar-left .toolbar-expand,
+body.plone-toolbar-left .toolbar-collapse {
+  display: none;
+}
+body.plone-toolbar-left #edit-zone .nav-link {
+  display: flex;
+  width: 100%;
+  padding-right: 0.5rem;
+}
+body.plone-toolbar-left #edit-zone .nav-link .plone-icon {
+  margin-top: 0.25em;
+  margin-right: 0.5em;
+  flex-shrink: 0;
+}
+body.plone-toolbar-left #edit-zone .nav-link .toolbar-label {
+  flex-grow: 1;
+}
+body.plone-toolbar-left #edit-zone .nav-link:after {
+  margin-top: 0.5em;
+  width: 0.3em;
+  height: 0.3em;
+}
+body.plone-toolbar-left #edit-zone .border-top {
+  border-top-color: var(--plone-toolbar-separator-color);
+}
+body.plone-toolbar-left .toolbar-expand {
+  display: block;
+}
+body.plone-toolbar-left #edit-zone {
+  visibility: visible !important;
+  transform: none;
+  transition: none;
+  width: var(--plone-toolbar-width-collapsed);
+}
+body.plone-toolbar-left #edit-zone .toolbar-label {
+  display: none;
+}
+@media (min-width: 768px) {
+  body.plone-toolbar-left.plone-toolbar-left-expanded {
+    padding-left: var(--plone-toolbar-width);
+  }
+  body.plone-toolbar-left.plone-toolbar-left-expanded .toolbar-expand {
+    display: none;
+  }
+  body.plone-toolbar-left.plone-toolbar-left-expanded .toolbar-collapse {
+    display: block;
+  }
+  body.plone-toolbar-left.plone-toolbar-left-expanded #edit-zone {
+    width: var(--plone-toolbar-width);
+  }
+  body.plone-toolbar-left.plone-toolbar-left-expanded #edit-zone .toolbar-label {
+    display: inline-block;
+    white-space: initial;
+    hyphens: auto;
+    word-break: break-word;
+    vertical-align: top;
+  }
+}
+
+/* extending dropdown from BS5 outside media query */
+body.plone-toolbar-top {
+  padding-left: var(--plone-toolbar-width-collapsed);
+  padding-top: 0;
+}
+body.plone-toolbar-top .toolbar-expand,
+body.plone-toolbar-top .toolbar-collapse {
+  display: none;
+}
+body.plone-toolbar-top .toolbar-label {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  body.plone-toolbar-top {
+    padding-top: var(--plone-toolbar-top-height);
+    padding-left: 0;
+  }
+  body.plone-toolbar-top .toolbar-collapse,
+  body.plone-toolbar-top .toolbar-header {
+    height: 100%;
+  }
+  body.plone-toolbar-top #edit-zone {
+    bottom: unset;
+    width: 100%;
+    flex-direction: row;
+    height: var(--plone-toolbar-top-height);
+  }
+  body.plone-toolbar-top #edit-zone .plone-toolbar-main {
+    flex-direction: row;
+  }
+  body.plone-toolbar-top #edit-zone .plone-toolbar-main > .border-top {
+    border-top: none;
+    border-right: solid 1px var(--plone-toolbar-separator-color);
+  }
+  body.plone-toolbar-top #edit-zone .personaltools-wrapper {
+    margin-left: auto;
+    margin-top: 0;
+    padding: 0;
+    border-top: none;
+  }
+}
+/* Dropdown fixes for mobile with top bar  */
+@media (max-width: 767.98px) {
+  body.plone-toolbar-top #edit-zone {
+    width: var(--plone-toolbar-width-collapsed);
+  }
+  body.plone-toolbar-top #edit-zone .nav-link {
+    padding-right: 0.5rem;
+  }
+  body.plone-toolbar-top #edit-zone .nav-link.dropdown-toggle::after {
+    vertical-align: 0;
+    margin-left: 0;
+    border-top: 0.3em solid transparent;
+    border-right: 0;
+    border-bottom: 0.3em solid transparent;
+    border-left: 0.3em solid;
+  }
+  body.plone-toolbar-top #edit-zone .dropdown-menu.show {
+    display: block;
+    margin-left: var(--plone-toolbar-width-collapsed) !important;
+    margin-top: -2.5rem !important;
+  }
+}
+}

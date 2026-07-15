@@ -1,0 +1,95 @@
+/* clara-megamenu.css — a Volto-style dropdown mega menu, built ENTIRELY on the
+ * native plone.app.layout global-sections markup. Nothing is replaced.
+ *
+ * GlobalSectionsViewlet.render_globalnav() (reused by the base's globalnav
+ * pagelet) already emits, per the registry navigation_depth:
+ *
+ *   <li class="<id> has_subtree nav-item">
+ *     <a class="state-… nav-link" aria-haspopup="true">Section</a>
+ *     <input class="opener" type="checkbox"><label …></label>   ← CSS-only toggle
+ *     <ul class="has_subtree dropdown"> … children … </ul>       ← the panel
+ *   </li>
+ *
+ * This file only STYLES that tree: the top-level list becomes a horizontal bar,
+ * each section's first subtree becomes a full-width multi-column mega panel that
+ * opens on hover / keyboard focus / the native .opener checkbox (no custom JS),
+ * and deeper subtrees render as the panel's grouped columns. All spacing/colour
+ * comes from --plone-* tokens. See docs §5, §8.
+ */
+@layer components {
+  /* ---- top-level bar ---------------------------------------------------- */
+  #portal-globalnav {
+    position: relative;                 /* panels position against the bar */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--plone-space-s);
+  }
+  #portal-globalnav > .nav-item { position: static; }
+  #portal-globalnav > .nav-item > .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--plone-space-3xs);
+    padding-block: var(--plone-space-2xs);
+    font-weight: 600;
+    color: var(--plone-color-text);
+    text-decoration: none;
+  }
+  #portal-globalnav > .nav-item.has_subtree > .nav-link::after {
+    content: "";
+    width: 0.5em; height: 0.5em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-0.15em);
+  }
+
+  /* the native pure-CSS opener: keep it reachable but visually a hit-area on
+     the label; hide the raw checkbox */
+  #portal-globalnav .opener { position: absolute; opacity: 0; pointer-events: none; }
+  #portal-globalnav > .nav-item > label { position: absolute; inset: 0; cursor: pointer; }
+
+  /* ---- the mega panel (a section's FIRST subtree) ----------------------- */
+  #portal-globalnav > .nav-item > .has_subtree.dropdown {
+    display: none;
+    position: absolute;
+    left: 0; right: 0; top: 100%;
+    z-index: 1000;
+    grid-template-columns:
+      repeat(auto-fit, minmax(var(--clara-megamenu-col, 14rem), 1fr));
+    gap: var(--plone-space-m);
+    padding: var(--plone-space-m);
+    background: var(--plone-color-bg);
+    border: var(--plone-border);
+    border-radius: var(--plone-radius-m);
+    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.25);
+  }
+  /* open on hover, keyboard focus, or the native checkbox (touch/click) */
+  #portal-globalnav > .nav-item:hover > .has_subtree.dropdown,
+  #portal-globalnav > .nav-item:focus-within > .has_subtree.dropdown,
+  #portal-globalnav > .nav-item > .opener:checked ~ .has_subtree.dropdown {
+    display: grid;
+  }
+
+  /* deeper subtrees inside the panel = static grouped columns, never hidden */
+  #portal-globalnav .has_subtree .has_subtree.dropdown {
+    display: block;
+    position: static;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    background: none;
+  }
+  #portal-globalnav .dropdown .nav-link { padding-block: var(--plone-space-3xs); }
+  #portal-globalnav .dropdown > .nav-item > .nav-link { font-weight: 600; }
+
+  /* ---- narrow viewports: stacked accordion via the same .opener ---------- */
+  @media (max-width: 48rem) {
+    #portal-globalnav { flex-direction: column; align-items: stretch; }
+    #portal-globalnav > .nav-item > .has_subtree.dropdown {
+      position: static;
+      grid-template-columns: 1fr;
+      box-shadow: none;
+      padding-inline: var(--plone-space-s);
+    }
+  }
+}

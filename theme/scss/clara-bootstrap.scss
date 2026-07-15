@@ -1,0 +1,87 @@
+// clara-bootstrap.scss — Clara's Bootstrap 5.3 build, driven from the Clara
+// tokens. Compiling this produces the `bootstrap` cascade layer (see the
+// @layer wrapper at the bottom); the output replaces the base's vendored
+// `bootstrap5` bundle in a productized Clara.
+//
+// This is the ONLY Sass an integrator could ever need to touch, and the design
+// goal is that they never do: brand changes happen in a runtime CSS :root {}
+// block (docs/clara-theming-architecture.md §1.5). This file exists so the
+// compiled component defaults (hover shades, contrast picks, generated
+// utilities) start from Clara's values rather than Bootstrap's.
+
+@use "clara-tokens" as clara;
+
+// ---------------------------------------------------------------------------
+// §6.1 — values that pass straight through to --bs-* custom properties.
+// Bootstrap emits e.g. `--bs-border-color: #{$border-color}` in _root.scss, so
+// a var() here prints through and stays live at runtime.
+//
+// NOTE (wayfinder ticket 04, first real compile): the pass-through only works
+// for $-vars Bootstrap NEVER runs Sass math on. Bootstrap 5.3.8 derives from
+// four of the originally-listed vars at COMPILE time — a var() there is fatal:
+//   * $body-color  → `to-rgb($body-color)` + `rgba($body-color, .75/.5)`
+//   * $body-bg     → `to-rgb($body-bg)`
+//   * $link-color  → `shift-color($link-color, …)` + `to-rgb($link-color)`
+//   * $font-size-base → `rfs(...)` + `$font-size-base * .875 / 2.5 / …`
+// So those four are compile-time LITERALS below (Clara's effective defaults).
+// Their §6.1 runtime promise is NOT lost: the runtime half — clara-bridge, one
+// cascade layer LATER (components) — rebinds --bs-body-color / --bs-body-bg /
+// --bs-link-color / --bs-body-font-size to the --plone-* tokens, so the live
+// :root value still tracks a token override. Only Bootstrap's compiled derived
+// shades (link-hover, body-secondary rgba) stay baked until a rebuild — the
+// same §6.2 caveat that already covers component hover/active shades.
+$border-color:   var(--plone-color-border);
+$border-radius:  var(--plone-radius-m);
+$border-width:   var(--plone-border-width);
+
+// Compile-time literals for the four math-sensitive vars (== _clara-tokens.scss
+// effective defaults; the drift guard keeps them honest). Runtime tracking is
+// the clara-bridge's job (§6.3), not these.
+$body-color:     clara.$clara-text;      // runtime → --bs-body-color: var(--plone-color-text)
+$body-bg:        clara.$clara-bg;        // runtime → --bs-body-bg: var(--plone-color-bg)
+$link-color:     clara.$clara-primary;   // link == primary; runtime → --bs-link-color: var(--plone-color-link)
+$font-size-base: 1rem;                   // fluid body size lives in the reset + bridge, not Sass math
+
+// ---------------------------------------------------------------------------
+// §6.2 — literals for Sass math (color functions / $theme-colors cannot take a
+// var()). These MUST equal the token file's default values.
+// ---------------------------------------------------------------------------
+$primary: clara.$clara-primary;
+$success: clara.$clara-success;
+$danger:  clara.$clara-danger;
+$warning: clara.$clara-warning;
+$info:    clara.$clara-info;
+
+$theme-colors: (
+  "primary": $primary,
+  "success": $success,
+  "danger":  $danger,
+  "warning": $warning,
+  "info":    $info,
+);
+
+// ---------------------------------------------------------------------------
+// §7 — remap $spacers onto the Clara fluid space scale so any third-party
+// .mb-3 / .p-2 resolves to a --plone-space-* value (fluid, on-scale) instead
+// of a hardcoded rem. The utility API stays ENABLED (no map-remove): existing
+// add-ons that emit spacing utilities keep working — the documented, defended
+// compatibility tradeoff. Clara's own markup never uses these classes.
+// ---------------------------------------------------------------------------
+$spacers: (
+  0: 0,
+  1: var(--plone-space-3xs),
+  2: var(--plone-space-2xs),
+  3: var(--plone-space-s),
+  4: var(--plone-space-m),
+  5: var(--plone-space-xl),
+);
+
+// ---------------------------------------------------------------------------
+// Compile Bootstrap INTO the `bootstrap` cascade layer so primitives /
+// components / site all beat it without !important (§2). The lean bundle drops
+// this whole file; the $spacers→token remap above is reproduced there as a
+// small hand-written tokens-only utilities file in the `compat` layer (§7).
+// ---------------------------------------------------------------------------
+@layer bootstrap {
+  @import "bootstrap/scss/bootstrap";
+}

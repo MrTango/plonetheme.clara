@@ -1,0 +1,151 @@
+<!doctype html>
+<!--
+  Component-scope bridge — the RUNTIME proof (wayfinder ticket 13).
+
+  Ticket 13 fixes a bridge defect surfaced by ticket 10: Bootstrap 5.3 pins its
+  component spacing tokens ON THE COMPONENT ROOT (`.btn{--bs-btn-padding-x:.75rem}`
+  …), shadowing the :root bridge, so buttons / nav / alert / breadcrumb kept
+  Bootstrap's flat rem instead of a --plone-* token. _clara-bridge.scss now
+  rebinds those at COMPONENT scope (in the `components` @layer, which beats
+  `bootstrap`).
+
+  Every bare component below is styled ENTIRELY by the compiled bundle in <head>.
+  The panel self-verifies, against a PROBE element that reads the same token, that
+  each component's padding computes to the --plone-* token (NOT Bootstrap's
+  default), and that the .btn size hierarchy (sm < base < lg) survives the
+  component-scope override. Companion structural proof:
+  tests/test_component_bridge.py.
+
+    ../../src/plonetheme/clara/static/clara.min.css   (run `npm run build` first)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clara component-scope bridge — runtime proof</title>
+  <link rel="stylesheet" href="../../src/plonetheme/clara/static/clara.min.css">
+  <style>
+    body { margin: 2rem; max-width: 60rem; }
+    .report { border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.25rem; margin-block-end: 2rem; }
+    .report h2 { margin-top: 0; }
+    table.readout { border-collapse: collapse; width: 100%; }
+    table.readout th, table.readout td { text-align: left; padding: 4px 10px; border-bottom: 1px solid #eee; font-variant-numeric: tabular-nums; }
+    .pass { color: #0a7c2f; font-weight: 600; }
+    .fail { color: #c0242c; font-weight: 600; }
+    h3.section { margin-block: 2rem 0.5rem; }
+    /* Hidden probes: a plain div whose padding-left IS the token, so the test
+       compares "computed padding of the component" to "computed value of the
+       token" without hardcoding any clamp() math. */
+    .probe { position: absolute; visibility: hidden; height: 0; }
+    #p-space-s   { padding-left: var(--plone-space-s); }
+    #p-space-m   { padding-left: var(--plone-space-m); }
+    #p-space-2xs { padding-left: var(--plone-space-2xs); }
+  </style>
+</head>
+<body>
+
+  <div class="report">
+    <h2>Ticket 13 — component-scope bridge, runtime readout</h2>
+    <p id="verdict">Computing…</p>
+    <table class="readout"><tbody id="rows"></tbody></table>
+    <p style="margin-block-end:0; color:#666; font-size:.9em">
+      Each row compares a bare component's computed padding to the --plone-*
+      token it must resolve to (a hidden probe), and to Bootstrap's flat default
+      it must NOT resolve to.
+    </p>
+  </div>
+
+  <div class="probe" id="p-space-s"></div>
+  <div class="probe" id="p-space-m"></div>
+  <div class="probe" id="p-space-2xs"></div>
+
+  <!-- ══ buttons: base + size variants (hierarchy must survive) ════════════ -->
+  <h3 class="section">buttons — <code>.btn</code>, <code>.btn-lg</code>, <code>.btn-sm</code></h3>
+  <p>
+    <button class="btn btn-primary btn-sm" id="btn-sm">Small</button>
+    <button class="btn btn-primary" id="btn">Default</button>
+    <button class="btn btn-primary btn-lg" id="btn-lg">Large</button>
+  </p>
+
+  <!-- ══ nav ═══════════════════════════════════════════════════════════════ -->
+  <h3 class="section">nav — <code>.nav &gt; .nav-link</code></h3>
+  <ul class="nav">
+    <li class="nav-item"><a class="nav-link active" href="#" id="navlink">Overview</a></li>
+    <li class="nav-item"><a class="nav-link" href="#">Details</a></li>
+  </ul>
+
+  <!-- ══ alert ═════════════════════════════════════════════════════════════ -->
+  <h3 class="section">alert — <code>.alert</code></h3>
+  <div class="alert alert-primary" id="alert">A bare alert, padded from a token.</div>
+
+  <!-- ══ breadcrumb ════════════════════════════════════════════════════════ -->
+  <h3 class="section">breadcrumb — <code>.breadcrumb-item</code></h3>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item" id="crumb"><a href="#">Section</a></li>
+      <li class="breadcrumb-item active">Page</li>
+    </ol>
+  </nav>
+
+  <!-- ══ card (regression: ticket-10 fix, now owned by the bridge) ═════════ -->
+  <h3 class="section">card — <code>.card &gt; .card-body</code></h3>
+  <div class="card" style="max-width:20rem">
+    <div class="card-body" id="cardbody"><h5 class="card-title">Card</h5><p class="card-text">Body padded from a token.</p></div>
+  </div>
+
+  <script>
+    const rows = [];
+    const padL = (id) => parseFloat(getComputedStyle(document.getElementById(id)).paddingLeft);
+    const EPS = 0.6; // sub-px rounding between elements
+
+    const tokS   = padL('p-space-s');    // --plone-space-s  computed px
+    const tokM   = padL('p-space-m');    // --plone-space-m
+    const tok2xs = padL('p-space-2xs');  // --plone-space-2xs
+
+    // A component "reads the token" when its padding matches the probe within EPS,
+    // and is NOT Bootstrap's default (which the ok===token check already implies,
+    // since the token differs from the default at this viewport).
+    const near = (a, b) => Math.abs(a - b) <= EPS;
+    const push = (label, got, ok, note='') => rows.push([label, got + (note?` (${note})`:''), ok]);
+
+    const btnSm = padL('btn-sm'), btn = padL('btn'), btnLg = padL('btn-lg');
+    push('.btn padding-left = --plone-space-s', btn.toFixed(1)+'px',
+         near(btn, tokS), 'token '+tokS.toFixed(1)+'px, BS default 12px');
+    push('.btn-lg padding-left = --plone-space-m', btnLg.toFixed(1)+'px',
+         near(btnLg, tokM), 'token '+tokM.toFixed(1)+'px');
+    push('.btn-sm padding-left = --plone-space-2xs', btnSm.toFixed(1)+'px',
+         near(btnSm, tok2xs), 'token '+tok2xs.toFixed(1)+'px');
+    push('.btn size hierarchy sm < base < lg (variants NOT collapsed)',
+         `${btnSm.toFixed(1)} < ${btn.toFixed(1)} < ${btnLg.toFixed(1)}`,
+         btnSm < btn && btn < btnLg);
+
+    const nav = padL('navlink');
+    push('.nav-link padding-left = --plone-space-s', nav.toFixed(1)+'px',
+         near(nav, tokS), 'BS default 16px@min only');
+
+    const alert = padL('alert');
+    push('.alert padding-left = --plone-space-m', alert.toFixed(1)+'px',
+         near(alert, tokM), 'token '+tokM.toFixed(1)+'px, BS default 16px');
+
+    const crumb = padL('crumb');
+    push('.breadcrumb-item padding-left = --plone-space-2xs', crumb.toFixed(1)+'px',
+         near(crumb, tok2xs), 'token '+tok2xs.toFixed(1)+'px, BS default 8px');
+
+    const cardbody = padL('cardbody');
+    push('.card-body padding-left = --plone-space-m (ticket-10 regression)',
+         cardbody.toFixed(1)+'px', near(cardbody, tokM), 'token '+tokM.toFixed(1)+'px');
+
+    document.getElementById('rows').innerHTML = rows.map(([k, v, ok]) =>
+      `<tr><th>${k}</th><td>${v}</td><td>${ok ? '<span class="pass">✓</span>' : '<span class="fail">✗</span>'}</td></tr>`
+    ).join('');
+
+    const ok = rows.every(([, , k]) => k);
+    document.getElementById('verdict').innerHTML = ok
+      ? '<span class="pass">PASS</span> — every bare Bootstrap component resolves its padding to a '
+        + '<code>--plone-*</code> token at component scope, and the <code>.btn</code> size hierarchy survives.'
+      : '<span class="fail">FAIL</span> — a component kept Bootstrap\'s default (bridge shadowed?) — is clara.min.css built?';
+    document.body.dataset.verdict = ok ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

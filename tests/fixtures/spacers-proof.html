@@ -1,0 +1,108 @@
+<!doctype html>
+<!--
+  §7 $spacers remap — the RUNTIME proof (wayfinder ticket 05).
+
+  This is the "themed page" the ticket asks for: a real browser resolves
+  var(--plone-space-s) → clamp(...) → px, which no text/parse test can do.
+
+  The markup below is deliberately THIRD-PARTY-STYLE: a plain Bootstrap
+  component using only stock utility classes (.mb-3, .p-2, .m-4 …) and NOT a
+  single Clara class or --plone-* reference. That is the whole point of §7 —
+  foreign markup inherits Clara's fluid spacing for free, through the remapped
+  utilities in the compiled theme bundle.
+
+  Open this file in any browser (file:// is fine). The panel self-verifies and
+  resize the window to watch the values flex between 16px and 20px. The
+  companion in-harness structural proof is tests/test_spacers_remap.py.
+
+  It links the SAME compiled artifact Clara ships in <head>:
+  ../../src/plonetheme/clara/static/clara.min.css  (run `npm run build` first).
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clara §7 $spacers remap — runtime proof</title>
+  <link rel="stylesheet" href="../../src/plonetheme/clara/static/clara.min.css">
+  <style>
+    /* Report chrome only — not part of the thing under test. */
+    body { font-family: system-ui, sans-serif; margin: 2rem; line-height: 1.5; }
+    .report { border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.25rem; max-width: 46rem; }
+    .report h2 { margin-top: 0; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; padding: 4px 10px; border-bottom: 1px solid #eee; font-variant-numeric: tabular-nums; }
+    code { background: #f4f4f4; padding: 0 4px; border-radius: 3px; }
+    .pass { color: #0a7c2f; font-weight: 600; }
+    .fail { color: #c0242c; font-weight: 600; }
+    .swatch { display: inline-block; background: #cfe3ff; }
+  </style>
+</head>
+<body>
+  <!-- ── The subject: foreign Bootstrap markup, zero Clara classes ───────── -->
+  <div class="card p-2" id="foreign-card">
+    <div class="mb-3" id="probe-mb3">Third-party <code>.mb-3</code> block</div>
+    <div class="p-2"   id="probe-p2">Third-party <code>.p-2</code> block</div>
+    <div class="m-4"   id="probe-m4">Third-party <code>.m-4</code> block</div>
+  </div>
+
+  <!-- Reference probes: a bare Clara token, and Bootstrap's stock flat 1rem. -->
+  <div id="ref-token" style="margin-bottom: var(--plone-space-s);"></div>
+  <div id="ref-flat"  style="margin-bottom: 1rem;"></div>
+
+  <div class="report">
+    <h2>§7 <code>$spacers</code> remap — runtime readout</h2>
+    <p id="verdict">Computing…</p>
+    <table><tbody id="rows"></tbody></table>
+    <p style="margin-bottom:0; color:#666; font-size:.9em">
+      Viewport: <span id="vw"></span>px — resize to watch the fluid values flex
+      between <code>1rem</code> (16px) and <code>1.25rem</code> (20px).
+    </p>
+  </div>
+
+  <script>
+    const px = (el, prop) => parseFloat(getComputedStyle(el).getPropertyValue(prop));
+    const near = (a, b) => Math.abs(a - b) < 0.05;   // sub-px rounding tolerance
+
+    function render() {
+      const mb3   = px(document.getElementById('probe-mb3'),  'margin-bottom');
+      const p2    = px(document.getElementById('probe-p2'),   'padding-top');
+      const m4    = px(document.getElementById('probe-m4'),   'margin-top');
+      const token = px(document.getElementById('ref-token'),  'margin-bottom');
+      const flat  = px(document.getElementById('ref-flat'),   'margin-bottom');
+
+      // The core claim: a foreign .mb-3 computes to *exactly* the resolved
+      // --plone-space-s length — i.e. it landed on the token, not a flat rem.
+      const landsOnToken = near(mb3, token);
+      // And it is genuinely fluid: within the clamp band, and (except at the
+      // 16px floor) distinct from Bootstrap's stock flat 1rem.
+      const inBand   = mb3 >= 16 - 0.05 && mb3 <= 20 + 0.05;
+      const isFluid  = !near(mb3, flat) || near(mb3, 16);
+
+      const rows = [
+        ['foreign <code>.mb-3</code> → margin-bottom', mb3.toFixed(2) + 'px', landsOnToken],
+        ['resolved <code>var(--plone-space-s)</code>', token.toFixed(2) + 'px', true],
+        ['equals <code>--plone-space-s</code>?', landsOnToken ? 'yes' : 'NO', landsOnToken],
+        ['within clamp band 16–20px?', inBand ? 'yes' : 'NO', inBand],
+        ['Bootstrap stock <code>.mb-3</code> (flat)', flat.toFixed(2) + 'px', null],
+        ['fluid, not the flat 1rem?', isFluid ? 'yes' : 'NO', isFluid],
+        ['foreign <code>.p-2</code> → padding', p2.toFixed(2) + 'px', p2 > 0],
+        ['foreign <code>.m-4</code> → margin', m4.toFixed(2) + 'px', m4 > 0],
+      ];
+      document.getElementById('rows').innerHTML = rows.map(([k, v, ok]) =>
+        `<tr><th>${k}</th><td>${v}</td><td>${ok === null ? '' :
+          (ok ? '<span class="pass">✓</span>' : '<span class="fail">✗</span>')}</td></tr>`
+      ).join('');
+
+      const ok = landsOnToken && inBand && isFluid;
+      const verdict = document.getElementById('verdict');
+      verdict.innerHTML = ok
+        ? '<span class="pass">PASS</span> — a third-party <code>.mb-3</code> resolves to '
+          + `Clara's fluid <code>--plone-space-s</code> (${mb3.toFixed(2)}px here), not a hardcoded rem.`
+        : '<span class="fail">FAIL</span> — the remap did not resolve; is clara.min.css built and linked?';
+      document.getElementById('vw').textContent = window.innerWidth;
+    }
+    render();
+    addEventListener('resize', render);
+  </script>
+</body>
+</html>

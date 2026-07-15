@@ -1,0 +1,131 @@
+/* clara-content.css — component styling for Plone's content-view hooks
+ * (listing / summary / tabular / album), wayfinder ticket 10.
+ *
+ * The STYLING half of the view stream; the templates that emit this markup are
+ * tickets 11/12. It reuses Plone's OWN semantic hooks verbatim (ticket 02
+ * audit of plone.app.contenttypes) — .entries / .item / .summary, the Bootstrap
+ * .card family (themed through the --bs-*→--plone-* bridge), .table, .card.album
+ * — and NEVER invents a parallel .plone-card. `plone-` is reserved for the
+ * structural primitives Plone can't name; a content hook Plone already names is
+ * reused as-is.
+ *
+ * Every hook carries a --plone-* custom-property API (gap / columns / rhythm),
+ * so a site retunes a listing in a CSS :root/scope block without touching a
+ * template or this file. Layout is ELASTIC — grid + minmax(), flex-grow,
+ * clamp() — so a listing reads right in the wide content column AND in a narrow
+ * rail with NO container queries (§5 deferred to fog; if ever needed they
+ * attach to these same reused hooks). No spacing utilities: named hooks +
+ * tokens only (the §7 tradeoff).
+ */
+@layer components {
+  /* ===== listing container — one elastic grid, a single column knob ======= */
+  .entries {
+    --plone-entries-gap: var(--plone-space-m);
+    /* 100% ⇒ a single column of full-width rows (listing / summary). An album
+       or card grid drops this to e.g. 16rem for auto multi-column that folds
+       to 1-up in a narrow rail — no media/container query. */
+    --plone-entries-min: 100%;
+    display: grid;
+    gap: var(--plone-entries-gap);
+    grid-template-columns:
+      repeat(auto-fill, minmax(min(var(--plone-entries-min), 100%), 1fr));
+  }
+
+  /* ===== listing / summary row =========================================== */
+  .entries > .item,
+  .entries > .summary {
+    --plone-item-space: var(--plone-space-s);
+    display: grid;
+    gap: var(--plone-space-2xs);
+    align-content: start;
+    padding-block-end: var(--plone-item-space);
+    border-block-end: var(--plone-border);
+  }
+  .entries > .item:last-child,
+  .entries > .summary:last-child {
+    padding-block-end: 0;
+    border-block-end: 0;
+  }
+
+  /* the row's title link — Plone marks it `.url` (summary adds `.summary`) */
+  .entries .url,
+  .entries a.summary {
+    font-size: var(--plone-text-l);
+    line-height: var(--plone-leading-tight);
+    color: var(--plone-color-link);
+    text-decoration: none;
+  }
+  .entries .url:hover,
+  .entries a.summary:hover { text-decoration: underline; }
+
+  /* byline + description read as secondary text, held to the measure */
+  .entries .documentByline,
+  .entries .description {
+    font-size: var(--plone-text-s);
+    color: var(--plone-color-muted);
+  }
+  .entries .description { max-inline-size: var(--plone-measure); }
+
+  /* a listing thumbnail (Plone's `.image-responsive`) just softens its corners;
+     content-plus-thumb layout is the template's job via the .plone-sidebar
+     primitive, not a bespoke rule here. */
+  .entries .image-responsive { border-radius: var(--plone-radius-m); }
+
+  /* ===== card family — hand-written styling ============================== *
+   * The card's --bs-*→--plone-* token rebind (spacers / border) lives in
+   * _clara-bridge.scss at component scope (ticket 13 folded it there so the
+   * bridge owns ALL --bs-* mapping in one place). This block keeps only the
+   * card styling Bootstrap gives no --bs-* knob for. */
+  .card-title {
+    font-size: var(--plone-text-l);
+    line-height: var(--plone-leading-tight);
+  }
+  .card-text { color: var(--plone-color-muted); }
+  .card-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--plone-color-surface);
+  }
+  .card-image > img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+
+  /* ===== tabular view — hand-written styling ============================= *
+   * The table's --bs-table-* token rebind (striped fill / border) lives in
+   * _clara-bridge.scss at component scope (ticket 13). th/caption are refined
+   * by hand here since Bootstrap gives them no --bs-* knob. */
+  .table > thead th {
+    text-align: start;
+    font-weight: 600;
+    color: var(--plone-color-text);
+    border-block-end: var(--plone-border);
+  }
+  .table caption {
+    color: var(--plone-color-muted);
+    font-size: var(--plone-text-s);
+  }
+
+  /* ===== album — a flexbin-style justified grid of image cards ============ */
+  /* Container stays the REUSED .entries hook with an `.album` modifier (album
+     is Plone's own concept, `.album` its own class) — no new structural class.
+     Flexbox, not .entries' grid, because flexbin JUSTIFIES each row: cards
+     flex-grow to fill the row at equal height and variable width (improved
+     over stock's fixed equal-width columns), collapsing elastically in a rail. */
+  .entries.album {
+    --plone-album-gap: var(--plone-space-s);
+    --plone-album-basis: 16rem;   /* target card width; cards grow to justify */
+    --plone-album-row: 14rem;     /* image band height */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--plone-album-gap);
+  }
+  /* every card in the album justifies (image cards `.card`, folder cards
+     `.card.album`); the folder card is called out so the ticket's named
+     `.card album` hook carries the flexbin sizing explicitly. */
+  .entries.album > .card,
+  .card.album {
+    flex-grow: 1;
+    flex-basis: var(--plone-album-basis, 16rem);
+  }
+  .entries.album .card-image { block-size: var(--plone-album-row); }
+}

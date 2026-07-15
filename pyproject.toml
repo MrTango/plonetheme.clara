@@ -1,7 +1,7 @@
 [project]
 name = "plonetheme.clara"
 version = "1.0.0a1"
-description = "A Plone heme based on plonetheme.pageletbase"
+description = "A Plone heme based on plone.pageletlayout"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "GPL-2.0-or-later"}
@@ -25,6 +25,7 @@ keywords = ["Plone", "CMS"]
 
 dependencies = [
     "Plone>=6.2",
+    "plone.pageletlayout",
     "setuptools<81",
     "plone.classicui",
     "Paste",
@@ -60,7 +61,7 @@ packages = ["src/plonetheme"]
 [tool.plone.backend_addon.settings]
 package_name = "plonetheme.clara"
 package_title = "Plonetheme Clara"
-package_description = "A Plone heme based on plonetheme.pageletbase"
+package_description = "A Plone heme based on plone.pageletlayout"
 package_folder = "plonetheme/clara"
 plone_version = "6.2"
 is_headless = false
@@ -123,6 +124,9 @@ preview = true
 
 [tool.uv]
 constraint-dependencies = ["Products.CMFPlone==6.2.1"]
+
+[tool.uv.sources]
+"plone.pageletlayout" = { path = "sources/plone.pageletlayout", editable = true }
 
 [dependency-groups]
 dev = ["invoke", "watchdog"]

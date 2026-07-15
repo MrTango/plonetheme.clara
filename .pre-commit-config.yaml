@@ -12,3 +12,14 @@ repos:
       - id: ruff
         args: [--fix]
       - id: ruff-format
+  - repo: local
+    hooks:
+      # §6.2 drift guard (wayfinder ticket 03 §4 / ticket 04): the compile-time
+      # $clara-* literals MUST equal the effective runtime --plone-* defaults.
+      # Pure text parse, no Sass/node — runs whenever the token files change.
+      - id: clara-token-drift
+        name: Clara token-literals drift guard
+        entry: uv run --extra test pytest tests/test_token_drift.py -q
+        language: system
+        pass_filenames: false
+        files: ^theme/scss/_clara-(tokens|tokens-defaults|brand)\.scss$

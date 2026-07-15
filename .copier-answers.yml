@@ -6,7 +6,7 @@ author_email: md@derico.de
 author_name: Maik Derstappen
 github_organization: plonetheme
 is_headless: false
-package_description: A Plone heme based on plonetheme.pageletbase
+package_description: A Plone heme based on plone.pageletlayout
 package_name: plonetheme.clara
 package_title: Plonetheme Clara
 plone_version: '6.2'

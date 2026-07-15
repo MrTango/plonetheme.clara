@@ -2,6 +2,7 @@
 import os
 
 import plone.app.theming
+import plone.pageletlayout
 import plone.restapi
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -22,6 +23,10 @@ class PlonethemeClaraLayer(PloneSandboxLayer):
         os.environ.setdefault("zope_i18n_compile_mo_files", "true")
         self.loadZCML(package=plone.app.theming)
         self.loadZCML(package=plone.restapi)
+        # Clara depends on plone.pageletlayout (its integration base); load the
+        # base ZCML so profile-plone.pageletlayout:default is registered and
+        # Clara's dependency-profile install resolves it (wayfinder ticket 04).
+        self.loadZCML(package=plone.pageletlayout)
         self.loadZCML(package=plonetheme.clara)
 
     def setUpPloneSite(self, portal):

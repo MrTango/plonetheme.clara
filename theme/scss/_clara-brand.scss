@@ -1,0 +1,30 @@
+/* clara-brand.css — Clara's brand token values.
+ *
+ * This is the ENTIRE difference between the bare pagelet base and the Clara
+ * theme at runtime: a single :root block in the `tokens` layer that overrides
+ * the base defaults. A second theme, or a site, does exactly this with
+ * different values (docs/clara-theming-architecture.md §1.5). Because every
+ * primitive, every --bs-* bridge line, and every component reads these roles,
+ * the whole theme responds. No Sass, no template touch.
+ */
+@layer tokens {
+  :root {
+    /* Clara's brand ramp + accent */
+    --plone-blue-500: #1e6f8e;
+    --plone-color-primary: #1e6f8e;
+
+    /* Clara's type: a slightly larger, calmer body rhythm */
+    --plone-font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --plone-leading-body: 1.6;
+
+    /* Clara softens the corners and widens the reading measure a touch */
+    --plone-radius-m: 0.625rem;
+    --plone-measure: 68ch;
+  }
+
+  [data-bs-theme="dark"] {
+    /* Clara's dark accent stays legible on the dark surface */
+    --plone-color-primary: #5db4d1;
+    --plone-color-link: #5db4d1;
+  }
+}

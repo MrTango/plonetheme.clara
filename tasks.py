@@ -101,7 +101,7 @@ site_api.create(
     {
         "site_id": "SITE_ID",
         "title": "Plonetheme Clara",
-        "description": "A Plone heme based on plonetheme.pageletbase",
+        "description": "A Plone heme based on plone.pageletlayout",
         "default_language": "en",
         "portal_timezone": "UTC",
         "setup_content": False,

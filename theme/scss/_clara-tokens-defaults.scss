@@ -1,0 +1,73 @@
+/* clara-tokens.css — the DEFAULT --plone-* token values.
+ *
+ * These are the base's fallback values so a site running plone.pageletlayout
+ * with NO theme still renders as a legible page. A theme (plonetheme.clara) or
+ * a site integrator overrides any of these by registering a LATER bundle whose
+ * whole content is a `:root {}` block — see docs/clara-theming-architecture.md
+ * §1.5. This is the entire public customization API; Sass is never involved.
+ */
+@layer tokens {
+  :root {
+    /* -- fluid space scale (Utopia-style clamp, 320px…1240px) ------------ */
+    --plone-space-3xs: clamp(0.25rem, 0.24rem + 0.05vw, 0.31rem);
+    --plone-space-2xs: clamp(0.50rem, 0.48rem + 0.11vw, 0.63rem);
+    --plone-space-xs:  clamp(0.75rem, 0.72rem + 0.16vw, 0.94rem);
+    --plone-space-s:   clamp(1.00rem, 0.96rem + 0.22vw, 1.25rem);
+    --plone-space-m:   clamp(1.50rem, 1.43rem + 0.33vw, 1.88rem);
+    --plone-space-l:   clamp(2.00rem, 1.91rem + 0.43vw, 2.50rem);
+    --plone-space-xl:  clamp(3.00rem, 2.87rem + 0.65vw, 3.75rem);
+    --plone-space-2xl: clamp(4.00rem, 3.83rem + 0.87vw, 5.00rem);
+    --plone-space-3xl: clamp(6.00rem, 5.74rem + 1.30vw, 7.50rem);
+
+    /* -- type scale ------------------------------------------------------ */
+    --plone-text-xs:   clamp(0.79rem, 0.77rem + 0.08vw, 0.83rem);
+    --plone-text-s:    clamp(0.89rem, 0.86rem + 0.14vw, 0.96rem);
+    --plone-text-base: clamp(1.00rem, 0.96rem + 0.22vw, 1.13rem);
+    --plone-text-m:    clamp(1.13rem, 1.06rem + 0.33vw, 1.35rem);
+    --plone-text-l:    clamp(1.27rem, 1.17rem + 0.49vw, 1.62rem);
+    --plone-text-xl:   clamp(1.42rem, 1.28rem + 0.71vw, 1.94rem);
+    --plone-text-2xl:  clamp(1.60rem, 1.39rem + 1.01vw, 2.33rem);
+    --plone-text-3xl:  clamp(1.80rem, 1.51rem + 1.42vw, 2.80rem);
+    --plone-leading-tight: 1.15;
+    --plone-leading-body:  1.55;
+    --plone-font-body: system-ui, -apple-system, "Segoe UI", roboto, sans-serif;
+
+    /* -- color: primitive ramp (excerpt) --------------------------------- */
+    --plone-blue-500: #2c7bb6;
+    --plone-gray-050: #f7f8fa;
+    --plone-gray-200: #dee2e6;
+    --plone-gray-700: #384049;
+    --plone-gray-900: #14181c;
+
+    /* -- color: semantic roles (the public surface) ---------------------- */
+    --plone-color-primary:    var(--plone-blue-500);
+    --plone-color-text:       var(--plone-gray-900);
+    --plone-color-muted:      var(--plone-gray-700);
+    --plone-color-bg:         #ffffff;
+    --plone-color-surface:    var(--plone-gray-050);
+    --plone-color-border:     var(--plone-gray-200);
+    --plone-color-link:       var(--plone-color-primary);
+    --plone-color-focus-ring: var(--plone-color-primary);
+
+    /* -- measure, radii, borders ----------------------------------------- */
+    --plone-measure:      65ch;
+    --plone-measure-wide: 85ch;
+    --plone-radius-0: 0;
+    --plone-radius-s: 0.25rem;
+    --plone-radius-m: 0.5rem;
+    --plone-radius-l: 1rem;
+    --plone-radius-pill: 50rem;
+    --plone-border-width: 1px;
+    --plone-border: var(--plone-border-width) solid var(--plone-color-border);
+  }
+
+  /* Dark mode expressed through the SAME roles (§6.4). Bootstrap's
+     [data-bs-theme] is honored; only the semantic tokens move. */
+  [data-bs-theme="dark"] {
+    --plone-color-bg:      var(--plone-gray-900);
+    --plone-color-surface: var(--plone-gray-700);
+    --plone-color-text:    var(--plone-gray-050);
+    --plone-color-muted:   var(--plone-gray-200);
+    --plone-color-border:  var(--plone-gray-700);
+  }
+}

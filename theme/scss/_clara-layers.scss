@@ -1,0 +1,41 @@
+/* clara-layers.css — the cascade-layer declaration + minimal reset.
+ *
+ * This file MUST load first (registry bundle with no `depends`). The single
+ * @layer line below is the whole conflict-resolution strategy: later layers
+ * win over earlier ones regardless of selector specificity, which is why
+ * nothing in this theme uses !important or specificity escalation.
+ *
+ * See docs/clara-theming-architecture.md §2. The `bootstrap` layer is filled
+ * by the theme (plonetheme.clara); under the future lean bundle it is simply
+ * dropped and every other layer keeps its meaning.
+ */
+@layer reset, tokens, bootstrap, primitives, components, compat, addons, site;
+
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--plone-font-body, system-ui, sans-serif);
+    font-size: var(--plone-text-base, 1rem);
+    line-height: var(--plone-leading-body, 1.55);
+    color: var(--plone-color-text, #14181c);
+    background: var(--plone-color-bg, #fff);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, figure, ul, ol { margin: 0; }
+  ul, ol { padding: 0; list-style: none; }
+
+  img, picture, svg { max-width: 100%; display: block; }
+
+  a { color: var(--plone-color-link, #2c7bb6); }
+
+  :where(:focus-visible) {
+    outline: 2px solid var(--plone-color-focus-ring, #2c7bb6);
+    outline-offset: 2px;
+  }
+}

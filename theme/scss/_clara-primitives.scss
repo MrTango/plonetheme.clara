@@ -1,0 +1,97 @@
+/* clara-primitives.css — the layout primitives + the whole-page layout grid.
+ *
+ * These ship in the base and are what the templates use INSTEAD of Bootstrap's
+ * spacing/flex/grid utilities (see docs/clara-theming-architecture.md §3, §4,
+ * §8). Every primitive: the class sets layout; a --plone-* property tunes it;
+ * the exception mechanism is to set that property on a child/one-off scope —
+ * never to add a utility class.
+ */
+@layer primitives {
+  /* Stack — vertical rhythm */
+  .plone-stack {
+    display: flex;
+    flex-direction: column;
+    --plone-stack-space: var(--plone-space-s);
+  }
+  .plone-stack > * { margin-block: 0; }
+  .plone-stack > * + * { margin-block-start: var(--plone-stack-space); }
+
+  /* Cluster — wrap-friendly horizontal group */
+  .plone-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: var(--plone-cluster-align, center);
+    justify-content: var(--plone-cluster-justify, flex-start);
+    gap: var(--plone-cluster-space, var(--plone-space-2xs));
+  }
+
+  /* Sidebar — content + rail, collapses gracefully */
+  .plone-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--plone-sidebar-space, var(--plone-space-m));
+  }
+  .plone-sidebar > .plone-sidebar__aside {
+    flex-basis: var(--plone-sidebar-width, 20rem);
+    flex-grow: 1;
+  }
+  .plone-sidebar > .plone-sidebar__main {
+    flex-basis: 0;
+    flex-grow: 999;
+    min-inline-size: var(--plone-sidebar-min, 50%);
+  }
+
+  /* Switcher — N-up that flips to stacked below a threshold (no media query) */
+  .plone-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--plone-switcher-space, var(--plone-space-m));
+  }
+  .plone-switcher > * {
+    flex-grow: 1;
+    flex-basis: calc((var(--plone-switcher-threshold, 30rem) - 100%) * 999);
+  }
+
+  /* Grid — intrinsic responsive grid */
+  .plone-grid {
+    display: grid;
+    gap: var(--plone-grid-space, var(--plone-space-m));
+    grid-template-columns:
+      repeat(auto-fit, minmax(min(var(--plone-grid-min, 16rem), 100%), 1fr));
+  }
+
+  /* Center / content-width */
+  .plone-center {
+    box-sizing: content-box;
+    margin-inline: auto;
+    max-inline-size: var(--plone-measure, 65ch);
+    padding-inline: var(--plone-center-gutter, var(--plone-space-s));
+  }
+  .plone-center--wide { --plone-measure: var(--plone-measure-wide, 85ch); }
+}
+
+@layer components {
+  /* The single whole-page layout container: a named-column grid. Direct
+     children default to the readable content column; .plone-bleed opts into
+     edge-to-edge. Vertical rhythm is the grid's row-gap. See §4. */
+  .plone-layout {
+    display: grid;
+    row-gap: var(--plone-layout-space, var(--plone-space-m));
+    grid-template-columns:
+      [full-start] minmax(var(--plone-layout-gutter, var(--plone-space-s)), 1fr)
+      [content-start] min(
+          var(--plone-measure, 65ch),
+          100% - var(--plone-layout-gutter, var(--plone-space-s)) * 2
+        )
+      [content-end] minmax(var(--plone-layout-gutter, var(--plone-space-s)), 1fr)
+      [full-end];
+    padding-block: var(--plone-space-m) var(--plone-space-xl);
+  }
+  .plone-layout > * { grid-column: content-start / content-end; }
+  .plone-layout > .plone-bleed { grid-column: full-start / full-end; }
+  .plone-layout > .plone-bleed--contained {
+    grid-column: full-start / full-end;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+}

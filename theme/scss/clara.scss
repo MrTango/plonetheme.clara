@@ -1,0 +1,34 @@
+// clara.scss — THE single compilable entry for Clara's one theme bundle.
+//
+// Compiling this file (see package.json `build`) emits ONE stylesheet — the
+// whole @layer cascade in a single file, the way Barceloneta ships one
+// barceloneta.min.css. An integrator restyles the entire site, Bootstrap
+// components included, by overriding --plone-* tokens at runtime; they never
+// open this file. See docs/clara-theming-architecture.md §2, §6, §7 and
+// wayfinder ticket 03 (build shape) / ticket 04 (this wiring).
+//
+// Import order IS the cascade wiring:
+//   * clara-layers declares `@layer reset, tokens, bootstrap, …` FIRST — a
+//     @layer statement's first occurrence fixes each layer's position, so
+//     nothing below needs !important or source-order discipline.
+//   * tokens-defaults then brand fill `@layer tokens { :root }`; brand comes
+//     AFTER the defaults because custom-property resolution is source-order.
+//   * clara-bootstrap sets Bootstrap's Sass $-vars from the Clara token
+//     literals, then @import"s Bootstrap INTO `@layer bootstrap`.
+//   * primitives / bridge / components / megamenu layer on top.
+//
+// Extension-less @import so Dart Sass INLINES each partial into this one file;
+// an explicit ".css" would leak a literal `@import url(...)` and defeat the
+// single-file goal. @import (not @use) is kept because Bootstrap 5.3 is not
+// module-ready and requires `@import "bootstrap/scss/bootstrap"`.
+
+@import "clara-layers";            // @layer decl (MUST be first) + reset layer
+@import "clara-tokens-defaults";   // @layer tokens { :root } — base defaults
+@import "clara-brand";             // @layer tokens { :root } — Clara brand override
+@import "clara-bootstrap";         // $-vars from tokens, then @layer bootstrap { bootstrap }
+@import "clara-primitives";        // @layer primitives + the @layer components layout grid
+@import "clara-bridge";            // @layer components — --bs-* → --plone-* rebind
+@import "clara-components";        // @layer components — .element-* hooks
+@import "clara-content";           // @layer components — content-view hooks (ticket 10)
+@import "clara-megamenu";          // @layer components — Clara's own nav
+@import "clara-toolbar";           // @layer components — editor-toolbar chrome (ticket 15)

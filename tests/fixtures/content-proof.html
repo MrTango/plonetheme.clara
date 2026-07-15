@@ -1,0 +1,148 @@
+<!doctype html>
+<!--
+  Content-view component styling — the RUNTIME proof (wayfinder ticket 10).
+
+  The markup below is the CLEAN, named-hook markup tickets 11/12 will emit —
+  Plone's own hooks (.entries / .item / .summary / .card / .card.album / .table)
+  with ZERO Bootstrap utility soup (no .row/.col/.mb-3) and NO invented
+  .plone-card. It is styled ENTIRELY by the compiled bundle Clara ships in
+  <head>; this file adds only report chrome + fake images.
+
+  Open in any browser (file:// is fine) and resize: the album justifies
+  flexbin-style, and dragging the frame narrow folds every listing to one column
+  with no media/container query. The panel self-verifies the load-bearing
+  claims. Companion structural proof: tests/test_content_components.py.
+
+    ../../src/plonetheme/clara/static/clara.min.css   (run `npm run build` first)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clara content components — runtime proof</title>
+  <link rel="stylesheet" href="../../src/plonetheme/clara/static/clara.min.css">
+  <style>
+    /* Report chrome + fake images only — NOT part of the thing under test. */
+    body { margin: 2rem; max-width: 60rem; }
+    .report { border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.25rem; margin-block-end: 2rem; }
+    .report h2 { margin-top: 0; }
+    table.readout { border-collapse: collapse; width: 100%; }
+    table.readout th, table.readout td { text-align: left; padding: 4px 10px; border-bottom: 1px solid #eee; font-variant-numeric: tabular-nums; }
+    .pass { color: #0a7c2f; font-weight: 600; }
+    .fail { color: #c0242c; font-weight: 600; }
+    h3.section { margin-block: 2rem 0.75rem; }
+    /* fake thumbnails so the fixture needs no network images */
+    .fake-img { aspect-ratio: 4 / 3; background: linear-gradient(135deg, #8ec5da, #1e6f8e); display: block; }
+    .card-image .fake-img { block-size: 100%; width: 100%; aspect-ratio: auto; }
+    .rail-demo { max-width: 22rem; outline: 2px dashed #bbb; padding: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <div class="report">
+    <h2>Ticket 10 — content component styling, runtime readout</h2>
+    <p id="verdict">Computing…</p>
+    <table class="readout"><tbody id="rows"></tbody></table>
+    <p style="margin-block-end:0; color:#666; font-size:.9em">
+      Resize the window: the album justifies; the rail demo below is fixed at
+      22rem to prove single-column folding with no query.
+    </p>
+  </div>
+
+  <!-- ══ 1. listing view: .entries > .item, named hooks, no utilities ══════ -->
+  <h3 class="section">listing_view — <code>.entries &gt; .item</code></h3>
+  <ul class="entries" id="listing">
+    <li class="item">
+      <a class="url" href="#">Annual report 2026</a>
+      <span class="documentByline">by Bob Dobalina — last modified today</span>
+      <p class="description">A concise summary of the year, held to the reading measure so long descriptions stay legible.</p>
+    </li>
+    <li class="item">
+      <a class="url" href="#">Roadmap and milestones</a>
+      <p class="description">Second entry, no byline — the row rhythm still holds.</p>
+    </li>
+    <li class="item"><a class="url" href="#">A third item with only a title</a></li>
+  </ul>
+
+  <!-- ══ 2. summary view: .entries > .summary ═════════════════════════════ -->
+  <h3 class="section">summary_view — <code>.entries &gt; .summary</code></h3>
+  <ul class="entries" id="summary">
+    <li class="summary">
+      <a class="summary url" href="#">Getting started with Clara</a>
+      <span class="description">Summary items reuse the same row hook; the title link carries <code>.summary.url</code>.</span>
+    </li>
+    <li class="summary">
+      <a class="summary url" href="#">Theming through tokens</a>
+      <span class="description">Restyle the whole listing by overriding <code>--plone-entries-gap</code> — no template edit.</span>
+    </li>
+  </ul>
+
+  <!-- ══ 3. album view: .entries.album with .card / .card.album ════════════ -->
+  <h3 class="section">album_view — <code>.entries.album</code> (flexbin)</h3>
+  <div class="entries album" id="album">
+    <div class="card"><div class="card-image"><span class="fake-img"></span></div>
+      <div class="card-body"><h5 class="card-title">Sunset</h5><p class="card-text">An image card.</p><a class="card-link" href="#">View</a></div></div>
+    <div class="card"><div class="card-image"><span class="fake-img"></span></div>
+      <div class="card-body"><h5 class="card-title">Harbour</h5><p class="card-text">Cards flex-grow to justify each row.</p><a class="card-link" href="#">View</a></div></div>
+    <div class="card album"><div class="card-image"><span class="fake-img"></span></div>
+      <div class="card-body"><h5 class="card-title">Gallery folder</h5><p class="card-text">A folder card — the named <code>.card.album</code> hook.</p><a class="card-link" href="#">View</a></div></div>
+    <div class="card"><div class="card-image"><span class="fake-img"></span></div>
+      <div class="card-body"><h5 class="card-title">Trees</h5><p class="card-text">Equal height, variable width.</p><a class="card-link" href="#">View</a></div></div>
+  </div>
+
+  <!-- ══ 4. tabular view: .table via the bridge ════════════════════════════ -->
+  <h3 class="section">tabular_view — <code>.table</code></h3>
+  <table class="table table-striped" id="tabular">
+    <thead><tr><th>Title</th><th>Creator</th><th>Modified</th></tr></thead>
+    <tbody>
+      <tr><td><a class="url" href="#">Annual report 2026</a></td><td>bob</td><td>today</td></tr>
+      <tr><td><a class="url" href="#">Roadmap</a></td><td>alice</td><td>yesterday</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══ 5. narrow-rail elastic proof: same .entries, folds to 1 column ════ -->
+  <h3 class="section">same <code>.entries</code> in a 22rem rail (no query)</h3>
+  <div class="rail-demo">
+    <ul class="entries" style="--plone-entries-min: 16rem;">
+      <li class="item"><a class="url" href="#">Rail item A</a><p class="description">In a wide column this would sit multi-up; here it folds to one.</p></li>
+      <li class="item"><a class="url" href="#">Rail item B</a></li>
+    </ul>
+  </div>
+
+  <script>
+    const cs = (el) => el ? getComputedStyle(el) : null;
+    const rows = [];
+    const push = (label, got, ok) => rows.push([label, got, ok]);
+
+    const listing = cs(document.getElementById('listing'));
+    const album   = cs(document.getElementById('album'));
+    const albumCard = cs(document.querySelector('#album .card'));
+    const card    = cs(document.querySelector('#album .card'));
+
+    // .entries is an elastic grid (not a flex/blocked list)
+    push('.entries → display', listing.display, listing.display === 'grid');
+    // .entries.album justifies with flexbox
+    push('.entries.album → display', album.display, album.display === 'flex');
+    push('.entries.album → flex-wrap', album.flexWrap, album.flexWrap === 'wrap');
+    // album cards flex-grow (flexbin justification)
+    push('.card in album → flex-grow', albumCard.flexGrow, parseFloat(albumCard.flexGrow) >= 1);
+    // .card is padded from the --plone-* token via the bridge (not 0, not hand-set)
+    const pad = parseFloat(cs(document.querySelector('#album .card-body')).paddingLeft);
+    push('.card-body padding (bridge → token)', pad.toFixed(1) + 'px', pad > 0);
+    // no bespoke .plone-card was minted
+    const noInvent = !document.querySelector('.plone-card, .plone-listing, .plone-entries');
+    push('no invented .plone-card / .plone-listing', noInvent ? 'none' : 'FOUND', noInvent);
+
+    document.getElementById('rows').innerHTML = rows.map(([k, v, ok]) =>
+      `<tr><th>${k}</th><td>${v}</td><td>${ok === null ? '' :
+        (ok ? '<span class="pass">✓</span>' : '<span class="fail">✗</span>')}</td></tr>`
+    ).join('');
+
+    const ok = rows.every(([, , k]) => k !== false);
+    document.getElementById('verdict').innerHTML = ok
+      ? '<span class="pass">PASS</span> — Plone\'s own content hooks are styled elastically from '
+        + '<code>--plone-*</code> tokens; the album justifies flexbin-style, and no <code>.plone-card</code> was invented.'
+      : '<span class="fail">FAIL</span> — is clara.min.css built and linked?';
+  </script>
+</body>
+</html>

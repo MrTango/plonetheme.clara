@@ -1,0 +1,20 @@
+// _clara-tokens.scss — the compile-time literals that Bootstrap's Sass math
+// needs (color functions, the $theme-colors map). These MUST match the runtime
+// default values in plone.pageletlayout/static/clara-tokens.css, because
+// Sass cannot read a CSS custom property at build time.
+//
+// See docs/clara-theming-architecture.md §6.2. Integrators never open this
+// file — it is a build-time implementation detail. Runtime overrides go in a
+// CSS :root {} block (§1.5); these literals only affect derived state shades
+// (hover/active), which the caveat in §6.2 documents.
+
+$clara-primary: #1e6f8e;   // === --plone-color-primary default (Clara brand)
+$clara-success: #2e7d32;
+$clara-danger:  #c62828;
+$clara-warning: #f9a825;
+$clara-info:    #0277bd;
+
+$clara-text:    #14181c;
+$clara-bg:      #ffffff;
+$clara-border:  #dee2e6;
+$clara-radius:  0.625rem;

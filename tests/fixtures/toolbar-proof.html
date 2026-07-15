@@ -1,0 +1,119 @@
+<!doctype html>
+<!--
+  Editor-toolbar chrome, theme-owned — the RUNTIME proof (wayfinder ticket 15).
+
+  Ticket 14 ruled the editor-toolbar CSS a THEME responsibility (as stock Plone
+  ships barceloneta-toolbar.min.css inside the Barceloneta theme); ticket 15
+  moved its #edit-zone chrome out of plone.pageletlayout (now zero-CSS) into
+  Clara's one compiled clara.min.css, as _clara-toolbar.scss in @layer
+  components. Only the TOOLBAR DELTA moved — the sheet's redundant Bootstrap
+  Reboot + :root{--bs-*} dump were dropped, so the chrome now reads --bs-* from
+  Clara's own compiled Bootstrap.
+
+  The #edit-zone toolbar below is styled ENTIRELY by the bundle in <head>. The
+  panel self-verifies, against hidden probes that read the same token, that:
+    * #edit-zone paints --plone-toolbar-bg  (the chrome rule applies at all);
+    * #edit-zone width == --plone-toolbar-width  (its layout token resolves);
+    * #edit-zone .nav-link colour == --plone-toolbar-text-color  — the
+      LOAD-BEARING one: it proves the #edit-zone override of Bootstrap's own
+      global `.nav-link` WINS, i.e. @layer components beats @layer bootstrap
+      after the fold. Companion structural proof: tests/test_toolbar.py.
+
+    ../../src/plonetheme/clara/static/clara.min.css   (run `npm run build` first)
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clara editor-toolbar chrome — runtime proof</title>
+  <link rel="stylesheet" href="../../src/plonetheme/clara/static/clara.min.css">
+  <style>
+    /* The report chrome is deliberately NOT under #edit-zone so the fixed
+       toolbar doesn't cover it; push it right of the 220px rail. */
+    #report { margin: 2rem 2rem 2rem 16rem; max-width: 50rem; border: 1px solid #ccc; border-radius: 8px; padding: 1rem 1.25rem; }
+    #report h2 { margin-top: 0; }
+    table.readout { border-collapse: collapse; width: 100%; }
+    table.readout th, table.readout td { text-align: left; padding: 4px 10px; border-bottom: 1px solid #eee; font-variant-numeric: tabular-nums; }
+    .pass { color: #0a7c2f; font-weight: 600; }
+    .fail { color: #c0242c; font-weight: 600; }
+    /* Hidden probes: a plain div whose property IS the token, so the test
+       compares "computed value of the chrome" to "computed value of the token"
+       with no hardcoded literal. --plone-toolbar-bg resolves to var(--bs-dark),
+       which Clara's customised Bootstrap omits globally — _clara-toolbar.scss
+       supplies --bs-dark at :root — so the probe reads a real dark colour. */
+    .probe { position: absolute; visibility: hidden; height: 0; }
+    #p-bg    { background-color: var(--plone-toolbar-bg); }
+    #p-width { width: var(--plone-toolbar-width); }
+    #p-text  { color: var(--plone-toolbar-text-color); }
+  </style>
+</head>
+<body>
+
+  <!-- A minimal editor toolbar, the stock Plone shape: #edit-zone > .nav > .nav-link -->
+  <div id="edit-zone">
+    <div class="probe" id="p-bg"></div>
+    <div class="probe" id="p-width"></div>
+    <div class="probe" id="p-text"></div>
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link" href="#" id="tb-link">Contents</a></li>
+      <li class="nav-item"><a class="nav-link" href="#">Edit</a></li>
+    </ul>
+  </div>
+
+  <div id="report">
+    <h2>Ticket 15 — editor-toolbar chrome in clara.min.css, runtime readout</h2>
+    <p id="verdict">Computing…</p>
+    <table class="readout"><tbody id="rows"></tbody></table>
+    <p style="margin-block-end:0; color:#666; font-size:.9em">
+      Each row compares a computed property of the bare <code>#edit-zone</code>
+      toolbar to the <code>--plone-toolbar-*</code> token it must resolve to
+      (a hidden probe).
+    </p>
+  </div>
+
+  <script>
+    const rows = [];
+    const gcs = (id) => getComputedStyle(document.getElementById(id));
+    const near = (a, b) => Math.abs(a - b) <= 0.6;
+    const push = (label, got, ok, note='') => rows.push([label, got + (note?` (${note})`:''), ok]);
+
+    // A token that resolves to nothing computes to transparent / 0 — guard
+    // against that "false pass" where probe and target both collapse to empty.
+    const TRANSPARENT = 'rgba(0, 0, 0, 0)';
+
+    // 1. #edit-zone paints the toolbar bg token (chrome rule applies) — and it
+    //    must be a REAL colour (--plone-toolbar-bg → var(--bs-dark), which Clara
+    //    doesn't emit globally; _clara-toolbar.scss supplies --bs-dark at :root).
+    const ezBg = gcs('edit-zone').backgroundColor;
+    const tokBg = gcs('p-bg').backgroundColor;
+    push('#edit-zone background-color = --plone-toolbar-bg', ezBg,
+         ezBg === tokBg && ezBg !== TRANSPARENT, 'token ' + tokBg + ', not transparent');
+
+    // 2. #edit-zone width resolves the width token (220px, non-zero)
+    const ezW = parseFloat(gcs('edit-zone').width);
+    const tokW = parseFloat(gcs('p-width').width);
+    push('#edit-zone width = --plone-toolbar-width', ezW.toFixed(1)+'px',
+         near(ezW, tokW) && ezW > 1, 'token '+tokW.toFixed(1)+'px');
+
+    // 3. LOAD-BEARING: #edit-zone .nav-link colour = --plone-toolbar-text-color
+    //    proves the #edit-zone override BEATS Bootstrap's global .nav-link,
+    //    i.e. @layer components wins over @layer bootstrap after the fold.
+    const lnk = gcs('tb-link').color;
+    const tokText = gcs('p-text').color;
+    push('#edit-zone .nav-link colour = --plone-toolbar-text-color', lnk,
+         lnk === tokText && lnk !== TRANSPARENT, 'token ' + tokText + ' — beats Bootstrap .nav-link');
+
+    document.getElementById('rows').innerHTML = rows.map(([k, v, ok]) =>
+      `<tr><th>${k}</th><td>${v}</td><td>${ok ? '<span class="pass">✓</span>' : '<span class="fail">✗</span>'}</td></tr>`
+    ).join('');
+
+    const ok = rows.every(([, , k]) => k);
+    document.getElementById('verdict').innerHTML = ok
+      ? '<span class="pass">PASS</span> — the editor-toolbar chrome resolves its '
+        + '<code>--plone-toolbar-*</code> tokens and its <code>#edit-zone .nav-link</code> '
+        + 'override beats Bootstrap, all from clara.min.css.'
+      : '<span class="fail">FAIL</span> — the toolbar lost a token or Bootstrap won — is clara.min.css built with _clara-toolbar.scss?';
+    document.body.dataset.verdict = ok ? 'PASS' : 'FAIL';
+  </script>
+</body>
+</html>

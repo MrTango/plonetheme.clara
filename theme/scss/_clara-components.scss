@@ -1,0 +1,40 @@
+/* clara-components.css — minimal restyle of the layout element hooks.
+ *
+ * Uses only the stable .element-* markup-contract hooks (§9) and --plone-*
+ * tokens; no spacing/flex utilities, no template knowledge. A theme
+ * (plonetheme.clara) or a site layers richer component styling on top in the
+ * `components`/`site` layers — this is just enough that the un-themed base
+ * reads as a page.
+ */
+@layer components {
+  .element-contentheader .documentFirstHeading {
+    font-size: var(--plone-text-2xl);
+    line-height: var(--plone-leading-tight);
+  }
+  .element-contentheader .documentDescription {
+    font-size: var(--plone-text-m);
+    color: var(--plone-color-muted);
+    margin-block-start: var(--plone-space-2xs);
+  }
+
+  .element-globalnav {
+    padding-block: var(--plone-space-2xs);
+    border-block: var(--plone-border);
+  }
+
+  .element-searchbox .searchField { max-inline-size: 18rem; }
+
+  .element-breadcrumbs {
+    font-size: var(--plone-text-s);
+    color: var(--plone-color-muted);
+  }
+
+  /* footer signature block */
+  .element-copyright,
+  .element-colophon,
+  .element-siteactions {
+    font-size: var(--plone-text-s);
+    color: var(--plone-color-muted);
+  }
+  .element-copyright { padding-block-start: var(--plone-space-s); border-block-start: var(--plone-border); }
+}
