@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:plone="http://namespaces.plone.org/plone"
@@ -9,10 +10,17 @@
 
   <include file="permissions.zcml" />
 
+  <!-- Clara's brand token file, served at ++resource++plonetheme.clara/ and
+       linked via a registry bundle (profiles/default/registry.xml). -->
+  <browser:resourceDirectory
+      name="plonetheme.clara"
+      directory="static"
+      />
+
   <genericsetup:registerProfile
       name="default"
       title="Plonetheme Clara"
-      description="A Plone heme based on plonetheme.pageletbase"
+      description="A Plone theme based on plone.pageletlayout"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/default"
       />
@@ -31,5 +39,8 @@
       description="Uninstall plonetheme.clara"
       handler="plonetheme.clara.setuphandlers.uninstall"
       />
+
+
+  <include package=".upgrades" />
 
 </configure>

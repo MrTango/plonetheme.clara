@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
-  <version>1000</version>
+  <version>1001</version>
   <dependencies>
     <dependency>profile-plone.app.registry:default</dependency>
+    <!-- Clara is the first theme built on the pagelet base: installing Clara
+         installs the whole rendering machinery, markup contract, primitives,
+         and default tokens; Clara then layers its brand tokens on top. -->
+    <dependency>profile-plone.pageletlayout:default</dependency>
   </dependencies>
 </metadata>
