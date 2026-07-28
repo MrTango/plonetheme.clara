@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clara token system — runtime proof</title>
+  <link rel="stylesheet" href="../../src/plonetheme/clara/static/clara.min.css">
+  <style>
+    body { margin: 0; }
+    main { width: min(100% - 2rem, 72rem); margin-inline: auto; padding-block: var(--plone-space-l); }
+    header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--plone-space-s); align-items: end; border-block-end: var(--plone-border); padding-block-end: var(--plone-space-s); }
+    header p { color: var(--plone-color-muted); }
+    section { padding-block: var(--plone-space-l); }
+    section + section { border-block-start: var(--plone-border); }
+    h1 { font-size: var(--clara-text-heading); }
+    h2 { margin-block-end: var(--plone-space-s); font-size: var(--plone-text-xl); }
+    .sample-row { display: flex; flex-wrap: wrap; gap: var(--plone-space-s); align-items: center; }
+    .message-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr)); gap: var(--plone-space-s); }
+    .message-list .alert { margin: 0; }
+    .form-proof { max-inline-size: 36rem; display: grid; gap: var(--plone-space-s); }
+    .field { display: grid; gap: var(--plone-space-3xs); }
+    .field label { font-weight: 650; }
+    .dark-proof { padding: var(--plone-space-m); border: 1px solid var(--plone-color-border); border-radius: var(--plone-radius-m); background: var(--plone-color-bg); color: var(--plone-color-text); }
+    .dark-proof p { color: var(--plone-color-muted); }
+    .dark-proof a { color: var(--plone-color-link); }
+    #verdict { font-weight: 700; }
+    #verdict[data-state="pass"] { color: var(--plone-color-success-text); }
+    #verdict[data-state="fail"] { color: var(--plone-color-danger-text); }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Clara’s runtime colour contract</h1>
+      <p>Official Plone identity, accessible reading roles, complete semantic states.</p>
+    </div>
+    <p id="verdict">Checking computed tokens…</p>
+  </header>
+
+  <section id="palette">
+    <h2>Primary interaction</h2>
+    <div class="sample-row">
+      <button class="btn btn-primary" id="primary">Save changes</button>
+      <button class="btn btn-primary" aria-busy="true">Publishing</button>
+      <button class="btn btn-primary" disabled>Unavailable</button>
+      <a href="#states" id="link">Review status guidance</a>
+    </div>
+  </section>
+
+  <section id="states">
+    <h2>Messages</h2>
+    <div class="message-list">
+      <div class="alert alert-success" role="status"><strong>Published.</strong> The page is visible.</div>
+      <div class="alert alert-warning" role="status"><strong>Review needed.</strong> Two fields remain.</div>
+      <div class="alert alert-danger" role="alert"><strong>Not saved.</strong> Correct the marked field.</div>
+      <div class="alert alert-info" role="status"><strong>Scheduled.</strong> Publication starts tomorrow.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Form validation</h2>
+    <form class="form-proof" novalidate>
+      <div class="field">
+        <label for="title">Page title</label>
+        <input class="form-control is-valid" id="title" value="Community guidelines" aria-describedby="title-ok">
+        <div class="valid-feedback" id="title-ok">Title is available.</div>
+      </div>
+      <div class="field">
+        <label for="slug">Short name</label>
+        <input class="form-control is-invalid" id="slug" value="community guidelines" aria-describedby="slug-error" aria-invalid="true">
+        <div class="invalid-feedback" id="slug-error">Use letters, numbers, and hyphens only.</div>
+      </div>
+    </form>
+  </section>
+
+  <section data-bs-theme="dark" class="dark-proof">
+    <h2>Dark token context</h2>
+    <p>The same semantic roles move to a darker same-hue surface.</p>
+    <a href="#palette">Return to primary interaction</a>
+  </section>
+</main>
+<script>
+  const normalize = (value) => value.replaceAll(' ', '').toLowerCase();
+  const primary = getComputedStyle(document.getElementById('primary'));
+  const link = getComputedStyle(document.getElementById('link'));
+  const checks = [
+    normalize(primary.backgroundColor) === 'rgb(0,131,190)',
+    normalize(primary.color) === 'rgb(0,16,24)',
+    normalize(link.color) === 'rgb(0,98,147)',
+    !getComputedStyle(document.querySelector('.alert-success')).backgroundColor.includes('0, 0, 0, 0')
+  ];
+  const pass = checks.every(Boolean);
+  const verdict = document.getElementById('verdict');
+  verdict.dataset.state = pass ? 'pass' : 'fail';
+  verdict.textContent = pass ? 'PASS — runtime roles resolved' : 'FAIL — rebuild clara.min.css';
+  document.body.dataset.verdict = pass ? 'PASS' : 'FAIL';
+</script>
+</body>
+</html>

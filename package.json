@@ -2,7 +2,7 @@
   "name": "plonetheme.clara",
   "version": "1.0.0",
   "private": true,
-  "description": "Frontend build for plonetheme.clara. Compiles the single theme bundle theme/scss/clara.scss (Bootstrap 5.3 folded in and driven from --clara-* tokens, the whole @layer cascade, the §7 $spacers remap) into the Plone static resource dir (src/plonetheme/clara/static/clara.min.css) that Clara's registry bundle links into <head>. Run `npm install` to fetch Bootstrap + compile (postinstall runs the build). Bootstrap is pinned EXACTLY to 5.3.8 = Plone 6.2's own (wayfinder ticket 01).",
+  "description": "Frontend build for plonetheme.clara. Compiles the single theme bundle theme/scss/clara.scss (Bootstrap 5.3 folded in and driven from the public --plone-* runtime contract, the whole @layer cascade, semantic states, and the §7 $spacers remap) into src/plonetheme/clara/static/clara.min.css. Run `npm install` to fetch Bootstrap and compile. Bootstrap is pinned exactly to Plone 6.2's 5.3.8.",
   "license": "GPL-2.0-only",
   "dependencies": {
     "bootstrap": "5.3.8",

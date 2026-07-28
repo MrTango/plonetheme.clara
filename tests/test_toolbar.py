@@ -77,15 +77,11 @@ def test_toolbar_tokens_present(flat):
 
 # ── the redundant Bootstrap was NOT folded in ────────────────────────────────
 
-def test_bs_dark_supplied_for_toolbar(flat):
-    """Clara's customised Bootstrap colour map omits --bs-dark, but the toolbar
-    background is ``--plone-toolbar-bg: var(--bs-dark)``. _clara-toolbar.scss
-    supplies it at :root so the toolbar paints a real dark instead of collapsing
-    to transparent (the false-pass the fixture's non-transparent guard catches).
-    """
-    assert "--bs-dark:#212529" in flat, (
-        "--bs-dark not supplied — the toolbar background resolves to transparent"
-    )
+def test_toolbar_background_uses_clara_semantic_dark(flat):
+    """The toolbar now uses Clara's same-hue dark surface directly instead of
+    reviving Bootstrap's stock --bs-dark token at :root."""
+    assert "--plone-toolbar-bg:var(--clara-brand-deep)" in flat
+    assert "--bs-dark:#212529" not in flat
 
 
 def test_bootstrap_dump_not_duplicated(flat):

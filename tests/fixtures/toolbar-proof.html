@@ -12,7 +12,7 @@
 
   The #edit-zone toolbar below is styled ENTIRELY by the bundle in <head>. The
   panel self-verifies, against hidden probes that read the same token, that:
-    * #edit-zone paints --plone-toolbar-bg  (the chrome rule applies at all);
+    * #edit-zone paints --plone-toolbar-bg (the chrome rule applies at all);
     * #edit-zone width == --plone-toolbar-width  (its layout token resolves);
     * #edit-zone .nav-link colour == --plone-toolbar-text-color  — the
       LOAD-BEARING one: it proves the #edit-zone override of Bootstrap's own
@@ -38,9 +38,8 @@
     .fail { color: #c0242c; font-weight: 600; }
     /* Hidden probes: a plain div whose property IS the token, so the test
        compares "computed value of the chrome" to "computed value of the token"
-       with no hardcoded literal. --plone-toolbar-bg resolves to var(--bs-dark),
-       which Clara's customised Bootstrap omits globally — _clara-toolbar.scss
-       supplies --bs-dark at :root — so the probe reads a real dark colour. */
+       with no hardcoded literal. --plone-toolbar-bg resolves to Clara's
+       same-hue dark brand surface, so the probe reads a real dark colour. */
     .probe { position: absolute; visibility: hidden; height: 0; }
     #p-bg    { background-color: var(--plone-toolbar-bg); }
     #p-width { width: var(--plone-toolbar-width); }
@@ -82,8 +81,7 @@
     const TRANSPARENT = 'rgba(0, 0, 0, 0)';
 
     // 1. #edit-zone paints the toolbar bg token (chrome rule applies) — and it
-    //    must be a REAL colour (--plone-toolbar-bg → var(--bs-dark), which Clara
-    //    doesn't emit globally; _clara-toolbar.scss supplies --bs-dark at :root).
+    //    must be a REAL colour from Clara's same-hue dark surface.
     const ezBg = gcs('edit-zone').backgroundColor;
     const tokBg = gcs('p-bg').backgroundColor;
     push('#edit-zone background-color = --plone-toolbar-bg', ezBg,

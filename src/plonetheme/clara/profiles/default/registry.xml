@@ -15,20 +15,33 @@
        declaration + Bootstrap). plone.pageletlayout ships ZERO CSS bundles
        under the two-package re-role (ticket 04), so there is nothing to chain.
 
-       EXPRESSION GATE (ticket 03 §5 / ticket 04 sub-task): load Clara only on
-       pagelet-rendered pages, never on stock Barceloneta admin / control-panel
-       / ZMI. The signal is the X-Theme-Disabled response header, which the
-       layout pagelets set (via _UnthemedMixin.update()) BEFORE StylesView
-       renders — the exact header plone.app.theming's own policy.isThemeEnabled()
-       checks. On a pagelet page it is "1" (truthy → bundle loads); on themed
-       admin chrome it is unset (falsy → bundle omitted), keeping those pages
-       pixel-for-pixel stock Plone (no Clara reset/tokens/bridge bleed). -->
+       NO EXPRESSION GATE (decision 2026-07-19, superseding the ticket 03 §5
+       gate): Clara styles EVERY Plone page — Diazo is disabled below, and
+       since the plone.pageletlayout main_template bridge every unconverted
+       classic consumer renders pagelet chrome, all styled by this one
+       bundle. The old X-Theme-Disabled gate is retired with it. -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-clara">
     <value key="csscompilation">++resource++plonetheme.clara/clara.min.css</value>
-    <value key="expression">python:request.response.getHeader('X-Theme-Disabled')</value>
+    <!-- clara.js: the mega menu's close gestures (outside click / Escape /
+         one-panel-at-a-time) — the only behavior the CSS-only .opener
+         checkboxes cannot express. Served as-is; small enough to skip the
+         build step. -->
+    <value key="jscompilation">++resource++plonetheme.clara/clara.js</value>
+    <value key="load_defer">True</value>
+    <!-- explicitly empty: clears the retired X-Theme-Disabled gate on
+         upgraded sites (a GS records import never clears omitted keys) -->
+    <value key="expression"></value>
     <value key="enabled">True</value>
   </records>
+
+  <!-- Clara does the styling — no Diazo at all (decision 2026-07-19).
+       Disabling the theming engine drops the auto-injected `diazo` bundle
+       (barceloneta.min.css); every page — pagelet or bridged classic —
+       renders through Clara's own compiled Bootstrap. -->
+  <record name="plone.app.theming.interfaces.IThemeSettings.enabled">
+    <value>False</value>
+  </record>
 
   <!-- The mega menu (folded into the bundle above) needs subsections to
        reveal: drive the NATIVE navigation depth (GlobalSectionsViewlet reads

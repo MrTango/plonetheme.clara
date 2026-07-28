@@ -1,30 +1,177 @@
-/* clara-brand.css — Clara's brand token values.
+/* Clara's base identity — the "Klarsicht" ladder (docs/design/clara-base).
  *
- * This is the ENTIRE difference between the bare pagelet base and the Clara
- * theme at runtime: a single :root block in the `tokens` layer that overrides
- * the base defaults. A second theme, or a site, does exactly this with
- * different values (docs/clara-theming-architecture.md §1.5). Because every
- * primitive, every --bs-* bridge line, and every component reads these roles,
- * the whole theme responds. No Sass, no template touch.
+ * One blue hue (OKLCH 238.72) anchored at the official Plone logo's exact
+ * #0083be, with lightness and chroma moving by role; one amber accent. Values
+ * are authored as sRGB because the drift-guarded subset must also exist as
+ * Sass literals for Bootstrap's compile-time colour math. OKLCH coordinates
+ * remain beside the values so the perceptual ladder is explicit.
+ *
+ * EVERY colour the theme paints with is declared here as a custom property:
+ * the --clara-* ladder is the brand vocabulary, the --plone-* roles are the
+ * shared pagelet/layout contract mapped onto it. A theme built on Clara
+ * replaces either level at runtime with a later :root {} block — no Sass.
  */
 @layer tokens {
-  :root {
-    /* Clara's brand ramp + accent */
-    --plone-blue-500: #1e6f8e;
-    --plone-color-primary: #1e6f8e;
-
-    /* Clara's type: a slightly larger, calmer body rhythm */
-    --plone-font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --plone-leading-body: 1.6;
-
-    /* Clara softens the corners and widens the reading measure a touch */
-    --plone-radius-m: 0.625rem;
-    --plone-measure: 68ch;
+  @font-face {
+    font-family: "Literata";
+    src: url("literata-latin-wght-normal.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Literata";
+    src: url("literata-latin-wght-italic.woff2") format("woff2");
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Source Sans 3";
+    src: url("source-sans-3-latin-wght-normal.woff2") format("woff2");
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Source Sans 3";
+    src: url("source-sans-3-latin-wght-italic.woff2") format("woff2");
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
   }
 
+  :root {
+    /* ── the Klarsicht ladder: official Plone blue, role-separated ───────── */
+    --clara-brand:       #0083be; /* oklch(0.57997 0.13006 238.72) — exact logo blue; identity + UI geometry */
+    --clara-brand-text:  #006293; /* oklch(0.47 0.115 238.72) — links; ≥4.64:1 on every light ground */
+    --clara-brand-hover: #005c88; /* oklch(0.45 0.105 238.72) — link hover */
+    --clara-brand-fill-hover: #65addc; /* oklch(0.72 0.10 238.72) — primary control hover */
+    --clara-brand-deep:  #083148; /* oklch(0.30 0.06 238.72) — dark accents, skip-link ground */
+    --clara-on-brand:    #001018; /* same-hue near-black; 4.59:1 on exact logo blue */
+    --clara-ground:      #fafcfe; /* oklch(0.99 0.003 238.72) — page */
+    --clara-surface:     #f0f4f7; /* brand-tinted quiet surface */
+    --clara-band:        #b7ddf8; /* oklch(0.88 0.055 238.72) — manifesto / CTA / footer bands */
+    --clara-band-soft:   #ddeefa; /* oklch(0.94 0.025 238.72) — mega-panel ground */
+    --clara-ink:         #0e222e; /* oklch(0.24 0.035 238.72) — text; 15.9:1 on ground */
+    --clara-ink-soft:    #314553; /* oklch(0.38 0.035 238.72) — secondary text; 9.7:1 */
+    --clara-rule:        #bfcdd6; /* oklch(0.84 0.02 238.72) — hairlines */
+    --clara-band-rule:   #5e89a6; /* oklch(0.61 0.065 238.72) — structural rules on pale bands */
+    --clara-amber:       #f4af2d; /* oklch(0.80 0.155 78) — the one CTA fill, published state */
+    --clara-amber-hover: #de9d16; /* oklch(0.74 0.15 78) */
+    --clara-amber-text:  #7a4e05; /* darker amber text; ≥5.0:1 on every light ground */
+    --clara-on-amber:    var(--clara-ink);
+
+    /* Semantic state palette. Each state owns fill, text, surface, border,
+       and on-fill roles; colour is never the sole signal in component markup. */
+    --clara-success:         #2e7d52;
+    --clara-success-text:    #205d40;
+    --clara-success-surface: #e7f5ec;
+    --clara-success-border:  #3b8f67;
+    --clara-on-success:      #ffffff;
+    --clara-warning:         var(--clara-amber);
+    --clara-warning-text:    #704d00;
+    --clara-warning-surface: #fff3d1;
+    --clara-warning-border:  var(--clara-amber-text);
+    --clara-on-warning:      var(--clara-ink);
+    --clara-error:           #a2080c;
+    --clara-error-text:      #861116;
+    --clara-error-surface:   #fdebec;
+    --clara-error-border:    #c94f55;
+    --clara-on-error:        #ffffff;
+    --clara-info-surface:    #e5f4fb;
+
+    /* Named component hooks a sub-theme retunes without touching rules. */
+    --clara-footer-ground: var(--clara-band);
+    --clara-footer-ink:    var(--clara-ink);
+
+    /* ── semantic roles: the shared --plone-* contract on the ladder ────── *
+     * Exact logo blue is primary identity. Normal-size text uses the darker
+     * same-hue step; controls on exact blue use --clara-on-brand. */
+    --plone-color-primary:        var(--clara-brand);
+    --plone-color-primary-hover:  var(--clara-brand-fill-hover);
+    --plone-color-primary-active: var(--clara-brand);
+    --plone-color-on-primary:     var(--clara-on-brand);
+    --plone-color-text:           var(--clara-ink);
+    --plone-color-muted:          var(--clara-ink-soft);
+    --plone-color-bg:             var(--clara-ground);
+    --plone-color-surface:        var(--clara-surface);
+    --plone-color-border:         var(--clara-rule);
+    --plone-color-link:           var(--clara-brand-text);
+    --plone-color-link-hover:     var(--clara-brand-hover);
+    --plone-color-focus-ring:     var(--clara-on-brand);
+    --plone-color-accent:         var(--clara-amber);
+    --plone-color-accent-strong:  var(--clara-amber-text);
+    --plone-color-on-dark:        var(--clara-ground);
+    --plone-color-dark-surface:   var(--clara-brand-deep);
+    --plone-color-success:         var(--clara-success);
+    --plone-color-success-text:    var(--clara-success-text);
+    --plone-color-success-surface: var(--clara-success-surface);
+    --plone-color-success-border:  var(--clara-success-border);
+    --plone-color-on-success:      var(--clara-on-success);
+    --plone-color-warning:         var(--clara-warning);
+    --plone-color-warning-text:    var(--clara-warning-text);
+    --plone-color-warning-surface: var(--clara-warning-surface);
+    --plone-color-warning-border:  var(--clara-warning-border);
+    --plone-color-on-warning:      var(--clara-on-warning);
+    --plone-color-danger:          var(--clara-error);
+    --plone-color-danger-text:     var(--clara-error-text);
+    --plone-color-danger-surface:  var(--clara-error-surface);
+    --plone-color-danger-border:   var(--clara-error-border);
+    --plone-color-on-danger:       var(--clara-on-error);
+    --plone-color-info:            var(--clara-brand);
+    --plone-color-info-text:       var(--clara-brand-hover);
+    --plone-color-info-surface:    var(--clara-info-surface);
+    --plone-color-info-border:     var(--clara-brand);
+    --plone-color-on-info:         var(--clara-on-brand);
+
+    /* ── type: Literata display (italic = voice) + Source Sans 3 body ───── */
+    --plone-font-body:    "Source Sans 3", system-ui, sans-serif;
+    --clara-font-display: "Literata", georgia, serif;
+    --plone-leading-body: 1.65;
+
+    /* The content is 16px — a flat 1rem, never viewport-fluid; the 15px
+       label tier is the floor, nothing renders below it. */
+    --plone-text-base: 1rem;
+    --plone-text-s:    var(--clara-text-label);
+    --plone-text-xs:   var(--clara-text-label);
+    --clara-text-label:   0.9375rem;
+    --clara-text-nav:     1.18125rem;
+    --clara-text-lede:    clamp(1.125rem, 1.06rem + 0.35vw, 1.35rem);
+    --clara-text-title:   clamp(1.35rem, 1.2rem + 0.7vw, 1.75rem);
+    --clara-text-heading: clamp(2rem, 1.45rem + 2.3vw, 3.5rem);
+    --clara-text-display: clamp(2.75rem, 1.85rem + 4vw, 5rem);
+
+    --plone-radius-m: 0.625rem;
+    --plone-measure: 76rem;
+  }
+
+  /* Dark mode moves semantic roles, never the primitive identity. Depth comes
+     from lighter same-hue surfaces rather than shadows. */
   [data-bs-theme="dark"] {
-    /* Clara's dark accent stays legible on the dark surface */
-    --plone-color-primary: #5db4d1;
-    --plone-color-link: #5db4d1;
+    --plone-color-primary: #65addc;       /* oklch(0.72 0.10 238.72) */
+    --plone-color-primary-hover: #8abfe2; /* oklch(0.78 0.075 238.72) */
+    --plone-color-primary-active: #ddeefa;
+    --plone-color-link: #8abfe2;
+    --plone-color-link-hover: #ddeefa;
+    --plone-color-focus-ring: #ddeefa;
+    --clara-amber-text: #ffc043;
+    --plone-color-success: #63c68d;
+    --plone-color-success-text: #8cdbad;
+    --plone-color-success-surface: #173d2c;
+    --plone-color-success-border: #63c68d;
+    --plone-color-on-success: var(--clara-on-brand);
+    --plone-color-warning-text: #ffc043;
+    --plone-color-warning-surface: #493815;
+    --plone-color-warning-border: #ffc043;
+    --plone-color-danger: #f96483;
+    --plone-color-danger-text: #ff9bac;
+    --plone-color-danger-surface: #511e29;
+    --plone-color-danger-border: #f96483;
+    --plone-color-on-danger: var(--clara-on-brand);
+    --plone-color-info: #65addc;
+    --plone-color-info-text: #ddeefa;
+    --plone-color-info-surface: #153848;
+    --plone-color-info-border: #65addc;
   }
 }

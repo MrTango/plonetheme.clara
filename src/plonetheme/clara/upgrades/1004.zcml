@@ -1,0 +1,34 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.clara">
+
+  <genericsetup:registerProfile
+      name="1004"
+      title="plonetheme.clara: upgrade to 1004"
+      directory="1004"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1003"
+      destination="1004"
+      profile="plonetheme.clara:default">
+
+    <genericsetup:upgradeStep
+        title="Mega menu section fields: behavior on Folder, catalog columns"
+        description="Reimport typeinfo (IMegamenuSection behavior on Folder)
+                     and catalog (megamenu_proof / megamenu_overview_label
+                     metadata columns), then refresh existing folders'
+                     catalog metadata so the new columns hold real values."
+        handler=".v1004.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1004"
+        import_profile="plonetheme.clara.upgrades:1004"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

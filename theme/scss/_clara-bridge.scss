@@ -51,6 +51,20 @@
     --bs-border-radius-sm:     var(--plone-radius-s);
     --bs-border-radius-lg:     var(--plone-radius-l);
     --bs-link-color:           var(--plone-color-link);
+    --bs-link-hover-color:     var(--plone-color-link-hover);
+    --bs-primary:              var(--plone-color-primary);
+    --bs-success:              var(--plone-color-success);
+    --bs-warning:              var(--plone-color-warning);
+    --bs-danger:               var(--plone-color-danger);
+    --bs-info:                 var(--plone-color-info);
+    --bs-form-valid-color:     var(--plone-color-success-text);
+    --bs-form-valid-border-color: var(--plone-color-success-border);
+    --bs-form-invalid-color:   var(--plone-color-danger-text);
+    --bs-form-invalid-border-color: var(--plone-color-danger-border);
+    /* font-family included: Reboot's `body{font-family:var(--bs-body-font-family)}`
+       sits in the LATER `bootstrap` layer and beats the reset's --plone-font-body,
+       so without this rebind the brand face never reaches the page. */
+    --bs-body-font-family:     var(--plone-font-body);
     --bs-body-font-size:       var(--plone-text-base);
     --bs-body-line-height:     var(--plone-leading-body);
 

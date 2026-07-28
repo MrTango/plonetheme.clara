@@ -47,10 +47,14 @@
     border-block-end: 0;
   }
 
-  /* the row's title link — Plone marks it `.url` (summary adds `.summary`) */
+  /* the row's title link — Plone marks it `.url` (summary adds `.summary`).
+     Serif at weight 650: listing rows read as the Klarsicht field-guide list
+     (same voice as the homepage resource list). */
   .entries .url,
   .entries a.summary {
+    font-family: var(--clara-font-display, inherit);
     font-size: var(--plone-text-l);
+    font-weight: 650;
     line-height: var(--plone-leading-tight);
     color: var(--plone-color-link);
     text-decoration: none;

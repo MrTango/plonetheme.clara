@@ -116,30 +116,41 @@ components consume; the ramp is retunable without touching either. Both are
 
 ```css
 :root {
-  /* primitive ramp (excerpt) — the token file's private implementation detail */
-  --plone-blue-500:  #2c7bb6;
-  --plone-gray-050:  #f7f8fa;
-  --plone-gray-200:  #dee2e6;
-  --plone-gray-700:  #384049;
-  --plone-gray-900:  #14181c;
+  /* primitive ramp (excerpt) — exact Plone identity plus functional steps */
+  --plone-blue-100: #ddeefa;
+  --plone-blue-500: #0083be; /* exact official Plone logo blue */
+  --plone-blue-700: #006293; /* accessible normal-size text */
+  --plone-gray-050: #f7f8fa;
+  --plone-gray-200: #d7e0e5;
+  --plone-gray-700: #314553;
+  --plone-gray-900: #0e222e;
+  --plone-gray-950: #001018;
 
   /* semantic roles — the actual public surface */
-  --plone-color-primary:      var(--plone-blue-500);
-  --plone-color-text:         var(--plone-gray-900);
-  --plone-color-muted:        var(--plone-gray-700);
-  --plone-color-bg:           #ffffff;
-  --plone-color-surface:      var(--plone-gray-050);
-  --plone-color-border:       var(--plone-gray-200);
-  --plone-color-link:         var(--plone-color-primary);
-  --plone-color-focus-ring:   var(--plone-color-primary);
+  --plone-color-primary: var(--plone-blue-500);
+  --plone-color-on-primary: var(--plone-gray-950);
+  --plone-color-text: var(--plone-gray-900);
+  --plone-color-muted: var(--plone-gray-700);
+  --plone-color-bg: #ffffff;
+  --plone-color-surface: var(--plone-gray-050);
+  --plone-color-border: var(--plone-gray-200);
+  --plone-color-link: var(--plone-blue-700);
+  --plone-color-focus-ring: var(--plone-gray-950);
+
+  /* every state is runtime-tunable as fill/text/surface/border/on-fill */
+  --plone-color-success: #2e7d52;
+  --plone-color-success-text: #205d40;
+  --plone-color-success-surface: #e7f5ec;
+  --plone-color-success-border: #3b8f67;
+  --plone-color-on-success: #ffffff;
 }
 ```
 
-> **State colors (`success`/`danger`/`warning`/`info`)** are today seeded as
-> compile-time Sass literals only (§6.2); adding runtime `--plone-color-*`
-> defaults for them — so they are runtime-tunable and the drift guard can cover
-> all nine — is a planned follow-up (tracked as fog toward a later component
-> ticket), not shipped yet.
+The exact logo blue is an identity/UI colour: it clears 3:1 against Clara's
+light grounds but only 4.21:1 against white. Normal-size links therefore use
+the darker same-hue step; controls filled with exact logo blue use the explicit
+near-black `--plone-color-on-primary` (4.59:1). Contrast tests enforce these
+roles instead of relying on palette arithmetic.
 
 ### 1.4 Measure, radii, borders
 
@@ -645,14 +656,14 @@ override still reaches the component (§6.3):
 
 ```scss
 // literals for Sass math — must match the token file's default value:
-$body-color:      #14181c;      // === --plone-gray-900 default (to-rgb math)
-$body-bg:         #ffffff;      // === --plone-color-bg default
-$link-color:      #2c7bb6;      // === --plone-blue-500 default (to-rgb math)
+$body-color:      #0e222e;      // === --plone-color-text default
+$body-bg:         #fafcfe;      // === --plone-color-bg default
+$link-color:      #0083be;      // Bootstrap compile seed; runtime link is #006293
 $font-size-base:  1rem;         // rfs() math
 
-$primary:   #2c7bb6;            // === --plone-blue-500 default; feeds shade/tint math
-$success:   #2e7d32;
-$danger:    #c62828;
+$primary:   #0083be;            // exact official Plone logo blue
+$success:   #2e7d52;
+$danger:    #a2080c;
 $theme-colors: (
   "primary": $primary, "success": $success, "danger": $danger,
 );
@@ -660,19 +671,15 @@ $theme-colors: (
 @import "bootstrap/scss/bootstrap";
 ```
 
-The tradeoff, stated plainly: **`$primary`'s hover/active shades are baked at
-compile time.** A site that changes `--plone-color-primary` at runtime gets the
-new base color everywhere the component reads `--bs-*` (§6.3), but the
-*computed hover shade* stays the compiled one until a rebuild — a shade or two
-off, never broken. Themes that need runtime-perfect state colors set the state
-custom properties explicitly in §6.3. This is the one place the "no Sass for
-integrators" rule has a caveat, and it is confined to derived state shades.
+The tradeoff, stated plainly: Bootstrap still compiles fallback shades from
+these literals, but Clara rebinds every supported component state in
+`_clara-states.scss` to explicit runtime `--plone-*` roles. A site overriding
+the semantic roles gets runtime-perfect buttons, alerts and validation states;
+only an unbridged third-party Bootstrap derivative may retain a compiled shade.
 
-**Drift guard.** Because these literals must mirror the runtime token defaults,
-a `pytest` + pre-commit check compares the compiled literal against the shipped
-`:root` value for the overlap set (primary/text/bg/border/radius-m). The four
-`$theme-colors` seeds are **exempt** — they are compile-only, with no runtime
-token yet (see §1.3's state-color note).
+**Drift guard.** Because these literals mirror runtime defaults, pytest compares
+primary, text, background, border, radius and all four state seeds against the
+resolved base⊕brand `:root` values. No theme-colour seed is exempt.
 
 ### 6.3 Rebinding Bootstrap's component `--bs-*` to `--plone-*` (the workhorse)
 
@@ -856,33 +863,46 @@ grid **stays compiled and enabled** so third-party `.row/.col` markup renders
 (its gutters read `--bs-gutter-x` → `--plone-space-m`, §6.3) — it is a compat
 surface, exactly like the spacing utilities.
 
-### Navigation — the Volto-style mega menu (native markup, CSS-only)
+### Navigation — the Volto-style mega menu (native skeleton, enriched panels)
 
-Clara's dropdown mega menu is **pure CSS over native `plone.app.layout`
-markup** — no template override, no custom JS. `GlobalSectionsViewlet`
-(reused by the base's globalnav pagelet) already emits, per the registry
-`navigation_depth`, a nested `<ul class="has_subtree dropdown">` tree with
-`.nav-item`/`.nav-link` and a **pure-CSS `.opener` checkbox** toggle:
+Clara's dropdown mega menu keeps the **native `plone.app.layout` skeleton**
+but enriches the panels: `plonetheme/clara/pagelets.py` subclasses
+`GlobalSectionsViewlet` (behind a Clara-layer override of the base's
+globalnav chrome pagelet — same provider name, `IPlonethemeClaraLayer`) and
+takes over item rendering. The top level stays byte-compatible with the
+stock viewlet — `.nav-item`/`.nav-link` and the **pure-CSS `.opener`
+checkbox** toggle — while a section's first subtree becomes the three-zone
+panel from the derico.de design mockups:
 
 ```
 <li class="section-a has_subtree nav-item">
   <a class="state-published nav-link" aria-haspopup="true">Section A</a>
   <input class="opener" type="checkbox"><label for="…"></label>  ← native toggle
-  <ul class="has_subtree dropdown"> …children… </ul>              ← the panel
+  <div class="has_subtree dropdown megamenu-panel">
+    <div class="megamenu-intro"> title · description · overview link </div>
+    <ul class="megamenu-links"> described children + .megamenu-sublinks </ul>
+    <p class="megamenu-proof"> proof sentence </p>
+  </div>
+  <label class="megamenu-backdrop" for="…"></label>              ← CSS-only scrim
 </li>
 ```
 
-Clara ships `.clara-megamenu` styling (in `components`) that styles this: the
-top-level list becomes a horizontal bar; each section's first subtree becomes a
-full-width, multi-column mega panel opening on `:hover` / `:focus-within` / the
-native `.opener:checked`; deeper subtrees render as the panel's grouped columns.
-The mega menu is one of the few things that stays **`clara-`** namespaced — it
-is Clara's own non-contract extension, not part of the `plone.app.layout`
-contract. The one native *configuration* Clara sets is
-`plone.navigation_depth = 3` (so sections carry children into the panel).
-Because the panel opens with the native checkbox, the menu works with **no
-Bootstrap `dropdown` JS at all**, so the mega menu survives the lean bundle
-unchanged.
+Zones render only when their data exists. Descriptions ride catalog brains
+(`Description` plus one extra memoized depth-1 query for the top level); the
+proof sentence and the overview-link label are the **`IMegamenuSection`
+behavior**'s two optional fields (on Folder, `Settings` fieldset), reaching
+the nav via the `megamenu_proof` / `megamenu_overview_label` metadata columns
+— rendering never wakes objects. An empty overview label means no overview
+link.
+
+The mega menu styling stays **`clara-`/`megamenu-`** namespaced — Clara's own
+non-contract extension. The panel opens on CLICK via the native
+`.opener:checked` (never hover); the second label is the click-to-close
+backdrop, and `clara.js` adds only the close gestures (outside click, Escape
+with focus return, one-panel-at-a-time). The one native *configuration*
+Clara sets is `plone.navigation_depth = 3` (so sections carry children and
+grandchildren into the panel). No Bootstrap `dropdown` JS is involved, so
+the mega menu survives the lean bundle unchanged.
 
 ### Bootstrap JavaScript
 

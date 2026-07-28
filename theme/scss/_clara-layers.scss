@@ -19,11 +19,11 @@
   body {
     margin: 0;
     min-height: 100vh;
-    font-family: var(--plone-font-body, system-ui, sans-serif);
-    font-size: var(--plone-text-base, 1rem);
-    line-height: var(--plone-leading-body, 1.55);
-    color: var(--plone-color-text, #14181c);
-    background: var(--plone-color-bg, #fff);
+    font-family: var(--plone-font-body);
+    font-size: var(--plone-text-base);
+    line-height: var(--plone-leading-body);
+    color: var(--plone-color-text);
+    background: var(--plone-color-bg);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -32,10 +32,10 @@
 
   img, picture, svg { max-width: 100%; display: block; }
 
-  a { color: var(--plone-color-link, #2c7bb6); }
+  a { color: var(--plone-color-link); }
 
   :where(:focus-visible) {
-    outline: 2px solid var(--plone-color-focus-ring, #2c7bb6);
+    outline: 2px solid var(--plone-color-focus-ring);
     outline-offset: 2px;
   }
 }

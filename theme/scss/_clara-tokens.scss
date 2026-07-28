@@ -8,13 +8,13 @@
 // CSS :root {} block (§1.5); these literals only affect derived state shades
 // (hover/active), which the caveat in §6.2 documents.
 
-$clara-primary: #1e6f8e;   // === --plone-color-primary default (Clara brand)
-$clara-success: #2e7d32;
-$clara-danger:  #c62828;
-$clara-warning: #f9a825;
-$clara-info:    #0277bd;
+$clara-primary: #0083be;   // exact official Plone logo blue / --plone-color-primary
+$clara-success: #2e7d52;   // --plone-color-success
+$clara-danger:  #a2080c;   // --plone-color-danger / --clara-error
+$clara-warning: #f4af2d;   // --plone-color-warning / --clara-amber
+$clara-info:    #0083be;   // --plone-color-info
 
-$clara-text:    #14181c;
-$clara-bg:      #ffffff;
-$clara-border:  #dee2e6;
+$clara-text:    #0e222e;   // --clara-ink
+$clara-bg:      #fafcfe;   // --clara-ground
+$clara-border:  #bfcdd6;   // --clara-rule
 $clara-radius:  0.625rem;

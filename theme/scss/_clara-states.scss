@@ -1,0 +1,155 @@
+/* Semantic interaction and status states.
+ *
+ * Quanta's useful lesson here is completeness, not its old palette: every
+ * state has an explicit fill, readable foreground, surface and boundary in the
+ * public --plone-* contract. Bootstrap components consume those roles at their
+ * own scope so runtime site overrides work without recompiling Sass.
+ */
+@layer components {
+  /* Buttons -------------------------------------------------------------- */
+  .btn-primary {
+    --bs-btn-color: var(--plone-color-on-primary);
+    --bs-btn-bg: var(--plone-color-primary);
+    --bs-btn-border-color: var(--plone-color-on-primary);
+    --bs-btn-hover-color: var(--plone-color-on-primary);
+    --bs-btn-hover-bg: var(--plone-color-primary-hover);
+    --bs-btn-hover-border-color: var(--plone-color-on-primary);
+    --bs-btn-active-color: var(--plone-color-on-primary);
+    --bs-btn-active-bg: var(--plone-color-primary-active);
+    --bs-btn-active-border-color: var(--plone-color-on-primary);
+    --bs-btn-disabled-color: var(--plone-color-on-primary);
+    --bs-btn-disabled-bg: var(--plone-color-primary);
+    --bs-btn-disabled-border-color: var(--plone-color-on-primary);
+    font-weight: 700;
+  }
+
+  .btn-success {
+    --bs-btn-color: var(--plone-color-on-success);
+    --bs-btn-bg: var(--plone-color-success);
+    --bs-btn-border-color: var(--plone-color-success);
+    --bs-btn-hover-color: var(--plone-color-on-success);
+    --bs-btn-hover-bg: var(--plone-color-success-text);
+    --bs-btn-hover-border-color: var(--plone-color-success-text);
+    --bs-btn-active-color: var(--plone-color-on-success);
+    --bs-btn-active-bg: var(--plone-color-success-text);
+    --bs-btn-active-border-color: var(--plone-color-success-text);
+  }
+
+  .btn-warning {
+    --bs-btn-color: var(--plone-color-on-warning);
+    --bs-btn-bg: var(--plone-color-warning);
+    --bs-btn-border-color: var(--plone-color-warning-border);
+    --bs-btn-hover-color: var(--plone-color-on-warning);
+    --bs-btn-hover-bg: var(--clara-amber-hover, var(--plone-color-warning));
+    --bs-btn-hover-border-color: var(--plone-color-warning-border);
+    --bs-btn-active-color: var(--plone-color-on-warning);
+    --bs-btn-active-bg: var(--clara-amber-hover, var(--plone-color-warning));
+    --bs-btn-active-border-color: var(--plone-color-warning-border);
+  }
+
+  .btn-danger {
+    --bs-btn-color: var(--plone-color-on-danger);
+    --bs-btn-bg: var(--plone-color-danger);
+    --bs-btn-border-color: var(--plone-color-danger);
+    --bs-btn-hover-color: var(--plone-color-on-danger);
+    --bs-btn-hover-bg: var(--plone-color-danger-text);
+    --bs-btn-hover-border-color: var(--plone-color-danger-text);
+    --bs-btn-active-color: var(--plone-color-on-danger);
+    --bs-btn-active-bg: var(--plone-color-danger-text);
+    --bs-btn-active-border-color: var(--plone-color-danger-text);
+  }
+
+  .btn-info {
+    --bs-btn-color: var(--plone-color-on-info);
+    --bs-btn-bg: var(--plone-color-info);
+    --bs-btn-border-color: var(--plone-color-on-info);
+    --bs-btn-hover-color: var(--plone-color-on-info);
+    --bs-btn-hover-bg: var(--plone-color-primary-hover);
+    --bs-btn-hover-border-color: var(--plone-color-on-info);
+    --bs-btn-active-color: var(--plone-color-on-info);
+    --bs-btn-active-bg: var(--plone-color-info);
+    --bs-btn-active-border-color: var(--plone-color-on-info);
+  }
+
+  .btn[aria-busy="true"] {
+    gap: var(--plone-space-2xs);
+    cursor: wait;
+  }
+  .btn[aria-busy="true"]::after {
+    display: inline-block;
+    flex: 0 0 auto;
+    inline-size: 1em;
+    block-size: 1em;
+    border: 0.14em solid currentColor;
+    border-inline-end-color: transparent;
+    border-radius: 50%;
+    content: "";
+    animation: clara-busy 700ms linear infinite;
+  }
+
+  /* Messages ------------------------------------------------------------- */
+  .alert-success {
+    --bs-alert-color: var(--plone-color-success-text);
+    --bs-alert-bg: var(--plone-color-success-surface);
+    --bs-alert-border-color: var(--plone-color-success-border);
+    --bs-alert-link-color: var(--plone-color-success-text);
+  }
+  .alert-warning {
+    --bs-alert-color: var(--plone-color-warning-text);
+    --bs-alert-bg: var(--plone-color-warning-surface);
+    --bs-alert-border-color: var(--plone-color-warning-border);
+    --bs-alert-link-color: var(--plone-color-warning-text);
+  }
+  .alert-danger {
+    --bs-alert-color: var(--plone-color-danger-text);
+    --bs-alert-bg: var(--plone-color-danger-surface);
+    --bs-alert-border-color: var(--plone-color-danger-border);
+    --bs-alert-link-color: var(--plone-color-danger-text);
+  }
+  .alert-info,
+  .alert-primary {
+    --bs-alert-color: var(--plone-color-info-text);
+    --bs-alert-bg: var(--plone-color-info-surface);
+    --bs-alert-border-color: var(--plone-color-info-border);
+    --bs-alert-link-color: var(--plone-color-info-text);
+  }
+
+  /* Forms ---------------------------------------------------------------- */
+  :where(.form-control, .form-select) {
+    min-block-size: var(--plone-target-min);
+    transition:
+      border-color var(--plone-duration-fast) var(--plone-ease-out-quart),
+      background-color var(--plone-duration-fast) linear;
+  }
+  :where(.form-control, .form-select)::placeholder {
+    color: var(--plone-color-muted);
+    opacity: 1;
+  }
+  :where(.form-control, .form-select):disabled {
+    color: var(--plone-color-muted);
+    cursor: not-allowed;
+  }
+  :where(.form-control, .form-select).is-valid,
+  .was-validated :where(.form-control, .form-select):valid {
+    border-color: var(--plone-color-success-border);
+  }
+  :where(.form-control, .form-select).is-invalid,
+  .was-validated :where(.form-control, .form-select):invalid {
+    border-color: var(--plone-color-danger-border);
+  }
+  .valid-feedback { color: var(--plone-color-success-text); }
+  .invalid-feedback { color: var(--plone-color-danger-text); }
+
+  @keyframes clara-busy { to { transform: rotate(1turn); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn[aria-busy="true"]::after {
+      animation: none;
+      border-inline-end-color: currentColor;
+      opacity: 0.55;
+    }
+    :where(.btn, .form-control, .form-select) {
+      transition-duration: 0.01ms;
+    }
+  }
+}

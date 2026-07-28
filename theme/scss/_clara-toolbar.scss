@@ -29,68 +29,55 @@
 @layer components {
 :root,
 [data-bs-theme=light] {
-  --plone-link-color: #0d6efd;
-  --plone-link-color-on-dark: #16a1e3;
-  --plone-link-color-on-grey: #086ca3;
-  --plone-link-hover-color: #024dbc;
-  --plone-portlet-list-hover-bg: #fcfcfd;
-  --plone-portlet-footer-bg: #fcfcfd;
-  --plone-portlet-list-bullet: #64bee8;
-  --plone-state-draft: #fab82a;
-  --plone-state-pending: #ccd111;
-  --plone-state-private: #c4183c;
-  --plone-state-internal: #fab82a;
-  --plone-state-internally-published: #883dfa;
+  --plone-link-color: var(--plone-color-link);
+  --plone-link-color-on-dark: #65addc;
+  --plone-link-color-on-grey: var(--plone-color-link);
+  --plone-link-hover-color: var(--plone-color-link-hover);
+  --plone-portlet-list-hover-bg: var(--plone-color-surface);
+  --plone-portlet-footer-bg: var(--plone-color-surface);
+  --plone-portlet-list-bullet: var(--plone-color-primary);
+  --plone-state-published: #65addc;
+  --plone-state-draft: #ffc043;
+  --plone-state-pending: #e2e721;
+  --plone-state-private: #f96483;
+  --plone-state-internal: #ffc043;
+  --plone-state-internally-published: #ab75ff;
 }
 
 [data-bs-theme=dark] {
-  --plone-link-color: #007bb1;
-  --plone-link-color-on-dark: #16a1e3;
-  --plone-link-color-on-grey: #086ca3;
-  --plone-link-hover-color: #024dbc;
-  --plone-portlet-list-hover-bg: #161719;
-  --plone-portlet-footer-bg: #161719;
-  --plone-portlet-list-bullet: #64bee8;
-  --plone-state-draft: #fab82a;
+  --plone-link-color: var(--plone-color-link);
+  --plone-link-color-on-dark: var(--plone-color-primary);
+  --plone-link-color-on-grey: var(--plone-color-link);
+  --plone-link-hover-color: var(--plone-color-link-hover);
+  --plone-portlet-list-hover-bg: var(--plone-color-surface);
+  --plone-portlet-footer-bg: var(--plone-color-surface);
+  --plone-portlet-list-bullet: var(--plone-color-primary);
+  --plone-state-published: var(--plone-color-primary);
+  --plone-state-draft: #ffc043;
   --plone-state-pending: #e2e721;
   --plone-state-private: #f96483;
-  --plone-state-internal: #fab82a;
+  --plone-state-internal: #ffc043;
   --plone-state-internally-published: #ab75ff;
 }
 
 :root {
-  --plone-toolbar-bg: var(--bs-dark);
-  --plone-toolbar-text-color: var(--bs-white);
-  --plone-toolbar-locked-color: var(--bs-warning);
-  --plone-toolbar-font: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --plone-toolbar-separator-color: var(--bs-gray-500);
+  --plone-toolbar-bg: var(--clara-brand-deep);
+  --plone-toolbar-text-color: var(--clara-ground);
+  --plone-toolbar-locked-color: var(--plone-color-warning);
+  --plone-toolbar-font: var(--plone-font-body);
+  --plone-toolbar-separator-color: var(--clara-band-rule);
   --plone-toolbar-link-color: var(--plone-link-color);
   --plone-toolbar-link-hover-color: var(--plone-link-hover-color);
-  --plone-toolbar-width: 220px;
-  --plone-toolbar-width-collapsed: 60px;
-  --plone-toolbar-top-height: 2.5rem;
-}
-
-/* The vendored sheet carried a full Bootstrap :root{--bs-*} dump, dropped here
-   as redundant with Clara's own compiled Bootstrap — so the toolbar tokens
-   above CONSUME Clara's --bs-* (theme-owned, ticket 14), NOT the sheet's stock
-   values. True per-#edit-zone isolation doesn't verify clean: the
-   --plone-toolbar-* tokens are declared at :root and also read by
-   body.plone-toolbar-* rules (ANCESTORS of #edit-zone), so they can't be
-   confined to #edit-zone; and re-asserting all five --bs-* at :root would
-   clobber Clara's own --bs-warning globally. So we supply only the ONE --bs-*
-   the toolbar needs that Clara's customised colour map omits: --bs-dark (the
-   toolbar background). It is a plain Bootstrap default, unused elsewhere by
-   Clara, so it neither shadows a Clara token nor leaks anything meaningful. */
-:root {
-  --bs-dark: #212529;
+  --plone-toolbar-width: 13.75rem;
+  --plone-toolbar-width-collapsed: 3.75rem;
+  --plone-toolbar-top-height: 2.75rem;
 }
 
 /* general collapsed dark mode */
 #edit-zone {
   font-family: var(--plone-toolbar-font);
   position: fixed;
-  z-index: 1040;
+  z-index: var(--plone-z-toolbar);
   top: 0;
   left: 0;
   bottom: 0;
@@ -135,13 +122,14 @@
   color: var(--plone-toolbar-link-hover-color) !important;
 }
 #edit-zone .toolbar-header {
-  background: var(--bs-primary);
+  background: var(--plone-color-primary);
+  color: var(--plone-color-on-primary);
   padding: 0.5rem 1rem;
   margin-bottom: 0.5rem;
   height: var(--plone-toolbar-top-height);
 }
 #edit-zone .toolbar-header a {
-  color: var(--plone-toolbar-text-color);
+  color: var(--plone-color-on-primary);
   cursor: pointer;
 }
 @media (max-width: 767.98px) {
@@ -154,7 +142,7 @@
   color: var(--plone-link-color-on-dark) !important;
 }
 #edit-zone .label-state-internally_published {
-  color: var(--plone-state-internally-published-color) !important;
+  color: var(--plone-state-internally-published) !important;
 }
 #edit-zone .label-state-pending {
   color: var(--plone-state-pending) !important;

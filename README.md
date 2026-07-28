@@ -7,12 +7,19 @@ overriding a single template.
 
 ## What it ships
 
-- **Brand tokens** (`static/clara-brand.css`) — one `:root {}` block that
-  overrides the base defaults. This is the entire runtime difference between the
-  bare base and Clara; a site rebrands by layering one more such file (no Sass).
+- **A useful first install** — a minimal Clara homepage using the Plone logo and
+  community resources, plus `Demo content` (Pages, News, Photos) and an editable
+  Contact page. Existing editor-owned pages are preserved when the profile is
+  reapplied.
+- **One public token contract** (`--plone-*`) — Clara supplies a systematic
+  Plone-blue ramp anchored at the official logo's exact `#0083be`, accessible
+  text/control role splits, semantic state families, fluid rhythm and motion.
+  A site rebrands by layering one later `:root {}` block; no Sass and no
+  competing `--quanta-*` namespace.
 - **The Bootstrap build sources** (`theme/scss/`) — `clara-bootstrap.scss` +
-  `_clara-tokens.scss`, driving Bootstrap's Sass from the tokens and remapping
-  `$spacers` onto the Clara fluid space scale (§6, §7 of the architecture doc).
+  `_clara-tokens.scss` drive Bootstrap's compile-time fallbacks, while
+  `_clara-bridge.scss` and `_clara-states.scss` rebind components to runtime
+  roles. `$spacers` maps onto Clara's fluid space scale (§6–7).
 - **A Volto-style mega menu** (`static/clara-megamenu.css`) — pure CSS over the
   **native** `plone.app.layout` global-sections markup (the `.has_subtree`
   dropdown tree with its CSS-only `.opener` toggle). No template override, no

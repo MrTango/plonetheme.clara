@@ -165,13 +165,18 @@ def test_card_restyled_through_the_bridge(bundle):
 
 
 # --------------------------------------------------------------------------- #
-# 5. Namespace: ticket-10 CSS introduces ONLY --plone-* custom properties.
-#    The single surviving --clara-* is Clara's own megamenu knob (ticket 09).
+# 5. Namespace: --plone-* is the shared contract; --clara-* is Clara's own
+#    non-contract vocabulary (the Klarsicht ladder, type tiers, component
+#    knobs), deliberately in the bundle since the clara-base redesign. The
+#    guard is against DANGLING reads, not against the namespace itself.
 # --------------------------------------------------------------------------- #
 
-def test_only_plone_custom_properties(bundle):
-    """No `--clara-*` sneaks back in via the new component CSS. The one allowed
-    theme-namespaced token is `--clara-megamenu-col` (Clara's own extension,
-    ticket 09) — everything else the contract emits is `--plone-*`."""
-    stray = set(re.findall(r"--clara-[\w-]+", bundle)) - {"--clara-megamenu-col"}
-    assert not stray, f"stray --clara-* tokens in the bundle: {sorted(stray)}"
+def test_clara_tokens_read_are_declared(bundle):
+    """Every fallback-less var(--clara-…) read must be declared somewhere in
+    the bundle — a dangling read is a typo or a renamed ladder step. Reads
+    carrying a fallback (integrator knobs like --clara-megamenu-col) resolve
+    by design and are exempt."""
+    declared = set(re.findall(r"(--clara-[\w-]+)\s*:", bundle))
+    fallbackless_reads = set(re.findall(r"var\(\s*(--clara-[\w-]+)\s*\)", bundle))
+    dangling = fallbackless_reads - declared
+    assert not dangling, f"dangling --clara-* reads in the bundle: {sorted(dangling)}"

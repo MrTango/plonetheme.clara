@@ -10,6 +10,16 @@
 
   <include file="permissions.zcml" />
 
+  <!-- Clara's mega-panel globalnav: same provider name as the base
+       registration, on Clara's (more specific) layer. The subclass
+       inherits the base's globalnav.pt shell template. -->
+  <include package="plone.pageletlayout" file="meta.zcml" />
+  <plone:chromepagelet
+      name="plone.pageletlayout.globalnav"
+      class=".pagelets.ClaraGlobalnavChromePagelet"
+      layer=".interfaces.IPlonethemeClaraLayer"
+      />
+
   <!-- Clara's brand token file, served at ++resource++plonetheme.clara/ and
        linked via a registry bundle (profiles/default/registry.xml). -->
   <browser:resourceDirectory
@@ -23,6 +33,7 @@
       description="A Plone theme based on plone.pageletlayout"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/default"
+      post_handler=".setuphandlers.post_install"
       />
 
   <genericsetup:registerProfile
@@ -40,7 +51,18 @@
       handler="plonetheme.clara.setuphandlers.uninstall"
       />
 
+  <!-- Hide the uninstall + upgrade profiles from the Add-ons panel; the
+       upgrade profiles are applied by their upgrade steps, never installed
+       by hand. -->
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="plonetheme.clara-hiddenprofiles"
+      />
+
 
   <include package=".upgrades" />
+
+
+  <include package=".behaviors" />
 
 </configure>

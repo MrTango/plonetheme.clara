@@ -212,6 +212,15 @@ def test_no_container_queries(bundle):
     )
 
 
-def test_only_plone_custom_properties(bundle):
-    stray = set(re.findall(r"--clara-[\w-]+", bundle)) - {"--clara-megamenu-col"}
-    assert not stray, f"stray --clara-* tokens in the bundle: {sorted(stray)}"
+def test_clara_tokens_read_are_declared(bundle):
+    """Namespace hygiene, updated for the Klarsicht brand layer: --clara-* is
+    Clara's own non-contract vocabulary (the colour ladder, type tiers, named
+    component hooks) and is DELIBERATE in the bundle — sub-themes override it
+    at runtime exactly like --plone-*. What must never happen is a *dangling*
+    read: a fallback-less var(--clara-…) whose token no rule declares (a typo,
+    or a renamed ladder step). Reads that carry a fallback (integrator knobs
+    like --clara-megamenu-col) are exempt — they resolve by design."""
+    declared = set(re.findall(r"(--clara-[\w-]+)\s*:", bundle))
+    fallbackless_reads = set(re.findall(r"var\(\s*(--clara-[\w-]+)\s*\)", bundle))
+    dangling = fallbackless_reads - declared
+    assert not dangling, f"dangling --clara-* reads in the bundle: {sorted(dangling)}"

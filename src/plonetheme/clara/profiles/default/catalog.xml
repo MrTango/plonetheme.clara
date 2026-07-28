@@ -2,4 +2,10 @@
 <object name="portal_catalog" meta_type="Plone Catalog Tool">
 <!-- -*- extra stuff goes here -*- -->
 
+  <!-- Metadata-only columns (no indexes): the mega menu reads the
+       IMegamenuSection fields from brains so rendering the navigation
+       never wakes the section objects. -->
+  <column value="megamenu_proof" />
+  <column value="megamenu_overview_label" />
+
 </object>

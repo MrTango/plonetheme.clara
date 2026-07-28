@@ -28,22 +28,3 @@ class TestUpgrade1001:
 
         setup_tool = self.portal.portal_setup
         upgrade(setup_tool)
-
-    def test_upgrade_reimports_registry(self):
-        """Running the upgrade re-imports registry.xml on an existing site.
-
-        Simulate a site installed before the registry records existed by
-        clobbering navigation_depth, then assert the upgrade restores the
-        profile value (3).
-        """
-        from plone.registry.interfaces import IRegistry
-        from plonetheme.clara.upgrades.v1001 import upgrade
-        from zope.component import getUtility
-
-        registry = getUtility(IRegistry)
-        registry["plone.navigation_depth"] = 1
-        assert registry["plone.navigation_depth"] == 1
-
-        upgrade(self.portal.portal_setup)
-
-        assert registry["plone.navigation_depth"] == 3

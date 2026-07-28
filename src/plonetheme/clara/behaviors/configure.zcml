@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="plonetheme.clara">
+
+  <!-- No factory: the schema's fields live as plain attributes on the
+       content object, which is what lets catalog metadata columns pick
+       them up for the mega menu without waking objects. Without a factory
+       the schema doubles as the marker (plone.behavior's rule). -->
+  <plone:behavior
+      name="plonetheme.clara.imegamenusection"
+      title="Mega menu section"
+      description="Extra mega-menu fields for a top-level navigation section"
+      provides=".imegamenusection.IMegamenuSection"
+      />
+
+</configure>

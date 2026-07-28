@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.clara">
+
+  <genericsetup:registerProfile
+      name="1002"
+      title="plonetheme.clara: upgrade to 1002"
+      directory="1002"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1001"
+      destination="1002"
+      profile="plonetheme.clara:default">
+
+    <genericsetup:upgradeStep
+        title="Add mega menu close JS (clara.js) to the Clara bundle"
+        description="A custom upgrade step"
+        handler=".v1002.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1002"
+        import_profile="plonetheme.clara.upgrades:1002"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

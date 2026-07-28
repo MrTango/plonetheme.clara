@@ -1,0 +1,33 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.clara">
+
+  <genericsetup:registerProfile
+      name="1003"
+      title="plonetheme.clara: upgrade to 1003"
+      directory="1003"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1002"
+      destination="1003"
+      profile="plonetheme.clara:default">
+
+    <genericsetup:upgradeStep
+        title="Clara styles everything: disable Diazo, ungate the bundle"
+        description="Reimport registry.xml (drops the X-Theme-Disabled bundle
+                     gate, sets plone.app.theming enabled=False) and move the
+                     events aggregator off the classic-only event_listing view."
+        handler=".v1003.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1003"
+        import_profile="plonetheme.clara.upgrades:1003"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Folders are the top-level sections the mega menu opens on; the behavior
+     adds the panel's proof sentence and overview-link label (both optional,
+     Settings fieldset). purge="False" keeps the stock behavior list. -->
+<object name="Folder" meta_type="Dexterity FTI">
+  <property name="behaviors" purge="False">
+    <element value="plonetheme.clara.imegamenusection" />
+  </property>
+</object>

@@ -1,16 +1,83 @@
+#--- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+#SOME DESCRIPTIVE TITLE.
+#FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 msgid ""
 msgstr ""
-"Project-Id-Version: plonetheme.clara\n"
-"POT-Creation-Date: 2026-07-13\n"
-"PO-Revision-Date: 2026-07-13\n"
-"Last-Translator: Maik Derstappen <md@derico.de>\n"
-"Language-Team: Plone <dev@plone.org>\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2026-07-25 15:06+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=1; plural=0\n"
 "Language-Code: en\n"
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plonetheme.clara\n"
-"X-Is-Fallback-For: en-au en-gb en-us en-ca\n"
+
+#: ../configure.zcml:37
+msgid "A Plone theme based on plone.pageletlayout"
+msgstr ""
+
+#: ../behaviors/configure.zcml:15
+msgid "Extra mega-menu fields for a top-level navigation section"
+msgstr ""
+
+#: ../behaviors/imegamenusection.py:42
+msgid "Label for the link to this section's overview page in the navigation panel. Leave empty to omit the link."
+msgstr ""
+
+#: ../behaviors/configure.zcml:15
+msgid "Mega menu section"
+msgstr ""
+
+#: ../behaviors/imegamenusection.py:41
+msgid "Navigation overview label"
+msgstr ""
+
+#: ../behaviors/imegamenusection.py:32
+msgid "Navigation proof sentence"
+msgstr ""
+
+#: ../behaviors/imegamenusection.py:33
+msgid "One short proof statement shown beside this section's links in the navigation panel. Leave empty to omit it."
+msgstr ""
+
+#: ../configure.zcml:37
+msgid "Plonetheme Clara"
+msgstr ""
+
+#: ../configure.zcml:45
+msgid "Plonetheme Clara (uninstall)"
+msgstr ""
+
+#: ../behaviors/imegamenusection.py:27
+msgid "Settings"
+msgstr ""
+
+#: ../configure.zcml:45
+msgid "Uninstalls plonetheme.clara"
+msgstr ""
+
+#. Default: "Close menu"
+#: ../pagelets.py:149
+msgid "megamenu_close_label"
+msgstr ""
+
+#: ../upgrades/1001.zcml:11
+msgid "plonetheme.clara: upgrade to 1001"
+msgstr ""
+
+#: ../upgrades/1002.zcml:11
+msgid "plonetheme.clara: upgrade to 1002"
+msgstr ""
+
+#: ../upgrades/1003.zcml:11
+msgid "plonetheme.clara: upgrade to 1003"
+msgstr ""
+
+#: ../upgrades/1004.zcml:11
+msgid "plonetheme.clara: upgrade to 1004"
+msgstr ""

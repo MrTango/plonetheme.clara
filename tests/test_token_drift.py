@@ -8,15 +8,11 @@ time, which is *why* the duplication exists — and also why a pure-Sass @error
 guard is impossible. This pytest is that guard: a text-parsing check, no
 Sass/node, that runs in the normal harness on every commit (+ pre-commit).
 
-Basis = base ⊕ brand, RESOLVED (ticket 03 §4): the literal must equal Clara's
-*effective* light-mode default, i.e. _clara-tokens-defaults.scss overlaid by
-_clara-brand.scss (brand wins, source order), with the one-level role→primitive
-var() indirection resolved. So `$clara-primary #1e6f8e` tracks the BRAND value
-(base is #2c7bb6), and `$clara-radius 0.625rem` tracks brand (base 0.5rem).
-
-Exempt (ticket 03 §4): $clara-success/danger/warning/info are compile-only
-$theme-colors seeds with NO runtime --plone-* token to compare against — the
-guard neither can nor should cover them (see test_state_seeds_are_exempt).
+Basis = base ⊕ brand, RESOLVED: the literal must equal Clara's effective
+light-mode default, i.e. _clara-tokens-defaults.scss overlaid by
+_clara-brand.scss (brand wins, source order), with role→primitive var()
+indirection resolved. The guard covers primary, neutrals, radius, and all four
+semantic state seeds; no Bootstrap theme colour is compile-only anymore.
 """
 import re
 from pathlib import Path
@@ -36,13 +32,6 @@ OVERLAP = {
     "clara-bg": "plone-color-bg",
     "clara-border": "plone-color-border",
     "clara-radius": "plone-radius-m",
-}
-
-#: compile-only $theme-colors seeds with no runtime token — never compared.
-#: Maps each $clara-* seed to the --plone-* contract token it would gain if it
-#: ever became runtime-tunable (ticket 10 fog); the guard asserts that token is
-#: still absent.
-EXEMPT = {
     "clara-success": "plone-color-success",
     "clara-danger": "plone-color-danger",
     "clara-warning": "plone-color-warning",
@@ -144,14 +133,9 @@ def test_literal_matches_effective_runtime_default(
     )
 
 
-def test_state_seeds_are_exempt(literals):
-    """The four state seeds exist as literals but have no runtime --plone-*
-    token to guard against (documented exemption, ticket 03 §4)."""
-    runtime = _effective_runtime_props()
-    for name, runtime_name in EXEMPT.items():
-        assert name in literals, f"missing state seed ${name}"
-        assert runtime_name not in runtime, (
-            f"--{runtime_name} now exists as a runtime token; fold ${name} into "
-            f"OVERLAP and drop the exemption (ticket 10 fog: runtime state-color "
-            f"tokens)."
+def test_public_runtime_api_has_no_quanta_namespace():
+    """Quanta informs Clara's system; it does not create a competing API."""
+    for path in SCSS.glob("*.scss"):
+        assert "--quanta-" not in _strip_comments(path.read_text()), (
+            f"{path.name} exposes --quanta-*; public runtime tokens stay --plone-*"
         )

@@ -16,6 +16,15 @@
   .plone-stack > * { margin-block: 0; }
   .plone-stack > * + * { margin-block-start: var(--plone-stack-space); }
 
+  /* A list that IS a primitive is layout, not prose. Bootstrap's Reboot sits
+     in a later layer than the base reset and re-adds `ul` padding + margin;
+     re-zero it here (primitives beat bootstrap). */
+  :is(ul, ol):is(.plone-stack, .plone-cluster, .plone-grid, .plone-switcher) {
+    margin-block: 0;
+    padding-inline-start: 0;
+    list-style: none;
+  }
+
   /* Cluster — wrap-friendly horizontal group */
   .plone-cluster {
     display: flex;

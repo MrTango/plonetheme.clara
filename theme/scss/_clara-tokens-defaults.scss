@@ -1,10 +1,9 @@
-/* clara-tokens.css — the DEFAULT --plone-* token values.
+/* The DEFAULT --plone-* contract values shipped by Clara.
  *
- * These are the base's fallback values so a site running plone.pageletlayout
- * with NO theme still renders as a legible page. A theme (plonetheme.clara) or
- * a site integrator overrides any of these by registering a LATER bundle whose
- * whole content is a `:root {}` block — see docs/clara-theming-architecture.md
- * §1.5. This is the entire public customization API; Sass is never involved.
+ * plone.pageletlayout owns the vocabulary but ships no CSS. Clara supplies the
+ * values: a systematic Plone-blue ramp, semantic state roles, fluid rhythm,
+ * and component foundations. A site overrides these at runtime in one later
+ * :root block; Sass remains a build-time detail. See architecture §1.5.
  */
 @layer tokens {
   :root {
@@ -32,24 +31,64 @@
     --plone-leading-body:  1.55;
     --plone-font-body: system-ui, -apple-system, "Segoe UI", roboto, sans-serif;
 
-    /* -- color: primitive ramp (excerpt) --------------------------------- */
-    --plone-blue-500: #2c7bb6;
+    /* -- color: primitive ramps ------------------------------------------ *
+     * Blue-500 is the exact official Plone logo colour. It is identity and UI
+     * geometry, not normal-size text on white (4.21:1); blue-700 is the
+     * accessible text/link step. Values are sRGB because Bootstrap's Sass
+     * colour math needs matching compile-time literals. */
+    --plone-blue-050: #eef6fc;
+    --plone-blue-100: #ddeefa;
+    --plone-blue-300: #8abfe2;
+    --plone-blue-500: #0083be;
+    --plone-blue-700: #006293;
+    --plone-blue-800: #005c88;
+    --plone-blue-900: #083148;
     --plone-gray-050: #f7f8fa;
-    --plone-gray-200: #dee2e6;
-    --plone-gray-700: #384049;
-    --plone-gray-900: #14181c;
+    --plone-gray-100: #f0f4f7;
+    --plone-gray-200: #d7e0e5;
+    --plone-gray-500: #5e7180;
+    --plone-gray-700: #314553;
+    --plone-gray-900: #0e222e;
+    --plone-gray-950: #001018;
 
     /* -- color: semantic roles (the public surface) ---------------------- */
-    --plone-color-primary:    var(--plone-blue-500);
-    --plone-color-text:       var(--plone-gray-900);
-    --plone-color-muted:      var(--plone-gray-700);
-    --plone-color-bg:         #ffffff;
-    --plone-color-surface:    var(--plone-gray-050);
-    --plone-color-border:     var(--plone-gray-200);
-    --plone-color-link:       var(--plone-color-primary);
-    --plone-color-focus-ring: var(--plone-color-primary);
+    --plone-color-primary:       var(--plone-blue-500);
+    --plone-color-primary-hover: #65addc;
+    --plone-color-primary-active: var(--plone-blue-500);
+    --plone-color-on-primary:    var(--plone-gray-950);
+    --plone-color-text:          var(--plone-gray-900);
+    --plone-color-muted:         var(--plone-gray-700);
+    --plone-color-bg:            #ffffff;
+    --plone-color-surface:       var(--plone-gray-050);
+    --plone-color-border:        var(--plone-gray-200);
+    --plone-color-link:          var(--plone-blue-700);
+    --plone-color-link-hover:    var(--plone-blue-800);
+    --plone-color-focus-ring:    var(--plone-gray-950);
 
-    /* -- measure, radii, borders ----------------------------------------- */
+    /* State roles: each family has fill, readable text, tinted surface,
+       boundary, and on-fill colour. Components never infer a foreground. */
+    --plone-color-success:         #2e7d52;
+    --plone-color-success-text:    #205d40;
+    --plone-color-success-surface: #e7f5ec;
+    --plone-color-success-border:  #3b8f67;
+    --plone-color-on-success:      #ffffff;
+    --plone-color-warning:         #f4af2d;
+    --plone-color-warning-text:    #704d00;
+    --plone-color-warning-surface: #fff3d1;
+    --plone-color-warning-border:  #875806;
+    --plone-color-on-warning:      var(--plone-gray-900);
+    --plone-color-danger:          #a2080c;
+    --plone-color-danger-text:     #861116;
+    --plone-color-danger-surface:  #fdebec;
+    --plone-color-danger-border:   #c94f55;
+    --plone-color-on-danger:       #ffffff;
+    --plone-color-info:            var(--plone-blue-500);
+    --plone-color-info-text:       var(--plone-blue-800);
+    --plone-color-info-surface:    #e5f4fb;
+    --plone-color-info-border:     var(--plone-blue-500);
+    --plone-color-on-info:         var(--plone-gray-950);
+
+    /* -- measure, radii, borders, interaction ---------------------------- */
     --plone-measure:      65ch;
     --plone-measure-wide: 85ch;
     --plone-radius-0: 0;
@@ -59,15 +98,53 @@
     --plone-radius-pill: 50rem;
     --plone-border-width: 1px;
     --plone-border: var(--plone-border-width) solid var(--plone-color-border);
+    --plone-target-min: 2.75rem;
+    --plone-duration-instant: 100ms;
+    --plone-duration-fast: 150ms;
+    --plone-duration-standard: 225ms;
+    --plone-duration-slow: 300ms;
+    --plone-ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+    --plone-ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --plone-z-dropdown: 20;
+    --plone-z-sticky: 30;
+    --plone-z-toolbar: 35;
+    --plone-z-modal-backdrop: 40;
+    --plone-z-modal: 50;
+    --plone-z-toast: 60;
+    --plone-z-tooltip: 70;
   }
 
   /* Dark mode expressed through the SAME roles (§6.4). Bootstrap's
      [data-bs-theme] is honored; only the semantic tokens move. */
   [data-bs-theme="dark"] {
-    --plone-color-bg:      var(--plone-gray-900);
-    --plone-color-surface: var(--plone-gray-700);
-    --plone-color-text:    var(--plone-gray-050);
-    --plone-color-muted:   var(--plone-gray-200);
-    --plone-color-border:  var(--plone-gray-700);
+    --plone-color-bg:             var(--plone-gray-900);
+    --plone-color-surface:        var(--plone-gray-700);
+    --plone-color-text:           var(--plone-gray-050);
+    --plone-color-muted:          var(--plone-gray-200);
+    --plone-color-border:         var(--plone-gray-500);
+    --plone-color-primary:        #65addc;
+    --plone-color-primary-hover:  var(--plone-blue-300);
+    --plone-color-primary-active: var(--plone-blue-100);
+    --plone-color-on-primary:     var(--plone-gray-950);
+    --plone-color-link:           var(--plone-blue-300);
+    --plone-color-link-hover:     var(--plone-blue-100);
+    --plone-color-focus-ring:     var(--plone-blue-100);
+    --plone-color-success:         #63c68d;
+    --plone-color-success-text:    #8cdbad;
+    --plone-color-success-surface: #173d2c;
+    --plone-color-success-border:  #63c68d;
+    --plone-color-on-success:      var(--plone-gray-950);
+    --plone-color-warning-text:    #ffc043;
+    --plone-color-warning-surface: #493815;
+    --plone-color-warning-border:  #ffc043;
+    --plone-color-danger:          #f96483;
+    --plone-color-danger-text:     #ff9bac;
+    --plone-color-danger-surface:  #511e29;
+    --plone-color-danger-border:   #f96483;
+    --plone-color-on-danger:       var(--plone-gray-950);
+    --plone-color-info:            #65addc;
+    --plone-color-info-text:       var(--plone-blue-100);
+    --plone-color-info-surface:    #153848;
+    --plone-color-info-border:     #65addc;
   }
 }

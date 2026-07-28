@@ -1,40 +1,500 @@
-/* clara-components.css — minimal restyle of the layout element hooks.
- *
- * Uses only the stable .element-* markup-contract hooks (§9) and --plone-*
- * tokens; no spacing/flex utilities, no template knowledge. A theme
- * (plonetheme.clara) or a site layers richer component styling on top in the
- * `components`/`site` layers — this is just enough that the un-themed base
- * reads as a page.
- */
+/* Clara's base component layer. It deliberately stays close to Plone's own
+ * semantic hooks so downstream theme packages can replace the visual voice
+ * without replacing templates. */
 @layer components {
-  .element-contentheader .documentFirstHeading {
-    font-size: var(--plone-text-2xl);
-    line-height: var(--plone-leading-tight);
+  html body {
+    font-kerning: normal;
+    font-optical-sizing: auto;
   }
-  .element-contentheader .documentDescription {
+
+  .plone-layout {
+    --plone-layout-space: 0;
+    background: var(--plone-color-bg);
+    /* the footer band closes the document — no ground strip below it */
+    padding-block-end: 0;
+  }
+
+  /* Literata carries display; weight 600 is the Klarsicht heading voice. */
+  h1, h2, h3 {
+    color: var(--plone-color-text);
+    font-family: var(--clara-font-display);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  p, li, dd { text-wrap: pretty; }
+  p { max-inline-size: 66ch; }
+
+  a {
+    color: var(--plone-color-link);
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+  a:hover { color: var(--plone-color-link-hover); }
+
+  /* The mockup's 3px ink focus geometry, over the base reset's 2px ring. */
+  :focus-visible {
+    outline: 3px solid var(--plone-color-focus-ring);
+    outline-offset: 3px;
+  }
+
+  /* Header lockup: the native Plone logo remains the asset and Clara Theme is
+     added as the visible theme name. The link's existing accessible name stays
+     the site's actual title. */
+  #portal-logo {
+    grid-row: 1;
+    align-self: center;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--plone-space-xs);
+    min-block-size: 3.5rem;
+    margin-block: var(--plone-space-s);
+    color: var(--plone-color-text);
+    text-decoration: none;
+  }
+  #portal-logo .plone-site-title {
+    padding-inline-start: var(--plone-space-xs);
+    border-inline-start: var(--plone-border);
     font-size: var(--plone-text-m);
-    color: var(--plone-color-muted);
-    margin-block-start: var(--plone-space-2xs);
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  #portal-logo img {
+    inline-size: clamp(7.5rem, 16vw, 9.5rem);
+    block-size: auto;
+  }
+
+  .element-anontools {
+    grid-row: 1;
+    align-self: center;
+    justify-self: end;
+    font-size: var(--plone-text-s);
+  }
+  .element-anontools a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 2.75rem;
+    color: var(--plone-color-link);
+    font-weight: 650;
   }
 
   .element-globalnav {
+    grid-row: 2;
+    grid-column: full-start / full-end;
+    align-self: stretch;
+    min-block-size: 4rem;
+    /* full-bleed like the footer band, aligned to the content edge with a
+       100%-based inset (scrollbar-safe); the end side also reserves the
+       searchbox overlay's lane */
+    --clara-nav-edge: max(
+      var(--plone-layout-gutter, var(--plone-space-s)),
+      calc((100% - var(--plone-measure)) / 2)
+    );
     padding-block: var(--plone-space-2xs);
+    padding-inline: var(--clara-nav-edge)
+      calc(var(--clara-nav-edge) + min(21rem, 34vw));
     border-block: var(--plone-border);
+    background: var(--plone-color-bg);
+  }
+  #portal-globalnav {
+    min-block-size: 3rem;
+    gap: var(--plone-space-m);
+  }
+  #portal-globalnav > .nav-item > .nav-link {
+    min-block-size: 2.75rem;
+    border-block-end-width: 3px;
+    font-size: var(--clara-text-nav);
+    font-weight: 650;
+  }
+  /* Blue is structure: the current/open marker is the brand underline;
+     amber stays reserved for the live edge (CTA, published state). */
+  #portal-globalnav > .nav-item:has(> .opener:checked) > .nav-link,
+  #portal-globalnav > .nav-item > .nav-link[aria-current="page"],
+  #portal-globalnav > .nav-item.selected > .nav-link {
+    border-block-end-color: var(--clara-brand);
+    color: var(--plone-color-link);
+  }
+  #portal-globalnav > .nav-item > .has_subtree.dropdown {
+    border-color: var(--clara-band-rule);
+    background: var(--clara-band-soft);
   }
 
-  .element-searchbox .searchField { max-inline-size: 18rem; }
+  .element-searchbox {
+    grid-row: 2;
+    align-self: center;
+    justify-self: end;
+    z-index: 1;
+  }
+  .element-searchbox .searchField {
+    inline-size: min(13rem, 22vw);
+    min-block-size: 2.75rem;
+    border-color: var(--plone-color-border);
+    background: var(--plone-color-bg);
+    color: var(--plone-color-text);
+  }
+  .element-searchbox .searchField::placeholder {
+    color: var(--plone-color-muted);
+    opacity: 1;
+  }
+  .element-searchbox .searchButton {
+    min-block-size: 2.75rem;
+    border-color: var(--plone-color-on-primary);
+    background: var(--plone-color-primary);
+    color: var(--plone-color-on-primary);
+    font-weight: 700;
+  }
+  .element-searchbox .searchButton:hover {
+    border-color: var(--plone-color-on-primary);
+    background: var(--plone-color-primary-hover);
+    color: var(--plone-color-on-primary);
+  }
 
   .element-breadcrumbs {
-    font-size: var(--plone-text-s);
+    padding-block: var(--plone-space-s) 0;
     color: var(--plone-color-muted);
+    font-size: var(--plone-text-s);
   }
 
-  /* footer signature block */
+  .element-contentheader {
+    padding-block: var(--plone-space-xl) var(--plone-space-m);
+  }
+  .element-contentheader .documentFirstHeading {
+    max-inline-size: 15ch;
+    font-size: var(--clara-text-heading);
+  }
+  .element-contentheader .documentDescription {
+    max-inline-size: 48ch;
+    margin-block-start: var(--plone-space-s);
+    color: var(--plone-color-muted);
+    font-size: var(--clara-text-lede);
+    line-height: 1.55;
+  }
+  /* The byline pagelet reuses plone.app.layout's viewlet markup wholesale, so
+     the live hook is #section-byline (the .element-byline class is kept for
+     the future contract sweep). */
+  .element-byline,
+  #section-byline {
+    padding-block-end: var(--plone-space-s);
+    color: var(--plone-color-muted);
+    font-size: var(--clara-text-label);
+  }
+  /* The reused markup tags the author as a Bootstrap badge pill (`bg-light
+     text-dark` — utilities Clara's $theme-colors never generates, leaving
+     white-on-transparent). Klarsicht speaks the label tier in plain text:
+     neutralize the pill through its own --bs-badge-* API. */
+  #section-byline .badge {
+    --bs-badge-color: var(--plone-color-link);
+    --bs-badge-padding-x: 0;
+    --bs-badge-padding-y: 0;
+    --bs-badge-font-size: 1em;
+    --bs-badge-font-weight: 650;
+  }
+
+  .element-body {
+    padding-block-end: var(--plone-space-2xl);
+  }
+  .element-body > :where(p, ul, ol, blockquote, h2, h3) {
+    max-inline-size: 68ch;
+  }
+  .element-body :where(ul, ol):not([class]) {
+    display: grid;
+    gap: var(--plone-space-2xs);
+    padding-inline-start: 1.35em;
+  }
+  .element-body ul:not([class]) { list-style: disc; }
+  .element-body ol:not([class]) { list-style: decimal; }
+
+  /* Homepage ------------------------------------------------------------ */
+  body:has(.clara-home) .element-breadcrumbs,
+  body:has(.clara-home) .element-contentheader,
+  body:has(.clara-home) .element-byline,
+  body:has(.clara-home) #section-byline {
+    display: none;
+  }
+  body:has(.clara-home) .element-body { padding-block-end: 0; }
+
+  .clara-home {
+    display: grid;
+    gap: var(--plone-space-2xl);
+    padding-block: var(--plone-space-xl) var(--plone-space-2xl);
+  }
+  .clara-home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 0.88fr) minmax(20rem, 1.12fr);
+    gap: var(--plone-space-xl);
+    align-items: center;
+  }
+  .clara-home-copy {
+    display: grid;
+    gap: var(--plone-space-m);
+    align-content: center;
+  }
+  .clara-home-copy h1 {
+    max-inline-size: 14.5ch;
+    font-size: var(--clara-text-display);
+    letter-spacing: -0.02em;
+  }
+  .clara-home-copy h1 strong {
+    color: var(--clara-brand);
+    font-weight: inherit;
+  }
+  .clara-home-lede {
+    max-inline-size: 35rem;
+    color: var(--plone-color-muted);
+    font-size: var(--clara-text-lede);
+    line-height: 1.55;
+  }
+  .clara-home-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--plone-space-s);
+    align-items: center;
+  }
+  /* Amber pill with ink label and ink outline — the one CTA. */
+  .clara-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 2.875rem;
+    padding: 0.68rem 1.35rem;
+    border: 1.5px solid var(--clara-ink);
+    border-radius: var(--plone-radius-pill);
+    background: var(--clara-amber);
+    color: var(--clara-on-amber);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .clara-button:hover {
+    background: var(--clara-amber-hover);
+    color: var(--clara-on-amber);
+  }
+  .clara-button:active { transform: scale(0.98); }
+  .clara-text-link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 2.75rem;
+    color: var(--clara-ink);
+    font-weight: 700;
+    text-underline-offset: 0.3em;
+  }
+  /* Blend, don't box: the illustration's white ground melts into the page
+     via multiply on the img — no frame, no surface card. */
+  .clara-home-figure {
+    inline-size: min(100%, 30rem);
+    margin-inline: auto;
+  }
+  .clara-home-figure img {
+    inline-size: 100%;
+    block-size: auto;
+    mix-blend-mode: multiply;
+  }
+  .clara-home-figure figcaption {
+    margin-block-start: var(--plone-space-s);
+    color: var(--plone-color-muted);
+    font-family: var(--clara-font-display);
+    font-size: var(--clara-text-label);
+    font-style: italic;
+    text-align: center;
+  }
+
+  .clara-community {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.72fr) minmax(0, 1.28fr);
+    gap: var(--plone-space-xl);
+    align-items: start;
+    padding-block-start: var(--plone-space-xl);
+    border-block-start: 1px solid var(--clara-band-rule);
+  }
+  .clara-community-heading {
+    display: grid;
+    gap: var(--plone-space-s);
+  }
+  .clara-community-heading h2 {
+    max-inline-size: 13ch;
+    font-size: clamp(1.85rem, 1.54rem + 1.55vw, 3rem);
+  }
+  .clara-community-heading p { color: var(--plone-color-muted); }
+
+  .clara-resource-list {
+    border-block-end: var(--plone-border);
+  }
+  .clara-resource-list li {
+    border-block-start: var(--plone-border);
+  }
+  .clara-resource-list a {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.58fr) minmax(0, 1fr) auto;
+    gap: var(--plone-space-s);
+    align-items: center;
+    min-block-size: 5.5rem;
+    padding-block: var(--plone-space-s);
+    color: var(--plone-color-text);
+    text-decoration: none;
+  }
+  .clara-resource-list strong {
+    color: var(--clara-brand);
+    font-family: var(--clara-font-display);
+    font-size: var(--plone-text-m);
+    font-weight: 650;
+  }
+  .clara-resource-list span { color: var(--plone-color-muted); }
+  .clara-resource-list b {
+    color: var(--plone-color-accent-strong);
+    font-size: var(--plone-text-l);
+    font-weight: 650;
+  }
+  .clara-resource-list a:hover strong { text-decoration: underline; }
+
+  /* Contact starter content. */
+  .clara-contact {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+    gap: var(--plone-space-xl);
+    padding-block: var(--plone-space-l);
+    border-block: var(--plone-border);
+  }
+  .clara-contact h2 { font-size: var(--plone-text-xl); }
+  .clara-contact-copy {
+    display: grid;
+    gap: var(--plone-space-s);
+  }
+
+  /* The three native footer pagelets read as one full-width closing band —
+     the Klarsicht band ground, hairlined in band-rule, tonal not dark.
+     CSS `order` (the §4 presentation reorder — registration order untouched)
+     sequences the band: the site's own links lead, the legal line follows,
+     the colophon closes. Padding-inline uses 100% (the grid's full width),
+     not 100vw, so a scrollbar never skews the alignment. */
   .element-copyright,
   .element-colophon,
   .element-siteactions {
-    font-size: var(--plone-text-s);
-    color: var(--plone-color-muted);
+    grid-column: full-start / full-end;
+    padding-inline: max(
+      var(--plone-layout-gutter, var(--plone-space-s)),
+      calc((100% - var(--plone-measure)) / 2)
+    );
+    background: var(--clara-footer-ground);
+    color: var(--clara-footer-ink);
+    font-size: var(--clara-text-label);
   }
-  .element-copyright { padding-block-start: var(--plone-space-s); border-block-start: var(--plone-border); }
+  .element-siteactions {
+    order: 1;
+    padding-block: var(--plone-space-l) 0;
+    border: 0;
+    border-block-start: 1px solid var(--clara-band-rule);
+  }
+  .element-siteactions ul { gap: var(--plone-space-s) var(--plone-space-m); }
+  .element-siteactions a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 2.75rem;
+    font-size: var(--plone-text-base);
+  }
+  .element-copyright {
+    order: 2;
+    max-inline-size: none;
+    padding-block: var(--plone-space-2xs);
+    color: var(--clara-ink-soft);
+  }
+  .element-colophon { order: 3; padding-block: 0 var(--plone-space-xl); }
+  .element-copyright a,
+  .element-colophon a,
+  .element-siteactions a {
+    color: var(--clara-footer-ink);
+    font-weight: 650;
+  }
+  .element-copyright a:hover,
+  .element-colophon a:hover,
+  .element-siteactions a:hover {
+    color: var(--clara-amber-text);
+    text-decoration-thickness: 0.14em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Animate the img ITSELF: an animated ancestor would isolate the stacking
+       context, suspend mix-blend-mode and flash the PNG's white ground. */
+    .clara-home-figure img {
+      animation: clara-figure-in 900ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+      animation-delay: 120ms;
+    }
+    .clara-button,
+    .clara-resource-list a,
+    #portal-globalnav .nav-link {
+      transition:
+        background-color var(--plone-duration-fast) linear,
+        border-color var(--plone-duration-standard) var(--plone-ease-out-quint),
+        color var(--plone-duration-standard) var(--plone-ease-out-quint);
+    }
+  }
+
+  @keyframes clara-figure-in {
+    from { opacity: 0; transform: scale(0.97); }
+  }
+
+  @media (max-width: 64rem) {
+    /* logo and Log in keep sharing row 1; only nav and search stack below */
+    .element-globalnav,
+    .element-searchbox {
+      grid-row: auto;
+    }
+    .element-globalnav { padding-inline: var(--clara-nav-edge); }
+    .element-searchbox {
+      justify-self: stretch;
+      padding-block: var(--plone-space-s);
+      border-block-end: var(--plone-border);
+    }
+    .element-searchbox form { flex-wrap: nowrap; }
+    .element-searchbox .searchField {
+      inline-size: auto;
+      max-inline-size: none;
+      flex: 1 1 auto;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .element-globalnav { min-block-size: auto; }
+    #portal-globalnav { gap: 0; }
+    #portal-globalnav > .nav-item > .nav-link { inline-size: 100%; }
+
+    .clara-home { gap: var(--plone-space-xl); }
+    .clara-home-hero,
+    .clara-community,
+    .clara-contact {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .clara-resource-list a {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .clara-resource-list a span {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .clara-resource-list b { grid-column: 2; grid-row: 1; }
+  }
+
+  @media (max-width: 30rem) {
+    #portal-logo .plone-site-title { font-size: var(--plone-text-base); }
+    .clara-home-actions { align-items: stretch; }
+    .clara-home-actions > * { inline-size: 100%; }
+    .clara-text-link { justify-content: center; }
+  }
+
+  @media print {
+    .element-anontools,
+    .element-globalnav,
+    .element-searchbox,
+    .clara-home-actions,
+    .element-siteactions { display: none; }
+    .plone-layout { display: block; }
+    .element-copyright,
+    .element-colophon {
+      padding-inline: 0;
+      background: transparent;
+      color: CanvasText;
+    }
+    .element-copyright a,
+    .element-colophon a { color: inherit; }
+  }
 }

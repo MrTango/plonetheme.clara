@@ -1,25 +1,35 @@
-/* clara-megamenu.css — a Volto-style dropdown mega menu, built ENTIRELY on the
- * native plone.app.layout global-sections markup. Nothing is replaced.
+/* clara-megamenu.css — a Volto-style dropdown mega menu on the native
+ * plone.app.layout global-sections SKELETON, with Clara-enriched panels.
  *
- * GlobalSectionsViewlet.render_globalnav() (reused by the base's globalnav
- * pagelet) already emits, per the registry navigation_depth:
+ * The top level is byte-compatible with the stock GlobalSectionsViewlet
+ * markup (see plonetheme/clara/pagelets.py, which subclasses it):
  *
  *   <li class="<id> has_subtree nav-item">
  *     <a class="state-… nav-link" aria-haspopup="true">Section</a>
  *     <input class="opener" type="checkbox"><label …></label>   ← CSS-only toggle
- *     <ul class="has_subtree dropdown"> … children … </ul>       ← the panel
+ *     <div class="has_subtree dropdown megamenu-panel">…</div>   ← the panel
+ *     <label class="megamenu-backdrop" for="…"></label>          ← CSS-only scrim
  *   </li>
  *
- * This file only STYLES that tree: the top-level list becomes a horizontal bar,
- * each section's first subtree becomes a full-width multi-column mega panel that
- * opens on hover / keyboard focus / the native .opener checkbox (no custom JS),
- * and deeper subtrees render as the panel's grouped columns. All spacing/colour
- * comes from --plone-* tokens. See docs §5, §8.
- */
+ * The panel carries the three-zone composition from the derico.de design
+ * mockups (docs/design/derico.de/site): .megamenu-intro (linked section
+ * title, description, overview link) | .megamenu-links (described children
+ * + .megamenu-sublinks dot rows) | .megamenu-proof (the section's proof
+ * sentence, an IMegamenuSection behavior field). Zones without data are
+ * absent from the markup, never empty boxes.
+ *
+ * CLICK on the item toggles it (the label overlays the whole item and
+ * drives the native .opener checkbox — no hover opening; clara.js adds
+ * only the close gestures), and the second label is the click-to-close
+ * backdrop. All spacing/colour comes from the --plone- and --clara-
+ * token namespaces. See docs §5, §8. */
 @layer components {
   /* ---- top-level bar ---------------------------------------------------- */
+  .element-globalnav {
+    position: relative;                 /* viewport panel anchors to the full bar */
+  }
   #portal-globalnav {
-    position: relative;                 /* panels position against the bar */
+    position: static;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -31,65 +41,370 @@
     align-items: center;
     gap: var(--plone-space-3xs);
     padding-block: var(--plone-space-2xs);
+    border-block-end: 3px solid transparent;
     font-weight: 600;
     color: var(--plone-color-text);
     text-decoration: none;
   }
-  #portal-globalnav > .nav-item.has_subtree > .nav-link::after {
+  #portal-globalnav > .nav-item:hover > .nav-link {
+    color: var(--plone-color-link);
+  }
+  /* the native pure-CSS opener: hide the raw checkbox; its label stacks over
+     the WHOLE item (grid cell 1/1 — the li must stay position:static so the
+     panel can anchor to the bar), so a click anywhere on the section toggles
+     the panel instead of navigating — the dlr.de / Volto-light-theme gesture.
+     Keyboard users still reach the section page via Enter on the link. */
+  #portal-globalnav .opener { position: absolute; opacity: 0; pointer-events: none; }
+  #portal-globalnav > .nav-item.has_subtree { display: grid; }
+  #portal-globalnav > .nav-item.has_subtree > .nav-link {
+    grid-area: 1 / 1;
+    padding-inline-end: calc(var(--plone-space-3xs) + 0.9em);  /* caret space */
+  }
+  #portal-globalnav > .nav-item > label {
+    grid-area: 1 / 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    cursor: pointer;
+  }
+  #portal-globalnav > .nav-item > label::before {
     content: "";
     width: 0.5em; height: 0.5em;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
     transform: rotate(45deg) translateY(-0.15em);
   }
+  /* open state: caret flips, item gets the dlr.de-style underline marker */
+  #portal-globalnav > .nav-item:has(> .opener:checked) > label::before {
+    transform: rotate(-135deg) translateY(-0.15em);
+  }
+  #portal-globalnav > .nav-item:has(> .opener:checked) > .nav-link {
+    border-block-end-color: currentColor;
+  }
+  /* keyboard focus on the hidden checkbox must stay visible — on the label */
+  #portal-globalnav > .nav-item > .opener:focus-visible ~ label {
+    outline: 2px solid var(--plone-color-focus-ring);
+    outline-offset: 2px;
+  }
+  /* panels never collapse below the first level; the Clara pagelet emits no
+     openers there (see plonetheme/clara/pagelets.py), so nothing to hide. */
 
-  /* the native pure-CSS opener: keep it reachable but visually a hit-area on
-     the label; hide the raw checkbox */
-  #portal-globalnav .opener { position: absolute; opacity: 0; pointer-events: none; }
-  #portal-globalnav > .nav-item > label { position: absolute; inset: 0; cursor: pointer; }
-
-  /* ---- the mega panel (a section's FIRST subtree) ----------------------- */
+  /* ---- the mega panel (a section's FIRST subtree) ----------------------- *
+   * The nav element is full-bleed (see _clara-components.scss), so the panel
+   * simply spans it: inset 0 + 100% — no 100vw, no transform, so a scrollbar
+   * never skews the column alignment against the content edge. Height is the
+   * content's own; an empty stage would read as broken, not generous.
+   *
+   * Three zones on the panel's own grid (the derico.de mockup's composition,
+   * spoken in Klarsicht tokens): intro (linked title, description, overview
+   * link) | described child links | proof sentence. The Clara globalnav
+   * pagelet renders the zones; empty ones are simply absent. */
   #portal-globalnav > .nav-item > .has_subtree.dropdown {
     display: none;
     position: absolute;
-    left: 0; right: 0; top: 100%;
-    z-index: 1000;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    z-index: var(--plone-z-dropdown, 20);
     grid-template-columns:
-      repeat(auto-fit, minmax(var(--clara-megamenu-col, 14rem), 1fr));
-    gap: var(--plone-space-m);
-    padding: var(--plone-space-m);
-    background: var(--plone-color-bg);
-    border: var(--plone-border);
-    border-radius: var(--plone-radius-m);
-    box-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.25);
+      minmax(13rem, 0.7fr) minmax(23rem, 1.5fr) minmax(11rem, 0.65fr);
+    align-content: start;
+    align-items: start;
+    column-gap: clamp(var(--plone-space-l), 4vw, var(--plone-space-2xl, 5rem));
+    padding-block: var(--plone-space-l);
+    padding-inline: max(
+      var(--plone-layout-gutter, var(--plone-space-s)),
+      calc((100% - var(--plone-measure, 72rem)) / 2)
+    );
+    /* flat full-width band, not a floating card — VLT/dlr.de look. Klarsicht
+       gives the panel the soft band ground with band-rule hairlines. */
+    background: var(--clara-band-soft, var(--plone-color-surface));
+    border-block: 1px solid var(--clara-band-rule, var(--plone-color-border));
   }
-  /* open on hover, keyboard focus, or the native checkbox (touch/click) */
-  #portal-globalnav > .nav-item:hover > .has_subtree.dropdown,
-  #portal-globalnav > .nav-item:focus-within > .has_subtree.dropdown,
+  /* opens ONLY via the checkbox (click/tap/space) — never on hover */
   #portal-globalnav > .nav-item > .opener:checked ~ .has_subtree.dropdown {
     display: grid;
   }
 
-  /* deeper subtrees inside the panel = static grouped columns, never hidden */
-  #portal-globalnav .has_subtree .has_subtree.dropdown {
+  /* zone 1: the section speaking for itself. Like the child links, ONE
+     anchor wraps title and description, so the description is a click
+     target too; hover/focus feedback stays on the title. */
+  .megamenu-intro-link {
     display: block;
-    position: static;
-    padding: 0;
-    border: 0;
-    box-shadow: none;
-    background: none;
+    color: var(--plone-color-text);
+    text-decoration: none;
   }
-  #portal-globalnav .dropdown .nav-link { padding-block: var(--plone-space-3xs); }
-  #portal-globalnav .dropdown > .nav-item > .nav-link { font-weight: 600; }
+  .megamenu-intro .megamenu-title {
+    margin: 0;
+    font-family: var(--clara-font-display, inherit);
+    font-size: var(--clara-text-title, var(--plone-text-l));
+    font-weight: 650;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  .megamenu-intro .megamenu-title::after {
+    content: "→";
+    margin-inline-start: var(--plone-space-3xs);
+    color: var(--clara-amber-text, var(--plone-color-accent-strong));
+    font-family: var(--plone-font-body);
+    font-size: 0.8em;
+  }
+  .megamenu-intro-link:hover .megamenu-title,
+  .megamenu-intro-link:focus-visible .megamenu-title {
+    color: var(--plone-color-link);
+    text-decoration: underline;
+  }
+  .megamenu-description {
+    margin-block: var(--plone-space-2xs) 0;
+    color: var(--plone-color-muted);
+    font-size: var(--plone-text-base);
+    font-weight: 400;
+    text-wrap: pretty;
+  }
+  .megamenu-overview-row { margin-block: var(--plone-space-s) 0; }
+  .megamenu-overview {
+    display: inline-flex;
+    min-block-size: 2.75rem;
+    align-items: center;
+    color: var(--plone-color-link);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .megamenu-overview:hover,
+  .megamenu-overview:focus-visible { text-decoration: underline; }
 
-  /* ---- narrow viewports: stacked accordion via the same .opener ---------- */
+  /* zone 2: described child links, two columns, hairline rows */
+  .megamenu-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--plone-space-m);
+    margin: 0;
+    padding: 0;
+    border-block-start: 1px solid var(--clara-band-rule, var(--plone-color-border));
+    list-style: none;
+  }
+  .megamenu-links > .nav-item {
+    border-block-end: 1px solid var(--clara-band-rule, var(--plone-color-border));
+  }
+  #portal-globalnav .megamenu-link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--plone-space-2xs);
+    min-block-size: 3.25rem;
+    padding-block: var(--plone-space-2xs);
+    color: var(--plone-color-text);
+    font-weight: 400;
+    text-decoration: none;
+  }
+  .megamenu-link::after {
+    content: "→";
+    color: var(--clara-amber-text, var(--plone-color-accent-strong));
+  }
+  .megamenu-link-text { display: block; }
+  .megamenu-link strong {
+    display: block;
+    font-family: var(--clara-font-display, inherit);
+    font-size: var(--plone-text-base);
+    font-weight: 650;
+  }
+  .megamenu-link-text span {
+    display: block;
+    color: var(--plone-color-muted);
+    font-size: var(--clara-text-label, var(--plone-text-s));
+  }
+  .megamenu-link:hover strong,
+  .megamenu-link:focus-visible strong {
+    color: var(--plone-color-link);
+    text-decoration: underline;
+  }
+
+  /* third level: an inline row of dot-marked quick links under its parent */
+  .megamenu-sublinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--plone-space-3xs) var(--plone-space-s);
+    margin: 0;
+    padding-block: 0 var(--plone-space-2xs);
+    padding-inline: 0;
+    list-style: none;
+  }
+  #portal-globalnav .megamenu-sublinks .nav-link {
+    display: inline-flex;
+    min-block-size: 2.75rem;
+    align-items: center;
+    gap: var(--plone-space-3xs);
+    padding-block: 0;
+    color: var(--plone-color-text);
+    font-size: var(--clara-text-label, var(--plone-text-s));
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .megamenu-sublinks .nav-link::before {
+    content: "";
+    inline-size: 0.3rem;
+    block-size: 0.3rem;
+    border-radius: 50%;
+    background: var(--clara-amber-text, var(--plone-color-accent-strong));
+  }
+  .megamenu-sublinks .nav-link:hover,
+  .megamenu-sublinks .nav-link:focus-visible {
+    color: var(--plone-color-link);
+    text-decoration: underline;
+  }
+
+  /* zone 3: the proof sentence — italic display voice, bottom-aligned */
+  .megamenu-proof {
+    align-self: end;
+    margin: 0;
+    padding-block-start: var(--plone-space-s);
+    border-block-start: 1px solid var(--clara-band-rule, var(--plone-color-border));
+    color: var(--plone-color-muted);
+    font-family: var(--clara-font-display, inherit);
+    font-style: italic;
+    text-wrap: pretty;
+  }
+
+  /* the click-to-close scrim: a second label on the same checkbox, anchored
+     below the nav bar like the panel, one z-step beneath it */
+  #portal-globalnav > .nav-item > .megamenu-backdrop {
+    display: none;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    block-size: 100dvh;
+    z-index: calc(var(--plone-z-dropdown, 20) - 1);
+    background: color-mix(in oklab, var(--clara-ink, #0e222e) 28%, transparent);
+    cursor: default;
+  }
+  #portal-globalnav > .nav-item > .opener:checked ~ .megamenu-backdrop {
+    display: block;
+  }
+
+  /* mid widths (menu bar still expanded, three tracks would jam): intro and
+     proof share the left rail, the links keep one full-measure column.
+     Lower bound keeps this off the 48rem accordion, which stacks 1fr. */
+  @media (min-width: 48.0625rem) and (max-width: 64rem) {
+    #portal-globalnav > .nav-item > .has_subtree.dropdown {
+      grid-template-columns: minmax(12rem, 2fr) minmax(0, 3fr);
+    }
+    .megamenu-links {
+      grid-row: 1 / span 2;
+      grid-column: 2;
+      grid-template-columns: 1fr;
+    }
+    .megamenu-proof { grid-column: 1; }
+  }
+
+  /* panel + scrim entrances; exits are instant (the whole band disappearing
+     is its own feedback). Reduced motion keeps the instant default. */
+  @media (prefers-reduced-motion: no-preference) {
+    #portal-globalnav > .nav-item > .opener:checked ~ .has_subtree.dropdown {
+      animation: clara-panel-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #portal-globalnav > .nav-item > .opener:checked ~ .megamenu-backdrop {
+      animation: clara-backdrop-in 180ms linear;
+    }
+  }
+
+  /* ---- nav-level disclosure --------------------------------------------- *
+   * The contract markup ships a nav-level .opener + .globalnav-toggle label
+   * (globalnav.pt), same native pure-CSS idiom as the section openers. Wide
+   * viewports never collapse: both stay display:none (an invisible control
+   * must not be focusable, so the checkbox is display:none, not opacity:0). */
+  .element-globalnav > .opener,
+  .globalnav-toggle { display: none; }
+
+  /* ---- narrow viewports: menu button + stacked accordion ----------------- */
   @media (max-width: 48rem) {
-    #portal-globalnav { flex-direction: column; align-items: stretch; }
+    /* the 44px Menu bar — flat, hairlined by the element's own borders */
+    .globalnav-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--plone-space-2xs);
+      min-block-size: 2.75rem;
+      cursor: pointer;
+      font-size: var(--clara-text-nav);
+      font-weight: 650;
+    }
+    .globalnav-toggle::after {
+      content: "";
+      inline-size: 0.5em;
+      block-size: 0.5em;
+      border-inline-end: 2px solid currentColor;
+      border-block-end: 2px solid currentColor;
+      transform: rotate(45deg) translateY(-0.15em);
+    }
+    /* focusable while visually hidden, so keyboard/AT can drive the label */
+    .element-globalnav > .opener {
+      display: block;
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .element-globalnav > .opener:focus-visible ~ .globalnav-toggle {
+      outline: 3px solid var(--plone-color-focus-ring);
+      outline-offset: 3px;
+    }
+    .element-globalnav > .opener:checked ~ .globalnav-toggle::after {
+      transform: rotate(-135deg) translateY(0.15em);
+    }
+    .element-globalnav > .opener:not(:checked) ~ #portal-globalnav {
+      display: none;
+    }
+    /* the searchbox belongs to the opened menu panel */
+    .plone-layout:has(.element-globalnav > .opener:not(:checked)) .element-searchbox {
+      display: none;
+    }
+
+    #portal-globalnav {
+      flex-direction: column;
+      align-items: stretch;
+      padding-block: var(--plone-space-2xs) var(--plone-space-s);
+    }
+    /* the panel folds into the accordion: same zones, stacked in source
+       order (intro, links, proof), quieter spacing, no scrim */
     #portal-globalnav > .nav-item > .has_subtree.dropdown {
       position: static;
+      inline-size: auto;
+      min-block-size: auto;
+      transform: none;
       grid-template-columns: 1fr;
+      row-gap: var(--plone-space-s);
       box-shadow: none;
+      padding-block: var(--plone-space-s) var(--plone-space-m);
       padding-inline: var(--plone-space-s);
     }
+    .megamenu-links { grid-template-columns: 1fr; }
+    .megamenu-proof { align-self: start; }
+    #portal-globalnav > .nav-item > .megamenu-backdrop { display: none !important; }
+    @media (prefers-reduced-motion: no-preference) {
+      #portal-globalnav > .nav-item > .opener:checked ~ .has_subtree.dropdown {
+        animation: clara-panel-in-narrow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+    }
+  }
+
+  /* wipe + settle for the wide band, plain settle for the accordion fold */
+  @keyframes clara-panel-in {
+    from {
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+      transform: translateY(-0.5rem);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: none;
+    }
+  }
+  @keyframes clara-panel-in-narrow {
+    from {
+      opacity: 0;
+      transform: translateY(-0.4rem);
+    }
+  }
+  @keyframes clara-backdrop-in {
+    from { opacity: 0; }
   }
 }
