@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Clara is a lightweight theme for Plone, the open-source CMS whose content stays secure in every sense: protected by workflow and permissions, durable across versions, open through the REST API.">
+  <meta name="theme-color" content="#fbfcfd">
+  <title>Content, secure in every sense. · Clara</title>
+  <link rel="preload" href="assets/fonts/source-sans-3-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" as="image" href="assets/images/plone_en.webp" type="image/webp">
+  <link rel="stylesheet" href="assets/site.css">
+  <script>document.documentElement.classList.add("js")</script>
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header" data-site-header data-nav-open="false">
+    <div class="header-shell shell">
+      <a class="brand-mark" href="index.html" aria-label="Plone Blicca Theme Clara home"><img class="brand-logo" src="assets/images/plone-logo.svg" width="215" height="56" alt=""></a>
+      <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-navigation" aria-expanded="false">
+        <span class="menu-toggle__icon" aria-hidden="true"></span><span>Menu</span>
+      </button>
+      <nav class="site-nav" id="site-navigation" aria-label="Primary navigation">
+        <ul class="primary-nav">
+          <li><a class="nav-link" href="index.html" aria-current="page">Home</a></li>
+          <li><a class="nav-link" href="why-plone.html">Why Plone</a></li>
+          <li><a class="nav-link" href="secure-content.html">Secure Content</a></li>
+          <li>
+            <button class="nav-trigger" type="button" data-mega-trigger aria-expanded="false" aria-controls="mega-community">Community</button>
+            <div class="mega-panel" id="mega-community" data-mega-panel hidden>
+    <div class="mega-inner">
+      <div class="mega-intro">
+        <h2><a href="community.html">Community</a></h2>
+        <p>Plone is built, documented and secured by a worldwide open-source community. Meet it where it works.</p>
+        <a class="mega-overview" href="community.html">Community overview</a>
+      </div>
+      <ul class="mega-links">
+        <li><a href="forum.html"><span><strong>Forum</strong><span>Questions and answers in the open, from users to core developers</span></span></a></li>
+        <li><a href="sprints.html"><span><strong>Sprints</strong><span>Focused development meetings where the platform moves forward</span></span></a></li>
+        <li><a href="conferences.html"><span><strong>Conferences</strong><span>The annual Plone Conference and community days worldwide</span></span></a></li>
+      </ul>
+      <p class="mega-proof">Hundreds of contributors, one steady release cadence: Plone has shipped since 2001.</p>
+    </div>
+  </div>
+          </li>
+        </ul>
+      </nav>
+      <ul class="utility-nav" aria-label="Related sites">
+        <li><a href="https://plone.org" rel="external">plone.org</a></li>
+      </ul>
+    </div>
+    <button class="mega-backdrop" type="button" data-mega-backdrop hidden aria-label="Close menu"></button>
+  </header>
+  
+  <main id="main"><section class="home-hero"><div class="shell home-hero__grid"><div><p class="kicker">Theme Clara for Plone Blicca</p><h1>Content, secure in every sense.</h1><p class="lede">Plone is the open-source CMS for organisations that publish with responsibility: workflow and permissions protect every item, migrations carry it across versions, and the REST API keeps it open.</p><div class="action-row"><a class="button" href="secure-content.html">What secure content means</a><a class="quiet-link" href="why-plone.html">Why Plone</a></div></div><figure class="hero-figure">
+    <picture>
+      <source type="image/webp" srcset="assets/images/plone_en.webp">
+      <img src="assets/images/plone_en.png" width="1254" height="1254" alt="Diagram: Plone, a great choice for content-heavy platforms — multiple editors and groups, powerful content workflows, granular permissions and roles, great user experience, built for content at scale. Loved by editors, trusted by developers." fetchpriority="high" decoding="async">
+    </picture>
+    <figcaption>Why teams pick Plone, at a glance.</figcaption>
+  </figure></div></section>
+  <section class="section section--band"><div class="shell"><h2 class="section-heading">A CMS that takes content seriously.</h2><div class="manifesto-grid"><article class="manifesto-item"><h3>Protected by the platform</h3><p>Workflow states and granular permissions decide who sees, changes and publishes every single item.</p></article><article class="manifesto-item"><h3>Durable across versions</h3><p>Six major releases since 2001, each with migration steps that carry existing content safely forward.</p></article><article class="manifesto-item"><h3>Open through the REST API</h3><p>Everything in the site reads and writes as structured JSON — for any front end, integration or export.</p></article><article class="manifesto-item"><h3>Built for content at scale</h3><p>Hundreds of thousands of pages, files and records stay organised in one consistent content tree.</p></article></div></div></section>
+  <section class="section structure-section" aria-labelledby="structure-title"><div class="shell"><h2 class="section-heading" id="structure-title">Every item knows its place — and its state.</h2><p class="section-intro">Clara's namesake is clarity: content lives in one tree, and each item carries a workflow state everyone can read.</p><figure class="structure-figure">
+      <div class="structure-stage">
+        <svg class="structure-svg" viewBox="0 0 560 350" role="img" aria-label="A content tree: one site root branching into sections; one section holds three documents in the workflow states private, pending review and published.">
+          <g class="tree-lines">
+            <path class="tree-line" d="M280 42 140 150M280 42v108M280 42l140 108"/>
+            <path class="tree-line" d="M420 150 340 278M420 150v128M420 150l80 128"/>
+          </g>
+          <circle class="tree-node" cx="280" cy="42" r="26"/>
+          <circle class="tree-node" cx="140" cy="150" r="22"/>
+          <circle class="tree-node" cx="280" cy="150" r="22"/>
+          <circle class="tree-node" cx="420" cy="150" r="22"/>
+          <circle class="tree-node" cx="340" cy="278" r="18"/>
+          <circle class="tree-node tree-node--pending" cx="420" cy="278" r="18"/>
+          <circle class="tree-node tree-node--published" cx="500" cy="278" r="18"/>
+        </svg>
+      </div>
+      <dl class="state-legend">
+        <div><span class="state-dot" aria-hidden="true"></span><dt>Private</dt><dd>visible to its owners and editors only</dd></div>
+        <div class="is-pending"><span class="state-dot" aria-hidden="true"></span><dt>Pending review</dt><dd>submitted, waiting for a reviewer's decision</dd></div>
+        <div class="is-published"><span class="state-dot" aria-hidden="true"></span><dt>Published</dt><dd>public — the state readers actually see</dd></div>
+      </dl>
+    </figure>
+    <p class="structure-note"><a class="quiet-link" href="secure-content.html">How states and permissions work together</a></p></div></section>
+  <section class="section section--soft" aria-labelledby="index-title"><div class="shell"><h2 class="section-heading" id="index-title">Start where it matters.</h2><dl class="section-index"><div class="section-index__row"><dt><a href="why-plone.html">Why Plone</a></dt><dd>The case for Plone: editors, workflows, scale and a track record reaching back to 2001.<br><a class="section-index__action" href="why-plone.html">Read the case</a></dd></div><div class="section-index__row"><dt><a href="secure-content.html">Secure Content</a></dt><dd>Protected by permissions and workflow, durable across version upgrades, open through the REST API.<br><a class="section-index__action" href="secure-content.html">See what secure means</a></dd></div><div class="section-index__row"><dt><a href="community.html">Community</a></dt><dd>Forum, sprints and conferences: the people behind the platform.<br><a class="section-index__action" href="community.html">Meet the community</a></dd></div></dl></div></section></main>
+  <section class="cta-band"><div class="shell"><h2>Open source, open to you.</h2><p>Plone is free software: download it, try the demo and bring your questions along.</p><div class="action-row"><a class="button" href="https://plone.org" rel="external">Get Plone</a><a class="quiet-link" href="forum.html">Ask in the forum</a></div></div></section>
+  <footer class="site-footer"><div class="shell footer-grid">
+    <div><p><strong>Clara</strong> · A lightweight theme for Plone. Content, secure in every sense.</p><p>Demo content — built with and for the Plone community.</p></div>
+    <ul class="footer-links"><li><a href="https://plone.org" rel="external">plone.org</a></li><li><a href="https://community.plone.org" rel="external">community.plone.org</a></li><li><a href="https://docs.plone.org" rel="external">docs.plone.org</a></li></ul>
+  </div></footer>
+</body>
+</html>

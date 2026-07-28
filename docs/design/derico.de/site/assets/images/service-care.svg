@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" role="img" aria-labelledby="title">
+  <title id="title">Application held on a maintenance stand</title>
+  <style>
+    .surface{fill:oklch(0.965 0.012 215);stroke:oklch(0.36 0.065 215.55);stroke-width:1.5}
+    .lines{fill:none;stroke:oklch(0.49 0.09 215.55);stroke-width:1.6}
+    .accent{fill:oklch(0.99 0.003 215);stroke:oklch(0.49 0.18 55);stroke-width:2.2}
+    g{stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <g class="surface">
+    <rect x="67" y="22" width="106" height="62" rx="3"/>
+    <path d="M82 84v15h76V84"/>
+  </g>
+  <g class="lines">
+    <path d="M84 39h72M84 52h48M84 65h58"/>
+    <path d="M43 45v45c0 11 9 20 20 20h114c11 0 20-9 20-20V45"/>
+  </g>
+  <g class="accent">
+    <circle cx="43" cy="39" r="6"/><circle cx="197" cy="39" r="6"/>
+    <path d="M111 98h18M120 89v18"/>
+  </g>
+</svg>

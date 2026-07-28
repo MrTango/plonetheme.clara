@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 132" role="img" aria-labelledby="title">
+  <title id="title">Specialised framework components converging on one application</title>
+  <style>
+    .surface{fill:oklch(0.965 0.012 215);stroke:oklch(0.36 0.065 215.55);stroke-width:1.5}
+    .lines{fill:none;stroke:oklch(0.49 0.09 215.55);stroke-width:1.6}
+    .accent{fill:oklch(0.99 0.003 215);stroke:oklch(0.49 0.18 55);stroke-width:2.2}
+    g{stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <g class="surface">
+    <rect x="8" y="12" width="42" height="30" rx="3"/>
+    <rect x="8" y="51" width="42" height="30" rx="3"/>
+    <rect x="8" y="90" width="42" height="30" rx="3"/>
+    <rect x="92" y="37" width="68" height="58" rx="3"/>
+    <rect x="202" y="45" width="40" height="42" rx="3"/>
+  </g>
+  <g class="lines">
+    <path d="M50 27h20c13 0 22 10 22 23M50 66h42M50 105h20c13 0 22-10 22-23M160 66h42"/>
+    <path d="M108 53h36M108 65h28M108 77h32"/>
+  </g>
+  <g class="accent">
+    <circle cx="92" cy="66" r="5"/><circle cx="181" cy="66" r="5"/>
+    <path d="M214 66l7 7 12-15"/>
+  </g>
+</svg>

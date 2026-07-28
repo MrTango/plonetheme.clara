@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" role="img" aria-labelledby="title">
+  <title id="title">Controlled editorial workspace schematic</title>
+  <style>
+    .surface{fill:oklch(0.965 0.012 215);stroke:oklch(0.36 0.065 215.55);stroke-width:1.5}
+    .lines{fill:none;stroke:oklch(0.49 0.09 215.55);stroke-width:1.6}
+    .accent{fill:oklch(0.99 0.003 215);stroke:oklch(0.49 0.18 55);stroke-width:2.2}
+    g{stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <g class="surface">
+    <path d="M42 30h156v98H42z"/>
+    <path d="M58 17h124v18H58z"/>
+    <path d="M60 48h71v62H60zM143 48h37v26h-37zM143 86h37v24h-37z"/>
+  </g>
+  <g class="lines">
+    <path d="M75 62h41M75 74h30M75 86h36M75 98h24"/>
+    <path d="M53 128v9h134v-9"/>
+  </g>
+  <g class="accent">
+    <circle cx="161.5" cy="60" r="5"/>
+    <path d="M152 72c2-6 17-6 19 0M151 98h21M161.5 90v16"/>
+    <path d="M112 17v18"/>
+  </g>
+</svg>

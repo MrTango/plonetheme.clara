@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>derico — Nachhaltige Lösungen · Variante 2 „Jahresringe" · hell — dunkle Schrift auf aufgehelltem Petrol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Roboto+Slab:wght@600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   derico.de — Variant 2 „Jahresringe" (growth rings)
+   Register: brand · Strategy: Drenched (the surface IS deep
+   evergreen) · Voice: forestry manual / bookbinding — durable,
+   quiet, grown rather than assembled. Tree rings = 20+ years
+   of release history.
+   Token block maps onto Clara's --plone-* API (dark scheme).
+   ============================================================ */
+:root {
+  /* Vorgegebenes Marken-Cyan für Inline-Logo und Ringe; kleine Texte und
+     Links nutzen die dunklere AA-Stufe derselben Hue. */
+  --petrol:               oklch(0.64705 0.1142 215.55); /* rgb(3 159 186) */
+  --petrol-700:           oklch(0.52 0.09 215.55);     /* 5.1:1+ auf hellen Flächen */
+  --plone-color-primary:  var(--petrol-700);
+  --plone-color-text:     oklch(0.22 0.02 225);
+  --plone-color-muted:    oklch(0.42 0.025 220);
+  --plone-color-bg:       oklch(0.99 0.003 215);
+  --plone-color-surface:  oklch(0.965 0.008 215);
+  --plone-color-border:   oklch(0.88 0.02 215);
+  --plone-color-link:     var(--petrol-700);
+  --plone-font-body:      "Source Sans 3", system-ui, sans-serif;
+  --label: 0.875rem;             /* 14px — Label-/Metazeile, die Untergrenze */
+  --plone-measure: 62ch;
+
+  --font-display: "Literata", georgia, serif;
+
+  /* Manifesto und Kontakt tragen eine helle Stufe des Marken-Cyans. Unter den
+     Ringen bleibt der Grund fast weiß, damit die exakte Markenfarbe 3:1 hält. */
+  --band-ground:   oklch(0.88 0.085 215.55);   /* helle Stufe von rgb(3 159 186) */
+  --hero-ground:   var(--plone-color-bg);
+  --band-ink:      oklch(0.22 0.020 225);      /* 12.20 */
+  --band-ink-soft: oklch(0.38 0.030 225);      /* 7.04 */
+  --band-rule:     oklch(0.52 0.050 215);
+  --copper:        oklch(0.57 0.18 50);        /* direktes Orange #c64c00 */
+  --copper-hover:  oklch(0.53 0.18 50);
+  --copper-text:   oklch(0.49 0.18 55);        /* dunklere Textstufe #a83500 */
+  --on-copper:     oklch(0.99 0.004 50);       /* 4.6:1 auf Orange */
+  --ochre: var(--copper-text);
+  --ring: var(--petrol);           /* exaktes Marken-Cyan, 3:1+ zum Hero-Grund */
+  --hairline: 1px solid var(--plone-color-border);
+
+  --space-s: clamp(1rem, 0.96rem + 0.22vw, 1.25rem);
+  --space-m: clamp(1.5rem, 1.43rem + 0.33vw, 1.88rem);
+  --space-l: clamp(2rem, 1.91rem + 0.43vw, 2.5rem);
+  --space-xl: clamp(3rem, 2.87rem + 0.65vw, 3.75rem);
+  --space-2xl: clamp(5rem, 4.2rem + 3vw, 8rem);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--plone-font-body);
+  /* Fließtext im Inhaltsbereich: effektiv 16px, keine viewport-Skalierung.
+     Größer wird nur, was ausdrücklich größer sein soll (Lede, Zitat, Headline). */
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--plone-color-text);
+  background: var(--plone-color-bg);
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; max-width: var(--plone-measure); text-wrap: pretty; }
+a { color: var(--plone-color-link); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 3rem); }
+
+/* ---- header ------------------------------------------------ */
+header { border-bottom: var(--hairline); }
+.nav { display: flex; align-items: center; gap: var(--space-m); padding-block: 1rem; flex-wrap: wrap; }
+.logo { display: inline-flex; flex: 0 0 auto; color: var(--petrol); text-decoration: none; }
+.logo svg { display: block; width: clamp(7rem, 9vw, 8.5rem); height: auto; }
+.logo__fill { fill: currentColor; }
+.logo__cutout { fill: var(--plone-color-bg); }
+.nav nav { display: flex; gap: 1.6rem; margin-left: auto; flex-wrap: wrap; }
+.nav nav a { color: var(--plone-color-text); text-decoration: none; font-size: var(--label); }
+.nav nav a:hover { color: var(--plone-color-link); text-decoration: underline; }
+.lang { font-size: var(--label); color: var(--plone-color-muted); }
+.lang b { color: var(--plone-color-text); }
+
+/* ---- hero with growth rings --------------------------------- */
+/* Erster Block in dunklem Logo-Cyan (Steer bacd83be); flacher Ton,
+   damit der Text-Halo der Ringgrafik exakt deckt */
+/* Hero-Polster auf die Hälfte von --space-2xl (Steer: weniger Luft) */
+.hero { padding-block: clamp(2.5rem, 2.1rem + 1.5vw, 4rem); overflow: hidden; background: var(--hero-ground); }
+.hero-grid {
+  display: grid; gap: var(--space-xl);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+}
+@media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+.kicker {
+  font-family: var(--font-display); font-style: italic;
+  color: var(--copper-text); font-size: 1.1rem;
+}
+.hero h1 {
+  /* accepted via live session f1d13021: slab display for the hero */
+  font-family: "Roboto Slab", "Literata", georgia, serif;
+  font-weight: 600;
+  font-size: clamp(2.5rem, 1.5rem + 4.6vw, 4.6rem);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  margin-top: 0.5rem;
+  max-width: 16ch;
+  color: var(--band-ink);
+}
+.hero .lede {
+  margin-top: var(--space-m);
+  font-size: clamp(1.08rem, 1rem + 0.45vw, 1.3rem);
+  color: var(--band-ink-soft);
+  max-width: 48ch;
+}
+.hero .link-quiet { color: var(--band-ink); }
+.hero .link-quiet:hover { color: var(--copper-text); }
+.cta-row { display: flex; gap: 1rem; margin-top: var(--space-l); flex-wrap: wrap; align-items: center; }
+.btn {
+  display: inline-block; text-decoration: none; font-weight: 600;
+  padding: 0.85rem 1.6rem; border-radius: 999px; font-size: 1rem;
+  transition: background-color 180ms cubic-bezier(0.22,1,0.36,1), color 180ms;
+}
+.btn-copper { background: var(--copper); color: var(--on-copper); }
+.btn-copper:hover { background: var(--copper-hover); }
+.link-quiet { color: var(--plone-color-link); font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor; }
+.link-quiet:hover { color: oklch(0.35 0.10 215); }
+
+/* rings figure */
+.rings { display: block; width: min(100%, 34rem); margin-inline: auto; height: auto; }
+.rings text {
+  /* accepted via live session 86a09263: on-ring labels, halo for legibility */
+  font-family: var(--plone-font-body); font-size: 22px;
+  fill: var(--plone-color-muted);
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--plone-color-bg);
+  stroke-width: 7px;
+  stroke-linejoin: round;
+}
+.rings .year { fill: var(--ochre); }
+.rings text .word { font-weight: 400; fill: var(--plone-color-muted); }
+/* Ringgrafik auf dem dunklen Hero-Grund: helle Labels, Halo im Grundton */
+.hero .rings text { fill: var(--band-ink-soft); stroke: var(--hero-ground); }
+.hero .rings .year { fill: var(--copper-text); }
+.hero .rings text .word { fill: var(--band-ink-soft); }
+/* Ringscheibe + Legende (accepted via live sessions 67d6e826, 7a213e20):
+   die Scheibe beherrscht das Bild und läuft aus dem Rahmen, die Legende führt
+   die vier Wachstumsstufen als Bestimmungsbuch-Zeilen. Punktmarken sitzen auf
+   dem jeweiligen Ring.
+   Die Zeilen stehen als echter HTML-Text unter der Scheibe, nicht mehr als
+   <text> daneben im SVG: SVG-Text skaliert mit der Grafik (Faktor 0.42–0.80
+   über die Viewports), eine feste Größe läge damit je nach Breite zwischen
+   16px und 31px. Als HTML hält die Legende die Schriftgrenze auf jeder Breite
+   und bleibt markierbar und übersetzbar. */
+.rings-legend { margin: var(--space-m) 0 0; max-width: 34rem; margin-inline: auto; }
+.rings-legend__row { padding-block: 0.5rem; border-top: var(--hairline); }
+.rings-legend dt { display: flex; gap: 0.6rem; font-weight: 600; font-size: var(--label); }
+.rings-legend dd { margin: 0 0 0 1.5rem; font-size: var(--label); color: var(--plone-color-muted); }
+.rings-legend .idx { color: var(--ochre); font-weight: 600; }
+.rings-legend__row--today dt { color: var(--ochre); }
+/* Legende auf dem dunklen Hero-Grund */
+.hero .rings-legend__row { border-top-color: var(--band-rule); }
+.hero .rings-legend dt { color: var(--band-ink); }
+.hero .rings-legend dd { color: var(--band-ink-soft); }
+.hero .rings-legend .idx,
+.hero .rings-legend__row--today dt { color: var(--copper-text); }
+.rings--guide .today { stroke: var(--ochre); stroke-width: 5; }
+.rings--guide .rule { stroke: var(--plone-color-border); stroke-width: 1; }
+.rings--guide .mark-dot { fill: var(--plone-color-text); stroke: var(--plone-color-bg); stroke-width: 3; }
+.rings--guide .mark-dot-4 { fill: var(--ochre); }
+/* auf dem dunklen Hero-Grund: helle Schrift, Kupfer aufgehellt, Halo im Grundton */
+.hero .rings--guide .name { fill: var(--band-ink); stroke: none; }
+.hero .rings--guide .gloss { fill: var(--band-ink-soft); stroke: none; }
+.hero .rings--guide .idx { fill: var(--copper-text); stroke: none; }
+.hero .rings--guide .name-4 { fill: var(--copper-text); }
+.hero .rings--guide .rule { stroke: var(--band-rule); }
+.hero .rings--guide .today { stroke: var(--copper-text); }
+.hero .rings--guide .mark-dot { fill: var(--band-ink); stroke: var(--hero-ground); }
+.hero .rings--guide .mark-dot-4 { fill: var(--copper-text); }
+.rings-caption {
+  text-align: center; font-size: var(--label); color: var(--plone-color-muted);
+  margin-top: 0.75rem; font-style: italic; font-family: var(--font-display);
+}
+.hero .rings-caption { color: var(--band-ink-soft); }
+
+/* ---- manifesto ---------------------------------------------- */
+/* Cyan-Tint statt Neutralgrau (Steer da02db3a: Hauptfarbe auch als Fläche) */
+.manifesto { border-block: 1px solid var(--band-rule); background: var(--band-ground); }
+.manifesto .wrap { padding-block: var(--space-2xl); }
+.manifesto h2 {
+  font-size: clamp(1.9rem, 1.3rem + 2.6vw, 3.4rem);
+  max-width: 24ch; letter-spacing: -0.01em;
+}
+.manifesto h2 em { color: var(--copper-text); }
+.manifesto-cols {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-l); margin-top: var(--space-xl);
+}
+.manifesto-cols p { color: var(--plone-color-muted); font-size: 1rem; }
+.manifesto-cols p b {
+  display: block; color: var(--plone-color-text);
+  font-family: var(--font-display); font-size: 1.2rem; font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+/* ---- field guide (services) --------------------------------- */
+.section { padding-block: var(--space-2xl); }
+.section > .wrap > h2 {
+  font-size: clamp(1.9rem, 1.4rem + 2.2vw, 3rem);
+  letter-spacing: -0.01em; margin-bottom: var(--space-s);
+}
+.section .intro { color: var(--plone-color-muted); margin-bottom: var(--space-xl); }
+.guide { margin: 0; }
+.guide > div {
+  display: grid; grid-template-columns: minmax(9rem, 16rem) minmax(0, 1fr);
+  gap: var(--space-m); padding-block: var(--space-m);
+  border-top: var(--hairline); align-items: baseline;
+}
+.guide > div:last-child { border-bottom: var(--hairline); }
+@media (max-width: 700px) { .guide > div { grid-template-columns: 1fr; gap: 0.4rem; } }
+.guide dt {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.25rem, 1.1rem + 0.7vw, 1.6rem);
+}
+.guide dt small {
+  display: block; font-family: var(--plone-font-body); font-weight: 400;
+  font-size: var(--label); color: var(--ochre); font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+.guide dd { margin: 0; color: var(--plone-color-muted); max-width: 58ch; }
+.guide dd a { color: var(--plone-color-link); }
+
+/* ---- training band ------------------------------------------ */
+.training { background: var(--plone-color-surface); border-block: var(--hairline); }
+.training .wrap { padding-block: var(--space-2xl); display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: var(--space-xl); }
+@media (max-width: 860px) { .training .wrap { grid-template-columns: 1fr; } }
+.training h2 { font-size: clamp(1.7rem, 1.3rem + 1.8vw, 2.6rem); max-width: 18ch; }
+.training p { color: var(--plone-color-muted); margin-top: var(--space-s); }
+.training blockquote {
+  margin: 0; font-family: var(--font-display); font-style: italic;
+  font-size: clamp(1.2rem, 1.05rem + 0.8vw, 1.6rem); line-height: 1.5;
+  color: var(--plone-color-text); border-top: 2px solid var(--ochre);
+  padding-top: var(--space-m);
+}
+.training blockquote footer {
+  font-family: var(--plone-font-body); font-style: normal; font-size: var(--label);
+  color: var(--plone-color-muted); margin-top: var(--space-s);
+}
+
+/* ---- contact ------------------------------------------------- */
+/* Drenched-Block in dunklem Logo-Cyan (Steer da02db3a) */
+.contact { padding-block: var(--space-2xl); text-align: center; background: var(--band-ground); }
+.contact h2 {
+  font-size: clamp(2rem, 1.4rem + 2.8vw, 3.6rem);
+  max-width: 20ch; margin-inline: auto; letter-spacing: -0.01em;
+  color: var(--band-ink);
+}
+.contact p { margin: var(--space-m) auto 0; color: var(--band-ink-soft); max-width: 46ch; }
+.contact .cta-row { justify-content: center; }
+.contact .link-quiet { color: var(--band-ink); }
+.contact .link-quiet:hover { color: var(--copper-text); }
+
+footer.site { border-top: var(--hairline); padding-block: var(--space-l); font-size: var(--label); color: var(--plone-color-muted); }
+footer.site .wrap { display: flex; gap: var(--space-m); flex-wrap: wrap; justify-content: space-between; }
+footer.site a { color: inherit; }
+
+/* ---- motion: rings breathe in once, type settles ------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1, .hero .kicker, .hero .lede, .hero .cta-row {
+    animation: settle 800ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  .hero .lede { animation-delay: 120ms; }
+  .hero .cta-row { animation-delay: 220ms; }
+  .rings circle { transform-origin: center; animation: grow 1100ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+  .rings circle:nth-of-type(2) { animation-delay: 60ms; }
+  .rings circle:nth-of-type(3) { animation-delay: 120ms; }
+  .rings circle:nth-of-type(4) { animation-delay: 180ms; }
+  .rings circle:nth-of-type(5) { animation-delay: 240ms; }
+  .rings circle:nth-of-type(6) { animation-delay: 300ms; }
+  .rings circle:nth-of-type(7) { animation-delay: 360ms; }
+  .rings circle:nth-of-type(8) { animation-delay: 420ms; }
+  @keyframes settle { from { opacity: 0; transform: translateY(12px); } }
+  @keyframes grow { from { opacity: 0; transform: scale(0.92); } }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#" aria-label="derico.de Startseite">
+      <svg viewBox="0 0 423.33366 145.52084" aria-hidden="true" focusable="false">
+        <g transform="translate(0,-151.47915)">
+          <g transform="translate(272.14286,198.05952)">
+            <g transform="translate(-2.4990107)">
+              <g transform="matrix(0.33377695,0,0,-0.33377695,-166.12573,45.832617)">
+                <path class="logo__fill" d="m 0,0 c 0,73.138 -59.284,132.425 -132.418,132.425 -73.136,0 -132.425,-59.287 -132.425,-132.425 0,-73.134 59.289,-132.421 132.425,-132.421 C -59.284,-132.421 0,-73.134 0,0" />
+              </g>
+              <g transform="matrix(0.33377695,0,0,-0.33377695,-89.24885,40.010233)">
+                <path class="logo__fill" d="m 0,0 c 0,82.773 -67.097,149.869 -149.867,149.869 -82.759,0 -149.854,-67.096 -149.854,-149.869 0,-82.77 67.095,-149.865 149.854,-149.865 C -67.097,-149.865 0,-82.77 0,0" />
+              </g>
+              <g transform="matrix(0.33377695,0,0,-0.33377695,-126.05112,12.577881)">
+                <path class="logo__fill" d="M 0,0 C 0,81.116 -65.756,146.871 -146.859,146.871 -227.972,146.871 -293.73,81.116 -293.73,0 c 0,-81.112 65.758,-146.875 146.871,-146.875 C -65.756,-146.875 0,-81.112 0,0" />
+              </g>
+              <path class="logo__fill" d="m 673.09331,409.99692 h -201.7756 v 102.22379 h 201.7756 z" transform="matrix(0.35277777,0,0,-0.35277777,-376.59539,234.61332)" />
+              <g transform="matrix(0.33377695,0,0,-0.33377695,-137.74543,-2.4196416)">
+                <path class="logo__cutout" d="m 0,0 c -0.004,0.018 -0.014,0.036 -0.022,0.056 h -21.582 -33.375 -19.964 v -171.56 h 0.003 v -8.189 c 0,-4.155 2.871,-7.035 7.027,-7.035 h 6.071 c 4.151,0 6.863,2.88 6.863,7.035 v 8.189 h 0.004 l -0.004,151.584 h 51.223 0.016 c 58.412,0 105.934,-47.522 105.934,-105.934 0,-58.417 -47.522,-105.937 -105.934,-105.937 h -211.642 c -48.245,0 -87.496,39.243 -87.496,87.484 0,45.648 34.256,83.104 79.684,87.125 l 9.596,0.847 -0.504,9.621 c -0.089,1.689 -0.13,3.386 -0.13,5.093 0,55.509 45.159,100.665 100.668,100.665 23.846,0 45.867,-8.031 63.215,-21.863 0.331,-0.265 0.64,-0.526 0.957,-0.784 1.04,-0.852 2.068,-1.713 3.074,-2.609 0.092,-0.081 0.197,-0.166 0.287,-0.251 2.541,-2.272 4.964,-4.673 7.259,-7.202 l 0.006,0.004 c 0.238,-0.274 0.482,-0.558 0.664,-0.784 4.184,-5.162 5.401,-5.776 10.196,-5.654 l 5.101,0.136 c 3.837,0.105 6.968,2.739 6.542,6.566 -0.195,2.47 -1.71,5.637 -4.2,9.146 l 0.032,0.022 c -19.726,26.081 -56.062,43.25 -93.133,43.25 -65.473,0 -118.933,-52.435 -120.602,-117.513 -51.165,-8.895 -88.685,-52.87 -88.685,-105.815 0,-59.257 48.21,-107.458 107.469,-107.458 H -3.74 c 69.425,0 125.906,56.486 125.906,125.911 C 122.166,-57.678 67.704,-1.983 0,0" />
+              </g>
+              <g transform="matrix(0.33377691,0,0,-0.33377691,-368.01784,223.82208)">
+                <text class="logo__fill" transform="matrix(1,0,0,-1,829.0586,431.3203)" font-family="Rubik, Source Sans 3, sans-serif" font-size="319.575" font-weight="300"><tspan x="0 174.48817 285.70041 356.96573 528.25812" y="0">erico</tspan></text>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </a>
+    <nav aria-label="Hauptnavigation">
+      <a href="#services">Leistungen</a>
+      <a href="#sustainability">Warum nachhaltig</a>
+      <a href="#training">Schulungen &amp; Vorträge</a>
+      <a href="#contact">Kontakt</a>
+    </nav>
+    <div class="lang"><b>DE</b> / EN</div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="kicker">Nachhaltige Lösungen, seit über 20 Jahren</p>
+        <h1>Anwendungen, die&nbsp;bleiben.</h1>
+        <p class="lede">Jedes Jahr, in dem wir ein System gesund halten, fügt
+          einen Ring hinzu: Python und Open Source im Kern, modernes JavaScript
+          am Rand — und zwei Jahrzehnte Wartungserfahrung, die alles
+          zusammenhalten.</p>
+        <div class="cta-row">
+          <a class="btn btn-copper" href="#contact">Projekt pflanzen</a>
+          <a class="link-quiet" href="#services">Zum Bestimmungsbuch</a>
+        </div>
+      </div>
+      <figure style="margin:0">
+        <svg class="rings rings--guide" viewBox="0 0 680 470" role="img"
+             aria-label="Ringscheibe mit vier Wachstumsstufen; die Stufen sind unter der Abbildung benannt">
+          <g class="disc" transform="translate(105 0)">
+            <g fill="none" stroke="var(--ring)" stroke-width="3">
+              <circle cx="150" cy="235" r="40"  stroke-width="2"/>
+              <circle cx="153" cy="232" r="80"/>
+              <circle cx="147" cy="238" r="125" stroke-width="2"/>
+              <circle cx="154" cy="231" r="170"/>
+              <circle cx="148" cy="237" r="215" stroke-width="2"/>
+              <circle cx="152" cy="234" r="250"/>
+              <circle class="today" cx="150" cy="235" r="290"/>
+              <circle cx="151" cy="234" r="315" stroke-width="2" stroke-dasharray="5 8"/>
+            </g>
+            <circle class="mark-dot" cx="178" cy="207" r="6"/>
+            <circle class="mark-dot" cx="238" cy="147" r="6"/>
+            <circle class="mark-dot" cx="302" cy="83"  r="6"/>
+            <circle class="mark-dot mark-dot-4" cx="355" cy="30" r="8"/>
+          </g>
+        </svg>
+
+        <dl class="rings-legend">
+          <div class="rings-legend__row">
+            <dt><b class="idx">1</b>schneller Prototyp</dt>
+            <dd>in Wochen bedienbar</dd>
+          </div>
+          <div class="rings-legend__row">
+            <dt><b class="idx">2</b>Erste Anwendung</dt>
+            <dd>trägt die tägliche Arbeit</dd>
+          </div>
+          <div class="rings-legend__row">
+            <dt><b class="idx">3</b>Der erfahrene Begleiter</dt>
+            <dd>wächst mit Ihren Anforderungen</dd>
+          </div>
+          <div class="rings-legend__row rings-legend__row--today">
+            <dt><b class="idx">4</b>Mit der Zeit gegangen</dt>
+            <dd>offen, aktuell, migrierbar</dd>
+          </div>
+        </dl>
+
+        <!-- <figcaption class="rings-caption">Abb. 1 — Eine nachhaltige Lösung setzt Jahresringe an: sie wächst mit Ihren Anforderungen, Open Source sichert die Nachhaltigkeit.</figcaption> -->
+
+      </figure>
+    </div>
+  </section>
+
+  <section class="manifesto" id="sustainability">
+    <div class="wrap">
+      <h2>Nachhaltige Anwendungen sind eine <em>Investition, die trägt</em>.</h2>
+      <div class="manifesto-cols">
+        <p><b>Solide und durchdacht.</b> Bewährte Frameworks, wenige
+           Abhängigkeiten, dokumentierte Entscheidungen: solide, saubere
+           Anwendungen, die im Alltag einfach funktionieren.</p>
+
+        <p><b>Wenn die Arbeit leicht von der Hand geht.</b> Unsere
+           Lösungen unterstützen Ihre Teams im Alltag und steigern
+           spürbar Produktivität und Qualität der Ergebnisse.</p>
+
+        <p><b>Offene Standards, offene Basis.</b> Open Source und offene
+           Standards sichern die Nachhaltigkeit der Lösung — und Ihr
+           Investment. Ein Wechsel bleibt immer möglich; das hält uns
+           ehrlich.</p>
+        <p><b>Langfristig bezahlt gemacht.</b> Wir betreuen noch Kunden aus
+           unseren ersten Ringen und halten ihre Systeme über Jahrzehnte
+           gesund. Ihre Investition arbeitet Jahr für Jahr weiter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="services">
+    <div class="wrap">
+      <h2>Ein Bestimmungsbuch unserer Arbeit.</h2>
+      <p class="intro">Fünf Arten von Systemen, die wir kultivieren — und wofür jede gut ist.</p>
+      <dl class="guide">
+        <div>
+          <dt>Plone <small>content-management</small></dt>
+          <dd>Enterprise-CMS mit Workflow und feingranularen Berechtigungen,
+              für Organisationen, deren Inhalte ihre Hardware überleben. Wir
+              pflegen <a href="#">plonecli</a> und <a href="#">bobtemplates.plone</a>,
+              die Scaffolding-Werkzeuge der Community.</dd>
+        </div>
+        <div>
+          <dt>Odoo <small>geschäftsprozesse</small></dt>
+          <dd>ERP, das Vertrieb, Lager und Rechnungen in einem System
+              vereint — mit eigenen Modulen nach OCA-Standards, Release für
+              Release upgradefähig.</dd>
+        </div>
+        <div>
+          <dt>Python-Backends <small>fastapi · django · pyramid</small></dt>
+          <dd>APIs und Anwendungen, passend zum Problem dimensioniert — mit
+              zwanzig Jahren Python-Erfahrung in Architektur, Sicherheit und
+              Betrieb.</dd>
+        </div>
+        <div>
+          <dt>Svelte &amp; SvelteKit <small>benutzeroberflächen</small></dt>
+          <dd>Moderne, schnelle, barrierearme Frontends, schlank
+              ausgeliefert — JavaScript in effizient.</dd>
+        </div>
+        <div>
+          <dt>Pflege &amp; Migration <small>der lange atem</small></dt>
+          <dd>Upgrades, Sicherheits-Patches, Performance-Pflege und
+              Rettungseinsätze für Systeme, deren ursprüngliche Gärtner
+              weitergezogen sind.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="training" id="training">
+    <div class="wrap">
+      <div>
+        <h2>Wissen ist zum Kompostieren da.</h2>
+        <p>Workshops und Schulungen für Teams, die Plone, Odoo, Python oder
+           Svelte einführen — dazu Konferenzvorträge und Sprint-Mentoring in
+           den Open-Source-Communities, in denen wir groß geworden sind. Was
+           wir in Projekten lernen, geht zurück in die Allmende.</p>
+        <div class="cta-row">
+          <a class="link-quiet" href="#">Vorträge ansehen</a>
+        </div>
+      </div>
+      <blockquote>
+        „Die grünste Zeile Code ist die, die noch läuft, verstanden und
+        gepatcht wird — fünfzehn Jahre, nachdem sie geschrieben wurde."
+        <footer>— Arbeitsprinzip, derico</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <h2>Lassen wir etwas wachsen, das seine Ringe behält.</h2>
+      <p>Ein erstes Gespräch kostet nichts. Deutsch oder Englisch, remote oder
+         bei uns im Biosphärenreservat an der Elbe.</p>
+      <div class="cta-row">
+        <a class="btn btn-copper" href="mailto:md@derico.de">md@derico.de</a>
+        <a class="link-quiet" href="#">Neuhaus/Elbe, Deutschland</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div>© 2026 derico — Nachhaltige Lösungen</div>
+    <div><a href="#">Impressum</a> · <a href="#">Datenschutz</a> · <a href="#">Anmelden</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,359 @@
+/*
+ * Two alternate visual systems for the Clara reference site.
+ * The markup, content, routes, and interaction model remain identical.
+ * Activate with ?variant=greenhouse or ?variant=open-sky.
+ */
+
+/* --------------------------------------------------------------------------
+   Variant 2 — Greenhouse
+   A cool, planted civic workshop after rain. Drenched deep green, mint light,
+   citron action, and brick red. One humanist type family keeps it direct.
+   -------------------------------------------------------------------------- */
+
+html[data-variant="greenhouse"] {
+  --sun: oklch(0.88 0.18 112);
+  --sun-soft: oklch(0.95 0.08 112);
+  --sun-deep: oklch(0.72 0.16 112);
+  --sky: oklch(0.83 0.08 190);
+  --sky-soft: oklch(0.94 0.035 190);
+  --leaf: oklch(0.46 0.12 157);
+  --leaf-soft: oklch(0.90 0.065 157);
+  --coral: oklch(0.50 0.17 33);
+  --coral-hover: oklch(0.43 0.15 33);
+  --coral-soft: oklch(0.90 0.055 33);
+  --ink: oklch(0.19 0.055 157);
+  --ink-raised: oklch(0.28 0.05 157);
+  --ink-soft: oklch(0.38 0.04 157);
+  --ground: oklch(0.98 0.01 157);
+  --surface: oklch(0.94 0.035 157);
+  --rule: oklch(0.72 0.045 157);
+  --on-dark: oklch(0.97 0.025 112);
+  --footer-copy: oklch(0.28 0.05 157);
+  --footer-rule: oklch(0.62 0.08 112);
+  --footer-faint: oklch(0.36 0.05 157);
+  --font-display: "Inclusive Sans", "Segoe UI", system-ui, sans-serif;
+  --radius-s: 0.75rem;
+  --radius-m: 1rem;
+  --text-display: clamp(3rem, 1.65rem + 5.5vw, 5.9rem);
+  --text-heading: clamp(2.25rem, 1.45rem + 3.2vw, 4.5rem);
+  background: var(--ink);
+}
+
+html[data-variant="greenhouse"] h1,
+html[data-variant="greenhouse"] h2,
+html[data-variant="greenhouse"] h3 {
+  font-family: var(--font-body);
+  font-weight: 760;
+  letter-spacing: -0.035em;
+}
+
+html[data-variant="greenhouse"] .site-header {
+  border-bottom-color: oklch(0.46 0.08 157);
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+html[data-variant="greenhouse"] .brand,
+html[data-variant="greenhouse"] .brand:hover,
+html[data-variant="greenhouse"] .menu-toggle,
+html[data-variant="greenhouse"] .nav-disclosure > summary,
+html[data-variant="greenhouse"] .direct-link,
+html[data-variant="greenhouse"] .utility a {
+  color: var(--on-dark);
+}
+
+html[data-variant="greenhouse"] .brand-window,
+html[data-variant="greenhouse"] .menu-toggle {
+  border-color: var(--on-dark);
+}
+
+html[data-variant="greenhouse"] .brand-window i:nth-child(1) { background: var(--sun); }
+html[data-variant="greenhouse"] .brand-window i:nth-child(2) { background: var(--sky); }
+html[data-variant="greenhouse"] .brand-window i:nth-child(3) { background: oklch(0.66 0.15 157); }
+html[data-variant="greenhouse"] .brand-window i:nth-child(4) { background: var(--coral); }
+
+html[data-variant="greenhouse"] .nav-item { border-color: oklch(0.46 0.08 157); }
+html[data-variant="greenhouse"] .nav-disclosure[data-current="true"] > summary,
+html[data-variant="greenhouse"] .direct-link[aria-current="page"] { color: var(--sun); }
+html[data-variant="greenhouse"] .nav-disclosure[open] > summary { background: var(--sun); color: var(--ink); }
+html[data-variant="greenhouse"] .mega-panel { border-color: var(--sun); background: var(--ink); color: var(--on-dark); }
+html[data-variant="greenhouse"] .mega-title,
+html[data-variant="greenhouse"] .mega-main,
+html[data-variant="greenhouse"] .mega-sub a { color: var(--on-dark); }
+html[data-variant="greenhouse"] .mega-main span span,
+html[data-variant="greenhouse"] .mega-intro > p,
+html[data-variant="greenhouse"] .mega-proof { color: oklch(0.84 0.03 112); }
+html[data-variant="greenhouse"] .mega-list,
+html[data-variant="greenhouse"] .mega-list > li,
+html[data-variant="greenhouse"] .mega-proof { border-color: oklch(0.48 0.07 157); }
+html[data-variant="greenhouse"] .mega-main > span:last-child { color: var(--sun); }
+
+html[data-variant="greenhouse"] .home-hero {
+  border-color: var(--sun);
+  background: var(--ink);
+  color: var(--on-dark);
+}
+html[data-variant="greenhouse"] .home-hero h1 { max-width: 12ch; color: var(--on-dark); }
+html[data-variant="greenhouse"] .home-hero .context,
+html[data-variant="greenhouse"] .home-hero .lede { color: oklch(0.88 0.035 112); }
+html[data-variant="greenhouse"] .home-hero .context::before { background: var(--sun); }
+html[data-variant="greenhouse"] .home-hero .text-link { color: var(--on-dark); }
+html[data-variant="greenhouse"] .home-hero .button--ink { background: var(--sun); color: var(--ink); }
+html[data-variant="greenhouse"] .home-hero .button--ink:hover { background: var(--sun-deep); color: var(--ink); }
+html[data-variant="greenhouse"] .hero-picture-wrap { padding: var(--space-s) var(--space-s) 0 0; }
+html[data-variant="greenhouse"] .hero-picture-wrap::before { inset: 0 0 var(--space-m) var(--space-m); border-color: var(--sun); background: var(--coral); }
+html[data-variant="greenhouse"] .hero-note { inset-inline: 0 auto; border-color: var(--sun); background: var(--sun); color: var(--ink); }
+
+html[data-variant="greenhouse"] .page-hero { background: var(--leaf-soft); }
+html[data-variant="greenhouse"] .page-hero--projects { background: var(--sun); }
+html[data-variant="greenhouse"] .page-hero--insights { background: var(--sky); }
+html[data-variant="greenhouse"] .page-hero--studio { background: var(--surface); }
+html[data-variant="greenhouse"] .page-hero--contact { background: var(--coral-soft); }
+
+html[data-variant="greenhouse"] .lifecycle { background: var(--leaf-soft); }
+html[data-variant="greenhouse"] .lifecycle-list > li > b { color: var(--coral); }
+html[data-variant="greenhouse"] .service-map { background: var(--ink); color: var(--on-dark); }
+html[data-variant="greenhouse"] .service-map .section-intro h2 { color: var(--on-dark); }
+html[data-variant="greenhouse"] .service-map .section-intro p { color: oklch(0.84 0.03 112); }
+html[data-variant="greenhouse"] .service-band { min-height: 19rem; align-content: end; }
+html[data-variant="greenhouse"] .service-band--sun { background: var(--sun); }
+html[data-variant="greenhouse"] .service-band--sky { background: var(--sky); }
+html[data-variant="greenhouse"] .service-band--leaf { background: oklch(0.70 0.14 157); }
+html[data-variant="greenhouse"] .service-band--coral { background: oklch(0.72 0.15 35); }
+
+html[data-variant="greenhouse"] .projects-home { background: var(--ground); }
+html[data-variant="greenhouse"] .project-feature > span { inset-inline: 0 auto; inset-block-end: 0; max-width: 78%; background: var(--sun); }
+html[data-variant="greenhouse"] .project-small--sky { background: var(--leaf-soft); }
+html[data-variant="greenhouse"] .project-small--sun { background: var(--sky); }
+html[data-variant="greenhouse"] .statement { background: var(--sun); }
+html[data-variant="greenhouse"] .insight-tease { background: var(--ground); }
+
+html[data-variant="greenhouse"] .deliverables { background: var(--leaf-soft); }
+html[data-variant="greenhouse"] .contact-aside { background: var(--sun); }
+html[data-variant="greenhouse"] .contact-band { background: var(--coral); color: var(--on-dark); }
+html[data-variant="greenhouse"] .contact-band h2,
+html[data-variant="greenhouse"] .contact-band > .shell > span { color: var(--on-dark); }
+html[data-variant="greenhouse"] .contact-band .button--ink { background: var(--sun); color: var(--ink); }
+html[data-variant="greenhouse"] .site-footer { background: var(--sun); color: var(--ink); }
+html[data-variant="greenhouse"] .site-footer a,
+html[data-variant="greenhouse"] .brand--footer,
+html[data-variant="greenhouse"] .brand--footer:hover,
+html[data-variant="greenhouse"] .footer-top li a { color: var(--ink); }
+html[data-variant="greenhouse"] .brand--footer .brand-window { border-color: var(--ink); }
+html[data-variant="greenhouse"] .footer-bottom { border-color: var(--footer-rule); color: var(--footer-faint); }
+
+@media (max-width: 55.99rem) {
+  html[data-variant="greenhouse"] .hero-picture-wrap { order: -1; }
+  html[data-variant="greenhouse"] .hero-picture { aspect-ratio: 5 / 4; }
+}
+
+@media (min-width: 56rem) {
+  html[data-variant="greenhouse"] .hero-picture-wrap { grid-column: 1; grid-row: 1; }
+  html[data-variant="greenhouse"] .hero-copy { grid-column: 2; }
+  html[data-variant="greenhouse"] .studio-grid picture { order: 2; }
+}
+
+/* --------------------------------------------------------------------------
+   Variant 3 — Open Sky
+   A bright public workshop near the water. Cobalt carries the surface, orange
+   marks action, and yellow behaves like direct sunlight. The topology opens
+   into broad horizontal bands rather than the Sunroom's upright windows.
+   -------------------------------------------------------------------------- */
+
+html[data-variant="open-sky"] {
+  --sun: oklch(0.87 0.18 91);
+  --sun-soft: oklch(0.96 0.07 91);
+  --sun-deep: oklch(0.73 0.17 86);
+  --sky: oklch(0.52 0.20 255);
+  --sky-soft: oklch(0.91 0.055 247);
+  --leaf: oklch(0.60 0.13 171);
+  --leaf-soft: oklch(0.91 0.065 171);
+  --coral: oklch(0.50 0.18 38);
+  --coral-hover: oklch(0.44 0.16 38);
+  --coral-soft: oklch(0.92 0.055 38);
+  --ink: oklch(0.18 0.045 255);
+  --ink-raised: oklch(0.28 0.05 255);
+  --ink-soft: oklch(0.40 0.045 255);
+  --ground: oklch(0.99 0.004 247);
+  --surface: oklch(0.95 0.022 247);
+  --rule: oklch(0.75 0.045 247);
+  --on-dark: oklch(0.98 0.01 91);
+  --footer-copy: oklch(0.88 0.025 247);
+  --footer-rule: oklch(0.45 0.10 255);
+  --footer-faint: oklch(0.78 0.035 247);
+  --radius-s: 0.75rem;
+  --radius-m: 1rem;
+  --text-display: clamp(2.8rem, 1.55rem + 5vw, 5.75rem);
+  --text-heading: clamp(2.15rem, 1.35rem + 3.1vw, 4.35rem);
+}
+
+html[data-variant="open-sky"] .site-header { border-color: var(--ink); background: var(--sky-soft); }
+html[data-variant="open-sky"] .brand-window { border-color: var(--ink); }
+html[data-variant="open-sky"] .brand-window i:nth-child(1) { background: var(--sky); }
+html[data-variant="open-sky"] .brand-window i:nth-child(2) { background: var(--sun); }
+html[data-variant="open-sky"] .brand-window i:nth-child(3) { background: var(--coral); }
+html[data-variant="open-sky"] .brand-window i:nth-child(4) { background: var(--leaf); }
+html[data-variant="open-sky"] .nav-disclosure[open] > summary { background: var(--coral); color: var(--on-dark); }
+html[data-variant="open-sky"] .mega-panel { border-color: var(--ink); background: var(--sky-soft); }
+html[data-variant="open-sky"] .mega-main > span:last-child { color: var(--coral); }
+html[data-variant="open-sky"] .mega-sub a::before { background: var(--coral); }
+
+html[data-variant="open-sky"] .home-hero { background: var(--sky); color: var(--on-dark); }
+html[data-variant="open-sky"] .home-hero h1 { max-width: 14ch; color: var(--on-dark); }
+html[data-variant="open-sky"] .home-hero .context,
+html[data-variant="open-sky"] .home-hero .lede,
+html[data-variant="open-sky"] .home-hero .text-link { color: var(--on-dark); }
+html[data-variant="open-sky"] .home-hero .context::before { background: var(--sun); }
+html[data-variant="open-sky"] .home-hero .button--ink { background: var(--sun); color: var(--ink); }
+html[data-variant="open-sky"] .home-hero .button--ink:hover { background: var(--sun-deep); color: var(--ink); }
+html[data-variant="open-sky"] .hero-picture-wrap { padding: 0 0 var(--space-s); }
+html[data-variant="open-sky"] .hero-picture-wrap::before { inset: var(--space-s) var(--space-s) 0; border-color: var(--ink); background: var(--sun); }
+html[data-variant="open-sky"] .hero-picture { aspect-ratio: 16 / 8; }
+html[data-variant="open-sky"] .hero-note { background: var(--sun); color: var(--ink); }
+
+html[data-variant="open-sky"] .page-hero { background: var(--sky); }
+html[data-variant="open-sky"] .page-hero h1,
+html[data-variant="open-sky"] .page-hero .lede,
+html[data-variant="open-sky"] .page-hero .context { color: var(--on-dark); }
+html[data-variant="open-sky"] .page-hero .context::before { background: var(--sun); }
+html[data-variant="open-sky"] .page-hero--projects { background: var(--coral); }
+html[data-variant="open-sky"] .page-hero--insights { background: var(--sun); }
+html[data-variant="open-sky"] .page-hero--insights h1,
+html[data-variant="open-sky"] .page-hero--insights .lede,
+html[data-variant="open-sky"] .page-hero--insights .context,
+html[data-variant="open-sky"] .page-hero--studio h1,
+html[data-variant="open-sky"] .page-hero--studio .lede,
+html[data-variant="open-sky"] .page-hero--studio .context,
+html[data-variant="open-sky"] .page-hero--contact h1,
+html[data-variant="open-sky"] .page-hero--contact .lede,
+html[data-variant="open-sky"] .page-hero--contact .context { color: var(--ink); }
+html[data-variant="open-sky"] .page-hero--studio { background: var(--leaf-soft); }
+html[data-variant="open-sky"] .page-hero--contact { background: var(--coral-soft); }
+
+html[data-variant="open-sky"] .lifecycle { background: var(--sun-soft); }
+html[data-variant="open-sky"] .lifecycle-list > li > b { color: oklch(0.43 0.18 255); }
+html[data-variant="open-sky"] .service-map { background: var(--ground); }
+html[data-variant="open-sky"] .service-band--sun { background: var(--sky); color: var(--on-dark); }
+html[data-variant="open-sky"] .service-band--sun h3,
+html[data-variant="open-sky"] .service-band--sun p { color: var(--on-dark); }
+html[data-variant="open-sky"] .service-band--sky { background: var(--sun); }
+html[data-variant="open-sky"] .service-band--leaf { background: var(--coral); color: var(--on-dark); }
+html[data-variant="open-sky"] .service-band--leaf h3,
+html[data-variant="open-sky"] .service-band--leaf p { color: var(--on-dark); }
+html[data-variant="open-sky"] .service-band--coral { background: var(--leaf-soft); }
+
+html[data-variant="open-sky"] .project-feature > span { background: var(--coral); color: var(--on-dark); }
+html[data-variant="open-sky"] .project-feature > span b { color: var(--on-dark); }
+html[data-variant="open-sky"] .project-small--sky { background: var(--sun); }
+html[data-variant="open-sky"] .project-small--sun { background: var(--leaf-soft); }
+html[data-variant="open-sky"] .statement { background: var(--coral); color: var(--on-dark); }
+html[data-variant="open-sky"] .statement h2,
+html[data-variant="open-sky"] .statement p { color: var(--on-dark); }
+html[data-variant="open-sky"] .statement .button--ink { background: var(--sun); color: var(--ink); }
+
+html[data-variant="open-sky"] .overview-row--sun { background: var(--sky); color: var(--on-dark); }
+html[data-variant="open-sky"] .overview-row--sun h3,
+html[data-variant="open-sky"] .overview-row--sun p { color: var(--on-dark); }
+html[data-variant="open-sky"] .overview-row--sky { background: var(--sun); }
+html[data-variant="open-sky"] .overview-row--leaf { background: var(--coral); color: var(--on-dark); }
+html[data-variant="open-sky"] .overview-row--leaf h3,
+html[data-variant="open-sky"] .overview-row--leaf p { color: var(--on-dark); }
+html[data-variant="open-sky"] .overview-row--coral { background: var(--leaf-soft); }
+html[data-variant="open-sky"] .deliverables { background: var(--sky-soft); }
+html[data-variant="open-sky"] .contact-aside { background: var(--sun); }
+html[data-variant="open-sky"] .contact-band { background: var(--sky); color: var(--on-dark); }
+html[data-variant="open-sky"] .contact-band h2,
+html[data-variant="open-sky"] .contact-band > .shell > span { color: var(--on-dark); }
+html[data-variant="open-sky"] .contact-band .button--ink { background: var(--sun); color: var(--ink); }
+html[data-variant="open-sky"] .site-footer { background: var(--ink); }
+
+@media (min-width: 56rem) {
+  html[data-variant="open-sky"] .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  html[data-variant="open-sky"] .hero-copy { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 0 var(--space-xl); align-items: end; }
+  html[data-variant="open-sky"] .hero-copy .context,
+  html[data-variant="open-sky"] .hero-copy h1 { grid-column: 1; }
+  html[data-variant="open-sky"] .hero-copy .lede { grid-column: 2; grid-row: 1 / span 2; align-self: end; margin-block-end: var(--space-s); }
+  html[data-variant="open-sky"] .hero-copy .actions { grid-column: 1 / -1; }
+  html[data-variant="open-sky"] .hero-picture { aspect-ratio: 16 / 6; }
+  html[data-variant="open-sky"] .project-mosaic { grid-template-columns: 1fr 1fr; }
+  html[data-variant="open-sky"] .project-feature { grid-column: 1 / -1; grid-row: auto; min-height: 34rem; }
+}
+
+/* Rounded component language shared by the two alternatives. The 16px ceiling
+   keeps the shapes friendly without turning every surface into a bubble. */
+html[data-variant="greenhouse"] .brand-window,
+html[data-variant="open-sky"] .brand-window { border-radius: 0.5rem; overflow: hidden; }
+html[data-variant="greenhouse"] .brand-window i,
+html[data-variant="open-sky"] .brand-window i { border-radius: 0.125rem; }
+html[data-variant="greenhouse"] .hero-picture-wrap::before,
+html[data-variant="open-sky"] .hero-picture-wrap::before,
+html[data-variant="greenhouse"] .hero-picture,
+html[data-variant="open-sky"] .hero-picture,
+html[data-variant="greenhouse"] .studio-grid picture,
+html[data-variant="open-sky"] .studio-grid picture,
+html[data-variant="greenhouse"] .project-hero-image picture,
+html[data-variant="open-sky"] .project-hero-image picture { border-radius: var(--radius-m); }
+html[data-variant="greenhouse"] .hero-note,
+html[data-variant="open-sky"] .hero-note,
+html[data-variant="greenhouse"] .deliverables,
+html[data-variant="open-sky"] .deliverables,
+html[data-variant="greenhouse"] .contact-aside,
+html[data-variant="open-sky"] .contact-aside,
+html[data-variant="greenhouse"] .form-status,
+html[data-variant="open-sky"] .form-status { border-radius: var(--radius-m); }
+html[data-variant="greenhouse"] .service-bands,
+html[data-variant="open-sky"] .service-bands,
+html[data-variant="greenhouse"] .overview-rows,
+html[data-variant="open-sky"] .overview-rows { gap: var(--space-xs); }
+html[data-variant="greenhouse"] .service-band,
+html[data-variant="open-sky"] .service-band,
+html[data-variant="greenhouse"] .overview-row,
+html[data-variant="open-sky"] .overview-row { border: 1px solid var(--ink); border-radius: var(--radius-m); }
+html[data-variant="greenhouse"] .project-feature,
+html[data-variant="open-sky"] .project-feature,
+html[data-variant="greenhouse"] .project-small,
+html[data-variant="open-sky"] .project-small,
+html[data-variant="greenhouse"] .project-row,
+html[data-variant="open-sky"] .project-row { border-radius: var(--radius-m); overflow: hidden; }
+html[data-variant="greenhouse"] .lifecycle-list > li > b,
+html[data-variant="open-sky"] .lifecycle-list > li > b { width: 2rem; height: 2rem; display: grid; place-items: center; border-radius: 50%; background: var(--coral); color: var(--on-dark); }
+html[data-variant="open-sky"] .lifecycle-list > li > b { background: var(--sky); }
+
+@media (min-width: 70rem) {
+  html[data-variant="greenhouse"] .mega-panel,
+  html[data-variant="open-sky"] .mega-panel { inset-inline: var(--space-s); border-radius: 0 0 var(--radius-m) var(--radius-m); }
+
+  /* Uneven rows keep the rounded blocks from becoming an identical card grid. */
+  html[data-variant="greenhouse"] .service-bands,
+  html[data-variant="greenhouse"] .overview-rows { display: flex; flex-direction: row; align-items: flex-end; }
+  html[data-variant="greenhouse"] .service-band,
+  html[data-variant="greenhouse"] .overview-row { flex: 1 1 0; min-height: 18rem; }
+  html[data-variant="greenhouse"] .service-band:nth-child(1),
+  html[data-variant="greenhouse"] .overview-row:nth-child(1) { flex-grow: 1.18; min-height: 22rem; }
+  html[data-variant="greenhouse"] .service-band:nth-child(2),
+  html[data-variant="greenhouse"] .overview-row:nth-child(2) { flex-grow: 0.88; min-height: 17rem; }
+  html[data-variant="greenhouse"] .service-band:nth-child(3),
+  html[data-variant="greenhouse"] .overview-row:nth-child(3) { flex-grow: 1.05; min-height: 20rem; }
+  html[data-variant="greenhouse"] .service-band:nth-child(4),
+  html[data-variant="greenhouse"] .overview-row:nth-child(4) { flex-grow: 0.92; min-height: 18.5rem; }
+
+  html[data-variant="open-sky"] .service-bands,
+  html[data-variant="open-sky"] .overview-rows { grid-template-columns: repeat(12, 1fr); }
+  html[data-variant="open-sky"] .service-band,
+  html[data-variant="open-sky"] .service-band:last-child,
+  html[data-variant="open-sky"] .service-band:nth-child(2),
+  html[data-variant="open-sky"] .service-band:nth-child(3),
+  html[data-variant="open-sky"] .service-band:nth-child(4),
+  html[data-variant="open-sky"] .overview-row,
+  html[data-variant="open-sky"] .overview-row:last-child,
+  html[data-variant="open-sky"] .overview-row:nth-child(even),
+  html[data-variant="open-sky"] .overview-row:nth-child(n + 3) { min-height: 16rem; border: 1px solid var(--ink); }
+  html[data-variant="open-sky"] .service-band:nth-child(1),
+  html[data-variant="open-sky"] .overview-row:nth-child(1) { grid-column: span 7; min-height: 20rem; }
+  html[data-variant="open-sky"] .service-band:nth-child(2),
+  html[data-variant="open-sky"] .overview-row:nth-child(2) { grid-column: span 5; min-height: 17rem; }
+  html[data-variant="open-sky"] .service-band:nth-child(3),
+  html[data-variant="open-sky"] .overview-row:nth-child(3) { grid-column: span 4; min-height: 16rem; }
+  html[data-variant="open-sky"] .service-band:nth-child(4),
+  html[data-variant="open-sky"] .overview-row:nth-child(4) { grid-column: span 8; min-height: 19rem; }
+}

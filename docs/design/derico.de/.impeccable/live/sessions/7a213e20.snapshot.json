@@ -1,0 +1,22 @@
+{
+  "id": "7a213e20",
+  "phase": "completed",
+  "pageUrl": null,
+  "sourceFile": null,
+  "previewFile": null,
+  "previewMode": null,
+  "expectedVariants": 0,
+  "arrivedVariants": 0,
+  "visibleVariant": null,
+  "paramValues": {},
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 0,
+  "activeOwner": null,
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "annotationArtifacts": [],
+  "diagnostics": [],
+  "updatedAt": "2026-07-16T13:28:20.618Z"
+}

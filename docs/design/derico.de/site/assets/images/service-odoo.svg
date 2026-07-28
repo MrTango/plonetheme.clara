@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" role="img" aria-labelledby="title">
+  <title id="title">Connected business-process schematic</title>
+  <style>
+    .surface{fill:oklch(0.965 0.012 215);stroke:oklch(0.36 0.065 215.55);stroke-width:1.5}
+    .lines{fill:none;stroke:oklch(0.49 0.09 215.55);stroke-width:1.6}
+    .accent{fill:oklch(0.99 0.003 215);stroke:oklch(0.49 0.18 55);stroke-width:2.2}
+    g{stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <g class="surface">
+    <rect x="16" y="31" width="52" height="42" rx="3"/>
+    <rect x="94" y="15" width="52" height="42" rx="3"/>
+    <rect x="172" y="31" width="52" height="42" rx="3"/>
+    <rect x="94" y="93" width="52" height="42" rx="3"/>
+  </g>
+  <g class="lines">
+    <path d="M68 52h26M146 36h14c7 0 12 5 12 12v4M120 57v36M172 52h-12"/>
+    <path d="M42 42h18M42 52h11M42 62h15M107 27h26M107 37h18M107 47h22M185 43h26M185 53h18M185 63h22M107 105h26M107 115h18M107 125h22"/>
+  </g>
+  <g class="accent">
+    <circle cx="81" cy="52" r="4"/><circle cx="159" cy="52" r="4"/><circle cx="120" cy="76" r="4"/>
+  </g>
+</svg>
