@@ -84,6 +84,12 @@
     /* Named component hooks a sub-theme retunes without touching rules. */
     --clara-footer-ground: var(--clara-band);
     --clara-footer-ink:    var(--clara-ink);
+    /* The CTA's outline. Klarsicht draws an ink hairline around the amber pill;
+       a theme whose accent is dark enough to stand on its own sets this to its
+       own fill instead of forking the rule. Keep it a COLOUR, never `none` —
+       the border box has to survive so the control still has an edge in
+       forced-colors mode and the pill's metrics do not shift. */
+    --clara-button-border-color: var(--clara-ink);
 
     /* ── semantic roles: the shared --plone-* contract on the ladder ────── *
      * Exact logo blue is primary identity. Normal-size text uses the darker
@@ -147,8 +153,10 @@
   }
 
   /* Dark mode moves semantic roles, never the primitive identity. Depth comes
-     from lighter same-hue surfaces rather than shadows. */
-  [data-bs-theme="dark"] {
+     from lighter same-hue surfaces rather than shadows. The selector is doubled
+     for the same reason as in _clara-tokens-defaults.scss: 0,2,0 so no later
+     `:root` can undo it. */
+  [data-bs-theme="dark"][data-bs-theme="dark"] {
     --plone-color-primary: #65addc;       /* oklch(0.72 0.10 238.72) */
     --plone-color-primary-hover: #8abfe2; /* oklch(0.78 0.075 238.72) */
     --plone-color-primary-active: #ddeefa;

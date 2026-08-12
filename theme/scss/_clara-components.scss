@@ -252,14 +252,16 @@
     gap: var(--plone-space-s);
     align-items: center;
   }
-  /* Amber pill with ink label and ink outline — the one CTA. */
+  /* Amber pill with ink label and ink outline — the one CTA. The outline reads
+     --clara-button-border-color so a sub-theme can drop it to its own fill
+     without forking this rule (see _clara-brand.scss). */
   .clara-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-block-size: 2.875rem;
     padding: 0.68rem 1.35rem;
-    border: 1.5px solid var(--clara-ink);
+    border: 1.5px solid var(--clara-button-border-color, var(--clara-ink));
     border-radius: var(--plone-radius-pill);
     background: var(--clara-amber);
     color: var(--clara-on-amber);

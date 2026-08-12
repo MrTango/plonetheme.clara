@@ -104,7 +104,14 @@ Every colour the theme paints with is a runtime custom property in
 - `--plone-*` is the sole public pagelet/layout API: primitive ramps, semantic
   roles, spacing, type, motion and component foundations.
 - `--clara-*` is private Klarsicht vocabulary used to compose those public
-  roles and named Clara-only hooks such as `--clara-footer-ground`.
+  roles, plus **named component hooks** — the spots where Klarsicht made a
+  judgement another brand predictably will not share:
+  `--clara-footer-ground` / `--clara-footer-ink` (the footer's coloured band)
+  and `--clara-button-border-color` (the ink hairline around the CTA pill).
+  Each ships with Clara's own value as its default, so naming the hook changes
+  nothing here; each exists because the alternative was a sub-theme forking the
+  rule. When a downstream theme has to fork a rule to change one value, the
+  answer is a new hook, not the fork.
 - Quanta informs the systematic role model but does not create a competing
   `--quanta-*` runtime namespace.
 

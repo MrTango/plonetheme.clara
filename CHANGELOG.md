@@ -2,6 +2,44 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **New named component hook: `--clara-button-border-color`.** `.clara-button`
+  hard-coded a 1.5px ink hairline around the CTA pill. That is a Klarsicht
+  judgement — amber is light enough to want the edge — and a theme whose accent
+  is dark enough to stand alone had no way to drop it except by forking the
+  rule. The hook defaults to `var(--clara-ink)`, so Clara's own appearance is
+  unchanged. Deliberately a *colour*, not a `border: none` switch: the border
+  box has to survive so the pill keeps its metrics and still has an edge in
+  forced-colors mode. `tests/test_component_bridge.py` now guards every named
+  hook (this one plus `--clara-footer-ground` / `--clara-footer-ink`): each is
+  declared with Clara's own value as the default, and each component paints
+  through its hook rather than the ladder token behind it.
+
+- **Bridge Bootstrap's compile-time `$primary` literals** (`_clara-bridge.scss`
+  §3). Seven components still painted the compiled Plone blue on a theme whose
+  tokens were entirely another hue — `.pagination`, `.nav-pills`,
+  `.progress-bar`, `.list-group`, `.dropdown-item.active`, the outline button
+  variants, and the form-control checked / indeterminate / range-thumb / focus
+  properties, four of which are plain properties with no `--bs-*` knob at all
+  and so were unreachable by any `:root` override. Found while building the
+  second theme on Clara (`plonetheme.derico`): 13 blue spots measured on a
+  live page, 0 after. Clara's own appearance is unchanged — every role now
+  read already resolved to the value Sass had baked in, and the two
+  `color-mix()` calls reproduce Bootstrap's own `tint-color($primary, 50%)` and
+  `rgba($primary, .25)` arithmetic. Architecture doc §6.2/§6.3 corrected: the
+  old claim that "only an unbridged third-party derivative may retain a
+  compiled shade" was wrong.
+
+- **Fix dark mode, which never actually went dark.** `[data-bs-theme="dark"]`
+  scores 0,1,0 — the same as `:root` — so `_clara-brand.scss`'s later `:root`
+  block silently undid the defaults' dark values for background, surface, text,
+  muted, border and on-primary. Both dark blocks now repeat the attribute
+  selector (0,2,0), which beats any `:root` in the layer regardless of import
+  order while keeping `data-bs-theme` usable on any element, so scoped dark
+  regions still work. `tests/test_color_contrast.py` could not have caught this:
+  its `_dark_props()` overlays the partials in import order, modelling a cascade
+  the browser never runs — the fix makes that model true. New
+  `tests/test_dark_mode_cascade.py` guards the shipped bundle.
+
 - Retire the classic-surface stopgaps: `plone.pageletlayout`'s
   `main_template` bridge now frames every unconverted classic page (login,
   `@@search`, edit forms, control panels) in pagelet chrome, so no page

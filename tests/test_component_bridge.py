@@ -224,3 +224,51 @@ def test_clara_tokens_read_are_declared(bundle):
     fallbackless_reads = set(re.findall(r"var\(\s*(--clara-[\w-]+)\s*\)", bundle))
     dangling = fallbackless_reads - declared
     assert not dangling, f"dangling --clara-* reads in the bundle: {sorted(dangling)}"
+
+
+# ---------------------------------------------------------------------------
+# Named component hooks
+#
+# The same lesson as the compile-time literals, one level up: a value a
+# sub-theme predictably wants to move must be reachable as a token, or the
+# sub-theme has to fork the rule. Each hook below is a spot where Klarsicht made
+# a judgement another brand will not share — the footer's coloured band, the ink
+# hairline around the CTA — and each ships with Clara's own value as the default,
+# so naming the hook changes nothing here.
+# ---------------------------------------------------------------------------
+
+#: hook -> the Klarsicht default it must keep resolving to
+NAMED_HOOKS = {
+    "--clara-footer-ground": "var(--clara-band)",
+    "--clara-footer-ink": "var(--clara-ink)",
+    "--clara-button-border-color": "var(--clara-ink)",
+}
+
+
+@pytest.mark.parametrize(("hook", "default"), sorted(NAMED_HOOKS.items()))
+def test_named_hook_declared_with_claras_own_default(bundle, hook, default):
+    match = re.search(re.escape(hook) + r"\s*:\s*([^;}]+)", bundle)
+    assert match, f"{hook} is not declared; sub-themes have nothing to override"
+    assert match.group(1).strip() == default, (
+        f"{hook} defaults to {match.group(1).strip()!r}, not {default!r} — "
+        "naming a hook must not change Clara's own appearance"
+    )
+
+
+@pytest.mark.parametrize(
+    ("selector", "prop", "hook"),
+    [
+        (".clara-button", "border", "--clara-button-border-color"),
+        (".element-copyright,.element-colophon,.element-siteactions", "background",
+         "--clara-footer-ground"),
+    ],
+)
+def test_component_paints_through_its_hook(bundle, selector, prop, hook):
+    """The rule must read the hook, not the ladder token behind it."""
+    bodies = "".join(_rules(bundle, selector))
+    assert bodies, f"{selector} rule not found in the bundle"
+    declared = re.search(rf"(?:^|;){re.escape(prop)}\s*:\s*([^;}}]+)", bodies)
+    assert declared, f"{selector} does not declare {prop}"
+    assert hook in declared.group(1), (
+        f"{selector} {{{prop}: {declared.group(1).strip()}}} bypasses {hook}"
+    )

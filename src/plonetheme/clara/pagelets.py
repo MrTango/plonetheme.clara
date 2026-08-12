@@ -4,7 +4,8 @@ The base pagelet (plone.pageletlayout.pagelets.globalnav) reuses the stock
 GlobalSectionsViewlet unchanged and Clara used to style only that native,
 titles-only markup. The design mockups' panel carries more than titles:
 the opened section's own description, described child links, and a proof
-sentence (docs/design/derico.de/site — the Jahresringe mockups' three-zone
+sentence (plonetheme.derico/docs/design/derico.de/site — the Jahresringe
+mockups' three-zone
 panel). That data cannot be styled into existence, so Clara subclasses the
 viewlet and takes over item rendering.
 

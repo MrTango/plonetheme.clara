@@ -146,4 +146,102 @@
   .table {
     --bs-table-striped-bg: var(--plone-color-surface);
   }
+
+  /* ── 3. COMPILE-TIME LITERALS: what Sass resolved before tokens existed ──── *
+   * The third leak class, and the one that only shows up downstream. Bootstrap's
+   * component mixins bake `$primary` into a literal hex the moment they run —
+   * `.pagination`'s active fill, `.nav-pills`, `.progress-bar`, `.list-group`,
+   * `.dropdown-item.active`, the outline button variants, and the form-control
+   * checked/indeterminate/thumb/focus properties, several of which have no
+   * `--bs-*` knob at all. A `:root` rebind cannot reach any of them, so a theme
+   * built on Clara renders PLONE BLUE in those seven places no matter what it
+   * sets — measured on a live page: 13 blue spots (plonetheme.derico,
+   * tests/test_override_minimality.py).
+   *
+   * That makes it a bug in the contract, not a downstream chore: principle 1,
+   * "a common adjustment that forces a template override is a bug in the markup
+   * contract — fix the contract, do not ship the override".
+   *
+   * Clara's own appearance does not move: every role below already resolves to
+   * exactly the value Sass baked in, and the two `color-mix()` calls reproduce
+   * Bootstrap's own tint arithmetic (`tint-color($primary, 50%)` /
+   * `rgba($primary, .25)`) against whatever primary is at runtime.
+   *
+   * Still compile-time and NOT covered here (they need an r,g,b triplet or a
+   * whole contextual palette Sass cannot express as a var): `--bs-*-rgb` and
+   * the `.text-primary` / `.link-primary` utilities that read them,
+   * `--bs-btn-focus-shadow-rgb`, and the `.table-primary` contextual row
+   * classes. Clara's own markup uses none of them. */
+
+  .pagination {
+    --bs-pagination-active-bg: var(--plone-color-primary);
+    --bs-pagination-active-border-color: var(--plone-color-primary);
+    --bs-pagination-active-color: var(--plone-color-on-primary);
+  }
+  .nav-pills {
+    --bs-nav-pills-link-active-bg: var(--plone-color-primary);
+    --bs-nav-pills-link-active-color: var(--plone-color-on-primary);
+  }
+  .progress,
+  .progress-stacked {
+    --bs-progress-bar-bg: var(--plone-color-primary);
+    --bs-progress-bar-color: var(--plone-color-on-primary);
+  }
+  .list-group {
+    --bs-list-group-active-bg: var(--plone-color-primary);
+    --bs-list-group-active-border-color: var(--plone-color-primary);
+    --bs-list-group-active-color: var(--plone-color-on-primary);
+  }
+  .dropdown-menu,
+  .dropdown-menu-dark {
+    --bs-dropdown-link-active-bg: var(--plone-color-primary);
+    --bs-dropdown-link-active-color: var(--plone-color-on-primary);
+  }
+
+  /* outline buttons — `button-outline-variant()` emits literals, unlike the
+     solid variants that _clara-states.scss already rebinds. Only the two blue
+     families are re-pointed; success/warning/danger already emit their own
+     token-seeded literals via the §6.2 drift-guarded $clara-* values. */
+  .btn-outline-primary,
+  .btn-outline-info {
+    --bs-btn-color: var(--plone-color-primary);
+    --bs-btn-border-color: var(--plone-color-primary);
+    --bs-btn-hover-color: var(--plone-color-on-primary);
+    --bs-btn-hover-bg: var(--plone-color-primary);
+    --bs-btn-hover-border-color: var(--plone-color-primary);
+    --bs-btn-active-color: var(--plone-color-on-primary);
+    --bs-btn-active-bg: var(--plone-color-primary);
+    --bs-btn-active-border-color: var(--plone-color-primary);
+    --bs-btn-disabled-color: var(--plone-color-primary);
+    --bs-btn-disabled-border-color: var(--plone-color-primary);
+  }
+
+  /* form controls — hard properties, no --bs-* knob exists for any of these */
+  .form-check-input:checked,
+  .form-check-input[type="checkbox"]:indeterminate {
+    background-color: var(--plone-color-primary);
+    border-color: var(--plone-color-primary);
+  }
+  .form-range::-webkit-slider-thumb { background-color: var(--plone-color-primary); }
+  .form-range::-moz-range-thumb { background-color: var(--plone-color-primary); }
+  .form-range::-webkit-slider-thumb:active,
+  .form-range::-moz-range-thumb:active {
+    /* Bootstrap's tint-color($primary, 70%) */
+    background-color: color-mix(in srgb, var(--plone-color-primary) 30%, #fff);
+  }
+  .form-control:focus,
+  .form-select:focus,
+  .form-check-input:focus {
+    /* Bootstrap's tint-color($primary, 50%) and rgba($primary, .25) */
+    border-color: color-mix(in srgb, var(--plone-color-primary) 50%, #fff);
+    box-shadow: 0 0 0 0.25rem
+      color-mix(in srgb, var(--plone-color-primary) 25%, transparent);
+  }
+  :root {
+    --bs-focus-ring-color: color-mix(
+      in srgb,
+      var(--plone-color-primary) 25%,
+      transparent
+    );
+  }
 }

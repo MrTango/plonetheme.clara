@@ -672,10 +672,22 @@ $theme-colors: (
 ```
 
 The tradeoff, stated plainly: Bootstrap still compiles fallback shades from
-these literals, but Clara rebinds every supported component state in
-`_clara-states.scss` to explicit runtime `--plone-*` roles. A site overriding
-the semantic roles gets runtime-perfect buttons, alerts and validation states;
-only an unbridged third-party Bootstrap derivative may retain a compiled shade.
+these literals, and **every one of them that reaches a shipped component has to
+be rebound** — `_clara-states.scss` covers the solid button variants, and
+§6.3's third scope covers the rest. A site overriding the semantic roles then
+gets runtime-perfect buttons, alerts and validation states.
+
+> **Corrected 2026-07-28.** This paragraph used to claim that "only an
+> unbridged third-party Bootstrap derivative may retain a compiled shade".
+> That was wrong, and it was only caught when the second theme
+> (`plonetheme.derico`) was built on Clara: seven *first-party* components —
+> `.pagination`, `.nav-pills`, `.progress-bar`, `.list-group`,
+> `.dropdown-item.active`, the outline buttons, and the form-control
+> checked/indeterminate/range-thumb properties — still painted the compiled
+> `$primary`, for **13 measured Plone-blue spots** on a page whose tokens were
+> entirely cyan. Four of them are plain properties with no `--bs-*` knob at
+> all, so no amount of token overriding could have reached them. The rebinds
+> are now in `_clara-bridge.scss` §3.
 
 **Drift guard.** Because these literals mirror runtime defaults, pytest compares
 primary, text, background, border, radius and all four state seeds against the
@@ -728,6 +740,30 @@ the markup** — the card template is just `<div class="card">`, and its interio
 rhythm is Plone tokens. Change `--plone-space-m` and every card, alert, and grid
 gutter moves together.
 
+**The third scope: compile-time literals (added 2026-07-28).** Beyond the two
+scopes above — `:root` globals and component-scoped `--bs-*` — there is a third
+class the bridge must answer, and it is invisible until a *second* theme exists.
+Bootstrap's component mixins resolve `$primary` to a hex the moment Sass runs.
+`.pagination { --bs-pagination-active-bg: #0083be }` is not a token reference; it
+is a finished value. Worse, `.form-check-input:checked { background-color:
+#0083be }` is a plain property with no custom property in sight.
+
+A rule of thumb for anyone extending the bridge:
+
+| what Bootstrap emitted | reachable by a `:root` override? | bridge action |
+|---|---|---|
+| `--bs-x: var(--bs-global)` | yes, through the global | none — repeating it is dead weight |
+| `--bs-x: <literal>` on `:root` | yes | rebind in the `:root` block |
+| `--bs-x: <literal>` on the component | **no** | rebind at component scope |
+| `property: <literal>` | **no** | restate the property |
+| `rgba(var(--bs-x-rgb), …)` | **no** — needs an r,g,b triplet | out of reach; keep it out of contract markup |
+
+The first two are cosmetic; the middle two are the ones that break a downstream
+theme, and they are what `_clara-bridge.scss` §3 now covers. The last row is the
+documented residual: `--bs-*-rgb` and the `.text-primary` / `.link-primary` /
+`.table-primary` utilities that read them cannot be expressed as a var, which is
+one more reason contract markup uses none of them (principle 3).
+
 ### 6.4 Color modes — dark mode through Clara tokens
 
 Bootstrap 5.3's `[data-bs-theme]` is honored, but dark mode is expressed by
@@ -736,7 +772,8 @@ selector, the same `--plone-*` roles:
 
 ```css
 @layer tokens {
-  [data-bs-theme="dark"] {
+  /* the attribute is REPEATED on purpose — see the specificity note below */
+  [data-bs-theme="dark"][data-bs-theme="dark"] {
     --plone-color-bg:      var(--plone-gray-900);
     --plone-color-surface: var(--plone-gray-700);
     --plone-color-text:    var(--plone-gray-050);
@@ -745,6 +782,22 @@ selector, the same `--plone-*` roles:
   }
 }
 ```
+
+**Why the selector is doubled (fixed 2026-07-28).** A plain
+`[data-bs-theme="dark"]` scores 0,1,0 — *exactly* what `:root` scores. Both
+token partials write `:root` in the same `tokens` layer, and `_clara-brand.scss`
+is imported after `_clara-tokens-defaults.scss`, so the brand's light `:root`
+was beating the defaults' dark block on source order alone: background, surface,
+text, muted, border and on-primary all snapped back to their light values the
+moment the switch was flipped. Repeating the attribute lifts the dark blocks to
+0,2,0 so dark always wins over light, whatever the import order.
+
+`:root[data-bs-theme="dark"]` would also score 0,2,0 and is **not** used:
+Bootstrap allows `data-bs-theme` on any element, and scoped dark regions have to
+keep receiving the flips. `tests/test_dark_mode_cascade.py` guards both halves
+of that. Note this defect was invisible to `tests/test_color_contrast.py`, whose
+`_dark_props()` overlays the partials in import order — a cascade the browser
+never runs; the fix makes that model true.
 
 Because §6.3 binds every `--bs-*` to a `--plone-*` role, flipping the roles
 flips Bootstrap's components, the primitives, and Clara's own components in one

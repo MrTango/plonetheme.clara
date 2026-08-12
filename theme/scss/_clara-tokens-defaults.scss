@@ -115,8 +115,17 @@
   }
 
   /* Dark mode expressed through the SAME roles (§6.4). Bootstrap's
-     [data-bs-theme] is honored; only the semantic tokens move. */
-  [data-bs-theme="dark"] {
+     [data-bs-theme] is honored; only the semantic tokens move.
+     ── Why the selector is doubled ─────────────────────────────────────────
+     A plain `[data-bs-theme="dark"]` scores 0,1,0 — the SAME as `:root`. Every
+     later `:root` in this layer therefore beat it, and _clara-brand.scss is
+     imported after this file: bg, surface, text, muted, border and on-primary
+     were silently reverting to their light values the moment the switch was
+     flipped. Repeating the attribute lifts this block to 0,2,0 so dark always
+     wins over light regardless of which partial is imported last, WITHOUT
+     pinning it to :root — Bootstrap allows [data-bs-theme] on any element, and
+     scoped dark regions must keep working. */
+  [data-bs-theme="dark"][data-bs-theme="dark"] {
     --plone-color-bg:             var(--plone-gray-900);
     --plone-color-surface:        var(--plone-gray-700);
     --plone-color-text:           var(--plone-gray-050);
