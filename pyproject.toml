@@ -131,7 +131,7 @@ preview = true
 constraint-dependencies = ["Products.CMFPlone==6.2.1"]
 
 [tool.uv.sources]
-"plone.pageletlayout" = { path = "sources/plone.pageletlayout", editable = true }
+"plone.pageletlayout" = { path = "../plone.pageletlayout", editable = true }
 
 [dependency-groups]
 dev = ["invoke", "watchdog"]
