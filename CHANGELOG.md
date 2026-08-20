@@ -2,6 +2,12 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Track the compiled `static/clara.min.css` in git instead of gitignoring it
+  and force-including it into wheels: any build from a fresh clone (mxdev
+  checkouts, `uv pip install` editable) failed with "Forced include not
+  found" unless `npm run build` had run first. The force-include hook is
+  gone; regenerate and commit the bundle alongside scss changes.
+
 - Remove the `plone.bundles/plonetheme-clara` registry records on uninstall
   (`profiles/uninstall/registry.xml`), so clara.min.css and clara.js stop
   loading once the add-on is removed.
