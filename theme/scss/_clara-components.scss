@@ -26,12 +26,16 @@
   p, li, dd { text-wrap: pretty; }
   p { max-inline-size: 66ch; }
 
-  a {
+  /* Anchor buttons keep Bootstrap's --bs-btn-* colors: this layer sits
+     above the bootstrap layer, so a bare `a` rule would repaint every
+     `<a class="btn">` (content browser "Auswählen", form actions) with the
+     link blue — unreadable on a primary fill. */
+  a:not(.btn) {
     color: var(--plone-color-link);
     text-underline-offset: 0.2em;
     text-decoration-thickness: 1px;
   }
-  a:hover { color: var(--plone-color-link-hover); }
+  a:not(.btn):hover { color: var(--plone-color-link-hover); }
 
   /* The mockup's 3px ink focus geometry, over the base reset's 2px ring. */
   :focus-visible {

@@ -2,6 +2,10 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Remove the `plone.bundles/plonetheme-clara` registry records on uninstall
+  (`profiles/uninstall/registry.xml`), so clara.min.css and clara.js stop
+  loading once the add-on is removed.
+
 - **New named component hook: `--clara-button-border-color`.** `.clara-button`
   hard-coded a 1.5px ink hairline around the CTA pill. That is a Klarsicht
   judgement — amber is light enough to want the edge — and a theme whose accent

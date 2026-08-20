@@ -94,3 +94,17 @@ class TestUninstall:
     def test_addon_uninstalled(self):
         """Test addon is uninstalled."""
         assert not self.installer.is_product_installed("plonetheme.clara")
+
+    def test_bundle_records_removed(self):
+        """No orphaned bundle: clara.min.css/clara.js must stop loading
+        after uninstall."""
+        bundle = "plone.bundles/plonetheme-clara"
+        assert api.portal.get_registry_record(f"{bundle}.enabled", default=None) is None
+        assert (
+            api.portal.get_registry_record(f"{bundle}.csscompilation", default=None)
+            is None
+        )
+        assert (
+            api.portal.get_registry_record(f"{bundle}.jscompilation", default=None)
+            is None
+        )

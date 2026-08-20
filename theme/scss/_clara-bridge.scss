@@ -216,6 +216,28 @@
     --bs-btn-disabled-border-color: var(--plone-color-primary);
   }
 
+  /* mockup pattern compat — pat-contentbrowser paints its toolbar
+     --bs-primary and drives the controls on it with Bootstrap's light
+     family (`color: var(--bs-light)`, `.btn-outline-light`), which Clara's
+     slimmed $theme-colors deliberately does not emit. Without these the
+     toolbar text and its buttons fall back to body ink on the brand fill.
+     Provide just the pieces those patterns consume, token-driven. */
+  :root {
+    --bs-light: var(--clara-ground);
+  }
+  .btn-outline-light {
+    --bs-btn-color: var(--clara-ground);
+    --bs-btn-border-color: var(--clara-ground);
+    --bs-btn-hover-color: var(--clara-ink);
+    --bs-btn-hover-bg: var(--clara-ground);
+    --bs-btn-hover-border-color: var(--clara-ground);
+    --bs-btn-active-color: var(--clara-ink);
+    --bs-btn-active-bg: var(--clara-ground);
+    --bs-btn-active-border-color: var(--clara-ground);
+    --bs-btn-disabled-color: var(--clara-ground);
+    --bs-btn-disabled-border-color: var(--clara-ground);
+  }
+
   /* form controls — hard properties, no --bs-* knob exists for any of these */
   .form-check-input:checked,
   .form-check-input[type="checkbox"]:indeterminate {

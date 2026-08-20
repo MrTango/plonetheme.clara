@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+
+  <!-- Remove all plone.bundles/plonetheme-clara.* records registered by
+       the default profile, so no orphaned bundle keeps loading clara.min.css
+       and clara.js after uninstall. -->
+  <records interface="plone.base.interfaces.IBundleRegistry"
+           prefix="plone.bundles/plonetheme-clara"
+           remove="true" />
+
+</registry>
