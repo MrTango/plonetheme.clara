@@ -1,0 +1,6 @@
+# @parcel/watcher is an optional dependency of sass, used only to speed up
+# `sass --watch`. This package has no watch script — it compiles once, in
+# `postinstall` — and sass falls back to chokidar regardless, so its native
+# build step buys nothing here.
+allowBuilds:
+  '@parcel/watcher': false

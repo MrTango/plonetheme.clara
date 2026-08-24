@@ -2,6 +2,15 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Build the theme with pnpm instead of npm, and track `pnpm-lock.yaml` so the
+  compiled CSS is reproducible. `package.json`'s `postinstall` and the
+  validation steps in the Quanta guide now call `pnpm`. `pnpm-workspace.yaml`
+  answers pnpm's build-script prompt for `@parcel/watcher` with `false`: it is
+  an optional dependency of sass that only speeds up `sass --watch`, this
+  package has no watch script, and sass falls back to chokidar anyway. The
+  pinned sass (1.102.0) reproduces the committed `static/clara.min.css`
+  byte for byte.
+
 - Re-enable `plone.app.theming` on uninstall
   (`profiles/uninstall/registry.xml`). Clara's default profile switches the
   theming engine off because it styles every page itself; removing the add-on

@@ -171,7 +171,7 @@ Do not:
 Run:
 
 ```bash
-npm run build
+pnpm run build
 uv run pytest -q
 node /.agents/skills/impeccable/scripts/detect.mjs --json theme/scss tests/fixtures
 ```
