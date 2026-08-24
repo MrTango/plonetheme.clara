@@ -2,6 +2,15 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Re-enable `plone.app.theming` on uninstall
+  (`profiles/uninstall/registry.xml`). Clara's default profile switches the
+  theming engine off because it styles every page itself; removing the add-on
+  left the site with neither Clara's bundle nor the auto-injected `diazo`
+  bundle (barceloneta.min.css), i.e. unstyled HTML. Uninstalling now restores
+  `IThemeSettings.enabled = True` — plone.app.theming's own default — so a
+  site falls back to stock Plone chrome. Covered by
+  `TestUninstall.test_theming_reenabled`.
+
 - Track the compiled `static/clara.min.css` in git instead of gitignoring it
   and force-including it into wheels: any build from a fresh clone (mxdev
   checkouts, `uv pip install` editable) failed with "Forced include not

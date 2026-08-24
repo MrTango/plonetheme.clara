@@ -108,3 +108,14 @@ class TestUninstall:
             api.portal.get_registry_record(f"{bundle}.jscompilation", default=None)
             is None
         )
+
+    def test_theming_reenabled(self):
+        """Clara disables plone.app.theming while installed; uninstalling has
+        to switch it back on, or the site is left with no styling at all."""
+        assert (
+            api.portal.get_registry_record(
+                "plone.app.theming.interfaces.IThemeSettings.enabled",
+                default=None,
+            )
+            is True
+        )

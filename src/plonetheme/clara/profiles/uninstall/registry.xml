@@ -8,4 +8,14 @@
            prefix="plone.bundles/plonetheme-clara"
            remove="true" />
 
+  <!-- Clara styles every page itself and therefore switches the theming
+       engine off in its default profile. Once Clara is gone nothing paints
+       the site: no Diazo theme, no auto-injected `diazo` bundle, so no
+       barceloneta.min.css either. Switch plone.app.theming back on — its own
+       default — so an uninstalled site falls back to stock Plone chrome
+       instead of unstyled HTML. -->
+  <record name="plone.app.theming.interfaces.IThemeSettings.enabled">
+    <value>True</value>
+  </record>
+
 </registry>
