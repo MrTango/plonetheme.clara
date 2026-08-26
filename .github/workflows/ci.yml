@@ -18,11 +18,11 @@ jobs:
       # plone.pageletlayout is not on PyPI; pyproject resolves it from
       # ../plone.pageletlayout, so both checkouts have to end up side by side
       # inside the workspace.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           path: plonetheme.clara
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: MrTango/plone.pageletlayout
           path: plone.pageletlayout
@@ -40,7 +40,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v10.0.1
