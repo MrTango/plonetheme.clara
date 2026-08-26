@@ -225,6 +225,35 @@
   :root {
     --bs-light: var(--clara-ground);
   }
+
+  /* Same compat class, two more consumers — the whole NEUTRAL button family,
+     which Clara's slimmed $theme-colors (§6.2) leaves unemitted. Both variants
+     were rendering as transparent, edgeless rectangles wherever core markup
+     asks for them:
+       * `.btn-light` — every configlet tile in Site Setup (overview.pt);
+       * `.btn-secondary` — the Cancel button on every control-panel form
+         (z3c.form's `submit-widget`), and the quiet action in folder_contents
+         and the modals.
+     Clara collapses Bootstrap's two greys into ONE quiet neutral button rather
+     than reproducing the #f8f9fa/#6c757d pair: the roles are bound to
+     surface/border/text, so it tracks a runtime token override and follows the
+     dark-mode swap for free, which a grey literal cannot. Layout for the
+     configlet tiles lives in _clara-controlpanel.scss. */
+  .btn-light,
+  .btn-secondary {
+    --bs-btn-color: var(--plone-color-text);
+    --bs-btn-bg: var(--plone-color-surface);
+    --bs-btn-border-color: var(--plone-color-border);
+    --bs-btn-hover-color: var(--plone-color-text);
+    --bs-btn-hover-bg: var(--plone-color-border);
+    --bs-btn-hover-border-color: var(--plone-color-border);
+    --bs-btn-active-color: var(--plone-color-text);
+    --bs-btn-active-bg: var(--plone-color-border);
+    --bs-btn-active-border-color: var(--plone-color-border);
+    --bs-btn-disabled-color: var(--plone-color-muted);
+    --bs-btn-disabled-bg: var(--plone-color-surface);
+    --bs-btn-disabled-border-color: var(--plone-color-border);
+  }
   .btn-outline-light {
     --bs-btn-color: var(--clara-ground);
     --bs-btn-border-color: var(--clara-ground);

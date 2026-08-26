@@ -2,6 +2,23 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Style the control panels (`@@overview-controlpanel` and its siblings), which
+  Clara had never covered: new `theme/scss/_clara-controlpanel.scss`. Two Clara
+  decisions had broken core's Site Setup markup. `$theme-colors` is slimmed to
+  five roles, so Bootstrap emitted neither `.btn-light` — every configlet tile
+  rendered as a transparent, edgeless rectangle — nor `.btn-secondary`, leaving
+  the Cancel button on every control-panel form invisible; the neutral button
+  family is now supplied by hand in `_clara-bridge.scss`, collapsed into one
+  quiet neutral button bound to the surface/border/text roles instead of
+  Bootstrap's grey literals, next to the existing `.btn-outline-light` compat
+  block. And the base reset's `svg { display: block }` took the tile icon
+  out of the tile's centred text flow and pinned it to the inline start, at its
+  16px intrinsic size; the icon now gets the 3rem box Barceloneta pins (through
+  a `--plone-configlet-icon-size` knob) and `margin-inline: auto` to re-centre
+  it without reverting the reset or overriding core's template. Panel header
+  rhythm comes from `--plone-space-l` rather than Barceloneta's flat 2rem.
+  Covered by `tests/test_controlpanel.py`.
+
 - Build the theme with pnpm instead of npm, and track `pnpm-lock.yaml` so the
   compiled CSS is reproducible. `package.json`'s `postinstall` and the
   validation steps in the Quanta guide now call `pnpm`. `pnpm-workspace.yaml`

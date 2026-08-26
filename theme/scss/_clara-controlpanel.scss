@@ -1,0 +1,53 @@
+/* clara-controlpanel.css — Site Setup and the panels reached from it.
+ *
+ * Plone core ships the control-panel markup (Products/CMFPlone/controlpanel/
+ * browser/overview.pt): a `.configlets` grid of `<a class="btn btn-light
+ * h-100">` tiles, each an `.overview-icon` above its label. Barceloneta ships
+ * the five rules that turn that markup into a readable tile grid; Clara shipped
+ * none of them, so @@overview-controlpanel rendered as 16px icons hanging off
+ * the left edge of invisible buttons.
+ *
+ * Two of the rules below are pure parity with Barceloneta (the icon box, the
+ * header rhythm, the .prefs-configlet row). The third is a Clara-specific
+ * repair: the base reset sets `svg { display: block }`, which takes the icon
+ * out of the tile's `text-align: center` flow and pins it to the inline start.
+ * `margin-inline: auto` re-centres it without reverting the reset — the tile
+ * markup is core's and must not be overridden (§ governing principle: fix the
+ * contract, do not ship a template override).
+ *
+ * The tile FILL comes from `.btn-light`, which _clara-bridge.scss supplies as
+ * $theme-colors compat — see the note there.
+ */
+@layer components {
+  /* Heading block of a control panel gets its own breathing room, the way
+     Barceloneta's `margin-bottom: 2rem` does — on the Clara space ramp. */
+  body[class*="-controlpanel"] .controlPanel > header,
+  body[class*="-controlpanel"] article > header {
+    margin-block-end: var(--plone-space-l);
+  }
+
+  /* The configlet tile icon: a fixed 3rem box centred over its label. Sized in
+     rem, not on the fluid ramp, because it is an icon box (geometry), not
+     rhythm — Barceloneta pins the same 3rem. */
+  .configlets .overview-icon {
+    inline-size: var(--plone-configlet-icon-size, 3rem);
+    block-size: var(--plone-configlet-icon-size, 3rem);
+    /* undo the reset's `svg { display: block }` de-centring (see file header) */
+    margin-inline: auto;
+  }
+
+  /* Tiles are one target each: no underline creep from the link reset, and the
+     two-line labels stay tight against the icon. */
+  .configlets .btn {
+    text-decoration: none;
+    line-height: var(--plone-leading-tight);
+  }
+
+  /* Row-style configlet links (the panels' own listings) put the icon beside
+     the label rather than above it. */
+  body[class*="-controlpanel"] .prefs-configlet a {
+    display: flex;
+    align-items: center;
+    gap: var(--plone-space-2xs);
+  }
+}

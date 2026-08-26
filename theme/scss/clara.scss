@@ -31,5 +31,6 @@
 @import "clara-components";        // @layer components — .element-* hooks
 @import "clara-states";            // @layer components — semantic buttons/forms/messages
 @import "clara-content";           // @layer components — content-view hooks (ticket 10)
+@import "clara-controlpanel";      // @layer components — Site Setup / control-panel chrome
 @import "clara-megamenu";          // @layer components — Clara's own nav
 @import "clara-toolbar";           // @layer components — editor-toolbar chrome (ticket 15)
