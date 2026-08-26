@@ -15,35 +15,37 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
+      # plone.pageletlayout is not on PyPI; pyproject resolves it from
+      # ../plone.pageletlayout, so both checkouts have to end up side by side
+      # inside the workspace.
       - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
+          path: plonetheme.clara
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[test]"
+      - uses: actions/checkout@v4
+        with:
+          repository: MrTango/plone.pageletlayout
+          path: plone.pageletlayout
+
+      - name: Set up uv and Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
 
       - name: Run tests
-        run: pytest -v
+        working-directory: plonetheme.clara
+        run: uv run --frozen --extra test pytest -v
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10
         with:
-          python-version: "3.12"
-          cache: pip
-
-      - name: Install ruff
-        run: pip install ruff
+          enable-cache: true
 
       - name: Run ruff
-        run: ruff check .
+        run: uvx ruff@0.16.4 check .

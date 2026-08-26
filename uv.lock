@@ -2913,7 +2913,7 @@ wheels = [
 [[package]]
 name = "plone-pageletlayout"
 version = "1.0.0a1"
-source = { editable = "sources/plone.pageletlayout" }
+source = { editable = "../plone.pageletlayout" }
 dependencies = [
     { name = "paste" },
     { name = "plone" },
@@ -3447,7 +3447,7 @@ requires-dist = [
     { name = "plone-app-testing", marker = "extra == 'test'" },
     { name = "plone-app-upgrade" },
     { name = "plone-classicui" },
-    { name = "plone-pageletlayout", editable = "sources/plone.pageletlayout" },
+    { name = "plone-pageletlayout", editable = "../plone.pageletlayout" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-cov", marker = "extra == 'test'" },

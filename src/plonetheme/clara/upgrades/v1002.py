@@ -3,6 +3,7 @@ import logging
 
 from plone.app.upgrade.utils import loadMigrationProfile
 
+
 logger = logging.getLogger(__name__)
 
 PROFILE = "profile-plonetheme.clara:default"

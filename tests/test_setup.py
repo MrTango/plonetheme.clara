@@ -23,6 +23,7 @@ class TestSetup:
     def test_browserlayer(self):
         """Test browserlayer is registered."""
         from plone.browserlayer import utils
+
         from plonetheme.clara.interfaces import IPlonethemeClaraLayer
 
         assert IPlonethemeClaraLayer in utils.registered_layers()

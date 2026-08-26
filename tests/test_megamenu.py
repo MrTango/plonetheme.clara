@@ -181,6 +181,7 @@ class TestMegamenuFullPage:
 
     def test_published_page_carries_the_panel(self, tmp_path):
         import os
+        from contextlib import suppress
 
         from plone.api.exc import InvalidParameterError
         from plone.app.testing import logout
@@ -193,11 +194,9 @@ class TestMegamenuFullPage:
             self.portal["leistungen"]["python"],
             self.page,
         ):
-            try:
+            # no workflow chain in the sandbox site: already public
+            with suppress(InvalidParameterError):
                 api.content.transition(obj, "publish")
-            except InvalidParameterError:
-                # no workflow chain in the sandbox site: already public
-                pass
         logout()
         view = self.page.restrictedTraverse("pagelet_view")
         html = view()

@@ -36,8 +36,9 @@ class TestUpgrade1002:
         jscompilation, then assert the upgrade restores clara.js.
         """
         from plone.registry.interfaces import IRegistry
-        from plonetheme.clara.upgrades.v1002 import upgrade
         from zope.component import getUtility
+
+        from plonetheme.clara.upgrades.v1002 import upgrade
 
         key = "plone.bundles/plonetheme-clara.jscompilation"
         registry = getUtility(IRegistry)
