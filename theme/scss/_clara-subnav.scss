@@ -1,0 +1,128 @@
+/* clara-subnav.css — the page-tail sub-navigation.
+ *
+ * Rendered by SubnavChromePagelet (plonetheme/clara/pagelets.py) as one
+ * element of the whole-body layout, placed directly after
+ * plone.pageletlayout.body:
+ *
+ *   <nav class="element-subnav" aria-labelledby="subnav-heading">
+ *     <h2 class="subnav-heading" id="subnav-heading">…</h2>
+ *     <ul class="subnav-list">
+ *       <li><a><span class="subnav-title">…</span>
+ *              <span class="subnav-text">…</span></a></li>
+ *     </ul>
+ *   </nav>
+ *
+ * Hairline tiles rather than bordered cards: Clara draws with rules and type,
+ * a boxed card grid would be the first one in the theme, and the tiles are
+ * meant to read as the page ending, not as content restarting. The whole tile
+ * is the link, so there is nothing to tab past between the two lines.
+ *
+ * Every value is a --plone-/--clara- token, so dark mode and any integrator's
+ * retokenising carry this element without a rule of their own. See
+ * docs/clara-theming-architecture.md §2, §6. */
+@layer components {
+  .element-subnav {
+    padding-block: var(--plone-space-xl) var(--plone-space-l);
+    border-block-start: 1px solid var(--plone-color-border);
+  }
+  .subnav-heading {
+    margin: 0;
+    font-family: var(--clara-font-display);
+    font-size: var(--clara-text-title);
+    font-weight: 650;
+    line-height: var(--plone-leading-tight);
+  }
+  .subnav-list {
+    display: flex;              /* one dimension, wrapping: flex, not grid */
+    flex-wrap: wrap;
+    gap: var(--plone-space-m);
+    margin: 0;
+    margin-block-start: var(--plone-space-l);
+    padding: 0;
+    list-style: none;
+  }
+  .subnav-list > li { flex: 1 1 min(100%, 18rem); }
+  /* A Plone folder can hold any number of children, and a wrapped orphan
+     stretching the full row reads as a mistake. From the fourth child on, cap
+     the tile at a third so later rows stay left-aligned against the first.
+     Browsers without :has() keep the stretch — a cosmetic degradation. */
+  .subnav-list:has(> :nth-child(4)) > li {
+    max-inline-size: calc((100% - 2 * var(--plone-space-m)) / 3);
+  }
+  .subnav-list > li > a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--plone-space-2xs);
+    block-size: 100%;           /* equal tiles: the top rules line up */
+    padding-block-start: var(--plone-space-s);
+    border-block-start: 1px solid var(--plone-color-border);
+    color: var(--plone-color-text);
+    text-decoration: none;
+  }
+  .subnav-title {
+    font-family: var(--clara-font-display);
+    font-size: var(--clara-text-lede);
+    font-weight: 650;
+    line-height: var(--plone-leading-tight);
+  }
+  /* Inline-block so the nudge below is a transform and not a layout change.
+     The title is sized to keep a long one (a folder titled "Django, Pyramid &
+     FastAPI") on one line at every tile width, which is what keeps the arrow
+     from wrapping away from it. */
+  .subnav-title::after {
+    content: "\2192";
+    display: inline-block;
+    margin-inline-start: 0.3em;
+    color: var(--plone-color-muted);
+  }
+  .subnav-text {
+    color: var(--plone-color-muted);
+    font-size: var(--plone-text-base);
+    line-height: var(--plone-leading-body);
+    text-wrap: pretty;
+  }
+
+  /* Three signals at once, because a 1px rule alone is too quiet to read as a
+     state change: the rule takes the accent, the title takes the link colour
+     and an underline, the arrow steps right. :focus-visible is styled with
+     :hover rather than after it, so keyboard and pointer never diverge.
+
+     accent-STRONG, not accent: --plone-color-accent is Clara's amber fill
+     (#f4af2d), which measures 1.85:1 on the light ground — swapping the
+     resting rule for it makes the rule FAINTER on hover in light mode, the
+     opposite of the intent. accent-strong is the amber text role, dark in
+     light mode and bright in dark (#7a4e05 / #ffc043), so the rule gains
+     weight against its ground in both. */
+  .subnav-list > li > a:hover,
+  .subnav-list > li > a:focus-visible {
+    border-block-start-color: var(--plone-color-accent-strong);
+  }
+  .subnav-list > li > a:hover .subnav-title,
+  .subnav-list > li > a:focus-visible .subnav-title {
+    color: var(--plone-color-link);
+    text-decoration: underline;
+  }
+  .subnav-list > li > a:hover .subnav-title::after,
+  .subnav-list > li > a:focus-visible .subnav-title::after {
+    color: var(--plone-color-accent-strong);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .subnav-list > li > a {
+      transition: border-block-start-color 200ms var(--plone-ease-out-quint);
+    }
+    .subnav-title::after {
+      transition:
+        transform 200ms var(--plone-ease-out-quint),
+        color 200ms var(--plone-ease-out-quint);
+    }
+    .subnav-list > li > a:hover .subnav-title::after,
+    .subnav-list > li > a:focus-visible .subnav-title::after {
+      transform: translateX(0.2rem);
+    }
+  }
+
+  @media print {
+    .element-subnav { display: none; }
+  }
+}

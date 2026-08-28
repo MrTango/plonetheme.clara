@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.clara">
+
+  <genericsetup:registerProfile
+      name="1005"
+      title="plonetheme.clara: upgrade to 1005"
+      directory="1005"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1004"
+      destination="1005"
+      profile="plonetheme.clara:default">
+
+    <genericsetup:upgradeStep
+        title="Sub-navigation chrome pagelet"
+        description="Register plonetheme.clara.subnav in the whole-body layout manager, directly after plone.pageletlayout.body."
+        handler=".v1005.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1005"
+        import_profile="plonetheme.clara.upgrades:1005"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

@@ -42,8 +42,10 @@ from html import escape
 from plone.app.layout.viewlets.common import GlobalSectionsViewlet
 from plone.base.utils import safe_text
 from plone.memoize.view import memoize
+from plone.pageletlayout.chrome import ChromePagelet
 from plone.pageletlayout.pagelets.globalnav import GlobalnavChromePagelet
 from Products.CMFCore.utils import getToolByName
+from zope.component import getMultiAdapter
 from zope.i18n import translate
 
 from plonetheme.clara.i18n import _
@@ -222,3 +224,69 @@ class ClaraGlobalnavChromePagelet(GlobalnavChromePagelet):
         # instantiation must, too.
         self.sections.__name__ = "plone.global_sections"
         self.sections.update()
+
+
+class SubnavChromePagelet(ChromePagelet):
+    """The page-tail sub-navigation: a folder's children, below its own page.
+
+    Gated on the DEFAULT PAGE, not on a list of view names. A folder that has
+    a default page renders that page, so its children are nowhere on screen and
+    this element is the only way down; a folder WITHOUT one renders a listing
+    view, which already shows them. Reading the content state instead of the
+    layout name means no hardcoded list of listing views to keep current, and
+    no false positive on a custom one.
+
+    That gate also fixes where the children come from. When a folder has a
+    default page, ``self.context`` IS that page — a Document, with no children
+    of its own — so querying the context would render nothing on exactly the
+    pages this element exists for. ``canonical_object()`` resolves back to the
+    folder, and it is only meaningful once ``is_default_page()`` is true.
+
+    ``is_portal_root()`` covers the front page, whose canonical object is the
+    site root: without it every top-level section would be listed at the foot
+    of the home page, which is the global navigation said twice.
+
+    Brain metadata only — rendering never wakes an object.
+
+    Markup (templates/subnav.pt), kept comment-free because a chrome template's
+    comments ship on every response: a labelled <nav> landmark around an <h2>
+    and a list of tiles, one <a> per tile wrapping both lines so there is no
+    nested interactive element to tab past. Styling: theme/scss/_clara-subnav.scss.
+    """
+
+    def update(self):
+        self.items = []
+        state = getMultiAdapter(
+            (self.context, self.request), name="plone_context_state"
+        )
+        # is_portal_root() already accounts for the default-page case: it is
+        # true both for the site root itself and for a default page whose
+        # parent is the site root.
+        if not state.is_default_page() or state.is_portal_root():
+            return
+        folder = state.canonical_object()
+        catalog = getToolByName(self.context, "portal_catalog")
+        brains = catalog(
+            path={"query": "/".join(folder.getPhysicalPath()), "depth": 1},
+            is_default_page=False,
+            exclude_from_nav=False,
+            sort_on="getObjPositionInParent",
+        )
+        self.items = [
+            {
+                "url": brain.getURL(),
+                "title": _clean(safe_text(brain.Title)) or brain.getId,
+                "description": _clean(safe_text(brain.Description)),
+            }
+            for brain in brains
+        ]
+
+    def render(self):
+        """Nothing at all when there is nothing to point at.
+
+        A folder whose only child is its own default page filters down to zero
+        items, and an empty heading over an empty list is worse than silence.
+        """
+        if not self.items:
+            return ""
+        return super().render()

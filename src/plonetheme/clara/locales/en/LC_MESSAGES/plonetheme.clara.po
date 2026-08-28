@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: plonetheme.clara\n"
-"POT-Creation-Date: 2026-07-25 15:06+0000\n"
+"POT-Creation-Date: 2026-08-28 11:51+0000\n"
 "PO-Revision-Date: 2026-07-13\n"
 "Last-Translator: Maik Derstappen <md@derico.de>\n"
 "Language-Team: Plone <dev@plone.org>\n"
@@ -59,7 +59,7 @@ msgid "Uninstalls plonetheme.clara"
 msgstr ""
 
 #. Default: "Close menu"
-#: ../pagelets.py:149
+#: ../pagelets.py:155
 msgid "megamenu_close_label"
 msgstr "Close menu"
 
@@ -78,3 +78,12 @@ msgstr ""
 #: ../upgrades/1004.zcml:11
 msgid "plonetheme.clara: upgrade to 1004"
 msgstr ""
+
+#: ../upgrades/1005.zcml:11
+msgid "plonetheme.clara: upgrade to 1005"
+msgstr ""
+
+#. Default: "More on this topic:"
+#: ../templates/subnav.pt:10
+msgid "subnav_heading"
+msgstr "More on this topic:"

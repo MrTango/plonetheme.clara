@@ -20,6 +20,30 @@
       layer=".interfaces.IPlonethemeClaraLayer"
       />
 
+  <!-- Clara's page-tail sub-navigation: a NEW element in the whole-body
+       layout, not an override of a base one, so it needs both halves — the
+       chrome pagelet (the element) and the PageletViewlet wrapper that puts
+       it in the manager. profiles/default/viewlets.xml then places it after
+       plone.pageletlayout.body.
+
+       It belongs here rather than in a brand theme because wayfinding into a
+       folder's children is generic: any Clara-based site with a default page
+       over children wants it, and a brand layer only re-points its tokens. -->
+  <plone:chromepagelet
+      name="plonetheme.clara.subnav"
+      class=".pagelets.SubnavChromePagelet"
+      template="templates/subnav.pt"
+      layer=".interfaces.IPlonethemeClaraLayer"
+      />
+  <browser:viewlet
+      name="plonetheme.clara.subnav"
+      pagelet="plonetheme.clara.subnav"
+      class="plone.pageletlayout.pagelets.layout.PageletViewlet"
+      manager="plone.pageletlayout.pagelets.layout.ILayoutManager"
+      layer=".interfaces.IPlonethemeClaraLayer"
+      permission="zope2.View"
+      />
+
   <!-- Clara's brand token file, served at ++resource++plonetheme.clara/ and
        linked via a registry bundle (profiles/default/registry.xml). -->
   <browser:resourceDirectory

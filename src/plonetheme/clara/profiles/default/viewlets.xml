@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- The sub-navigation joins the whole-body layout manager's order directly
+       after the content body, so it renders below the page and above the
+       footer rows.
+
+       insert-after, not a restated order: plone.pageletlayout owns the
+       canonical sequence (layout.ELEMENTS, pinned by its own parity test) and
+       this file must not fork it. The importer starts from whatever order is
+       stored, removes the name if present and re-inserts it at the anchor —
+       so this is additive, idempotent, and survives the base package growing
+       new elements. -->
+  <order manager="plone.pageletlayout.layout" skinname="Plone Default">
+    <viewlet name="plonetheme.clara.subnav"
+             insert-after="plone.pageletlayout.body" />
+  </order>
+</object>

@@ -1,0 +1,18 @@
+<nav class="element-subnav"
+     aria-labelledby="subnav-heading"
+     i18n:domain="plonetheme.clara">
+  <!-- No inner container: .plone-layout places this on the content column. -->
+  <h2 class="subnav-heading"
+      id="subnav-heading"
+      i18n:translate="subnav_heading">More on this topic:</h2>
+  <ul class="subnav-list">
+    <li tal:repeat="item view/items">
+      <a tal:attributes="href item/url">
+        <span class="subnav-title" tal:content="item/title">Title</span>
+        <span class="subnav-text"
+              tal:condition="item/description"
+              tal:content="item/description">Description</span>
+      </a>
+    </li>
+  </ul>
+</nav>
