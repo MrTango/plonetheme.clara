@@ -7,6 +7,9 @@ shows them. Two consequences are pinned here: the element stays silent in the
 listing case, and — because ``context`` IS the default page when one is set —
 the children come from the canonical folder rather than from the context.
 """
+import re
+from pathlib import Path
+
 import pytest
 from plone import api
 from plone.app.testing import setRoles
@@ -164,3 +167,71 @@ class TestSubnavRegistration:
         assert 'manager="plone.pageletlayout.layout"' in xml
         assert 'name="plonetheme.clara.subnav"' in xml
         assert 'insert-after="plone.pageletlayout.body"' in xml
+
+
+# --------------------------------------------------------------------------- #
+# How the tiles lay out. Pinned against the compiled bundle because the defect
+# this replaces was a CSS one: a `max-inline-size` of a third, meant to keep a
+# wrapped orphan from stretching, applied on a phone too and turned the row
+# into three ~90px columns. The mechanism below has no column count in it, so
+# there is nothing left to be wrong at one width and right at another.
+# --------------------------------------------------------------------------- #
+
+BUNDLE = (
+    Path(__file__).resolve().parent.parent
+    / "src" / "plonetheme" / "clara" / "static" / "clara.min.css"
+)
+
+
+@pytest.fixture(scope="module")
+def subnav_css():
+    assert BUNDLE.exists(), (
+        f"compiled bundle missing at {BUNDLE} — run `pnpm run build` in "
+        f"plonetheme.clara first."
+    )
+    css = re.sub(r"/\*.*?\*/", "", BUNDLE.read_text(), flags=re.DOTALL)
+    return re.sub(r"\s+", "", css)
+
+
+@pytest.fixture(scope="module")
+def subnav_list_rule(subnav_css):
+    bodies = re.findall(r"\.subnav-list\{([^}]*)\}", subnav_css)
+    assert bodies, ".subnav-list is not styled in the compiled bundle"
+    return bodies[0]
+
+
+class TestSubnavLayout:
+    """§5 elastic CSS: the row decides how many tiles fit, not a breakpoint."""
+
+    def test_tiles_are_an_elastic_track_list(self, subnav_list_rule):
+        assert "display:grid" in subnav_list_rule
+        assert "repeat(auto-fit,minmax(" in subnav_list_rule, (
+            "the track list must be auto-fit + minmax: auto-fit collapses the "
+            "tracks no item reaches (a two-child folder gets halves, not "
+            "thirds) and keeps the ones items do reach (a wrapped orphan stays "
+            "a third wide instead of stretching the whole row)"
+        )
+
+    def test_the_track_floor_collapses_to_the_row_on_a_phone(
+        self, subnav_list_rule
+    ):
+        """`min(100%, 18rem)`, not a bare `18rem`. On a 390px phone the row is
+        narrower than one tile; without the `100%` term the track keeps asking
+        for 18rem and the tile overflows its own list."""
+        assert "minmax(min(100%,18rem),1fr)" in subnav_list_rule
+
+    def test_no_column_count_is_hardcoded(self, subnav_list_rule):
+        """No `repeat(3, …)`: the row counts its own tracks."""
+        assert not re.search(r"repeat\(\d", subnav_list_rule)
+
+    def test_no_tile_is_capped_to_a_fraction_of_the_row(self, subnav_css):
+        """The regression itself. Any rule that hands a `.subnav-list` child a
+        `max-inline-size` is asserting a column count the row has not agreed
+        to, and on a phone that count is wrong by three."""
+        capped = [
+            rule
+            for rule in re.findall(r"([^{}]*\.subnav-list[^{}]*)\{([^}]*)\}",
+                                   subnav_css)
+            if "max-inline-size" in rule[1]
+        ]
+        assert not capped, f"tile width capped by {capped}"

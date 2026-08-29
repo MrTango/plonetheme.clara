@@ -2,6 +2,21 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Let the page-tail sub-navigation stack on a phone. The tiles wrapped
+  correctly on their own, but the guard that keeps a wrapped orphan from
+  stretching the whole row — `.subnav-list:has(> :nth-child(4)) > li
+  { max-inline-size: calc((100% - 2 * gap) / 3) }` — asserted a column count
+  the row had never agreed to, and on a 390px screen a third of the row is a
+  90px tile: a four-child folder rendered three unreadable columns instead of
+  one. Both the wrap and the guard now come from one elastic track list,
+  `repeat(auto-fit, minmax(min(100%, 18rem), 1fr))` (§5, no query and no
+  breakpoint): `min(100%, …)` collapses the track floor to the row on a phone,
+  `auto-fit` drops the tracks no item reaches (a two-child folder gets halves,
+  not thirds and a hole) and keeps the ones items do reach, which is what
+  holds the orphan at a track's width. The 2-up band a `:nth-child(4)` test
+  could never see — three children in a row that seats two — is covered too.
+  Pinned by `tests/test_subnav.py::TestSubnavLayout`.
+
 - Style the control panels (`@@overview-controlpanel` and its siblings), which
   Clara had never covered: new `theme/scss/_clara-controlpanel.scss`. Two Clara
   decisions had broken core's Site Setup markup. `$theme-colors` is slimmed to

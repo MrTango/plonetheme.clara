@@ -32,22 +32,33 @@
     font-weight: 650;
     line-height: var(--plone-leading-tight);
   }
+  /* An elastic track list, the §5 mechanism: the row seats as many 18rem
+     tiles as it has room for and the tiles share what is left. `min(100%,
+     18rem)` is the track floor, so on a phone — where the whole row is
+     narrower than one tile — the floor collapses to the row and the list is
+     one full-width column. Nothing states a breakpoint or a column count.
+
+     `auto-FIT`, and both halves of that word are load-bearing:
+
+     - it collapses tracks no item reaches, so a two-child folder gets two
+       half-width tiles rather than two thirds and a hole;
+     - it KEEPS the tracks that items do reach, which is what stops a
+       wrapped orphan from stretching the full row: a Plone folder holds any
+       number of children, and the fourth of four lands in track 1 of row 2
+       at a third's width, left-aligned under the first.
+
+     That orphan guard used to be a `:has(> :nth-child(4))` cap of a third,
+     and it was what broke the phone: a third of a 390px row is a 90px tile,
+     and the cap overruled the wrap into three unreadable columns. The track
+     list has no count to be wrong about. */
   .subnav-list {
-    display: flex;              /* one dimension, wrapping: flex, not grid */
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
     gap: var(--plone-space-m);
     margin: 0;
     margin-block-start: var(--plone-space-l);
     padding: 0;
     list-style: none;
-  }
-  .subnav-list > li { flex: 1 1 min(100%, 18rem); }
-  /* A Plone folder can hold any number of children, and a wrapped orphan
-     stretching the full row reads as a mistake. From the fourth child on, cap
-     the tile at a third so later rows stay left-aligned against the first.
-     Browsers without :has() keep the stretch — a cosmetic degradation. */
-  .subnav-list:has(> :nth-child(4)) > li {
-    max-inline-size: calc((100% - 2 * var(--plone-space-m)) / 3);
   }
   .subnav-list > li > a {
     display: flex;
