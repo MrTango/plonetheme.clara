@@ -178,3 +178,98 @@ def test_form_focus_mode_is_phone_only(bundle):
     ), "the focus-mode rule is not inside a (max-width: 767.98px) block"
 
 
+# ── Clara's own: the pin/unpin toggle is findable ────────────────────────────
+
+def _media_blocks(css, condition):
+    """Bodies of every ``@media`` block whose prelude carries `condition`,
+    brace-balanced so a compressed one-line bundle reads the same as a
+    pretty-printed one."""
+    blocks = []
+    for match in re.finditer(r"@media([^{]*)\{", css):
+        if condition.replace(" ", "") not in match.group(1).replace(" ", ""):
+            continue
+        index, depth = match.end(), 1
+        while depth and index < len(css):
+            depth += {"{": 1, "}": -1}.get(css[index], 0)
+            index += 1
+        blocks.append(css[match.end():index - 1])
+    return blocks
+
+
+def test_the_toggle_has_a_real_hit_area(bundle):
+    """The viewlet ships each toggle as a bare 16px glyph. Without a target
+    around it the control is a pixel hunt, which is the whole reason people
+    conclude the rail cannot be collapsed."""
+    rules = re.findall(r"#edit-zone \.toolbar-header a\{([^}]*)\}", bundle)
+    assert rules, "no rule styles the toolbar-header links at all"
+    sized = [r for r in rules if "min-height" in r]
+    assert sized, f"the toggle is still just the glyph: {rules!r}"
+    for declaration in ("padding-inline:", "gap:"):
+        assert declaration in sized[0], (
+            f"the toggle has no {declaration.rstrip(':')}: {sized[0]!r}"
+        )
+    assert "width:1.25rem" in bundle, "the toggle's icon was not enlarged"
+
+
+def test_the_toggle_answers_the_pointer_and_the_keyboard(bundle):
+    """Feedback is half of an affordance: something has to happen on hover,
+    and the same thing on focus, or the strip still reads as decoration."""
+    match = re.search(
+        r"([^{}]*\.toolbar-header a:hover[^{}]*)\{([^}]*)\}", bundle
+    )
+    assert match, "nothing paints a hover state on the toolbar header"
+    assert ":focus-visible" in match.group(1), (
+        f"the hover state is not shared with the keyboard: {match.group(1)!r}"
+    )
+    assert "background" in match.group(2), (
+        f"the hover state paints nothing: {match.group(2)!r}"
+    )
+
+
+def test_the_expanded_rail_names_the_control(bundle):
+    """The name comes from the aria-label the viewlet already renders and
+    Plone already translates ("Unpin" -> "Abkoppeln"), so the visible label
+    can never drift from what a screen reader announces."""
+    labels = re.findall(r"([^{}]*)\{content:attr\(aria-label\)", bundle)
+    assert labels, "the toggle is still unlabelled in the expanded rail"
+    for selector in labels:
+        assert ".plone-toolbar-left-expanded" in selector, (
+            f"{selector!r} writes the label into a rail with no room for it"
+        )
+
+
+def test_the_label_is_desktop_only(bundle):
+    """The 60px icon rail cannot show a word, and below 768px the toggles are
+    hidden outright — a label there would be a label on nothing."""
+    desktop = _media_blocks(bundle, "(min-width:768px)")
+    assert desktop, "no (min-width: 768px) block in the bundle at all"
+    assert any("attr(aria-label)" in block for block in desktop), (
+        "the label rule is not inside a (min-width: 768px) block"
+    )
+
+
+def test_the_state_switch_still_decides_which_toggle_shows(bundle):
+    """These rules re-declare `display` for the toggle that is showing, so
+    the icon and its label share a line. Re-declaring it unconditionally
+    would reveal BOTH toggles at once; every such rule has to carry the body
+    class that names the state."""
+    switches = re.findall(
+        r"([^{}]*\.toolbar-(?:expand|collapse))\{display:flex\}", bundle
+    )
+    assert switches, "no toggle is laid out as a row — the label cannot sit "
+    for selector in switches:
+        assert "body.plone-toolbar-left" in selector, (
+            f"{selector!r} shows a toggle regardless of the toolbar's state"
+        )
+
+
+def test_the_phone_rule_still_hides_both_toggles(bundle):
+    """Below 768px the toolbar is a 60px rail whose expanded state does not
+    exist, so a visible toggle there would be a no-op — except on the Aurora
+    edit page, whose own sheet reveals it deliberately and gives it something
+    to do (plone.blicca.auroraeditor, blocks_view.css)."""
+    phone = "".join(_media_blocks(bundle, "(max-width:767.98px)"))
+    assert "#edit-zone .toolbar-header a{display:none}" in phone, (
+        "the phone rule that hides both toggles is gone — the 60px rail now "
+        "carries a control that cannot change anything"
+    )

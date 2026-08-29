@@ -322,4 +322,67 @@ body.plone-toolbar-top .toolbar-label {
   }
 }
 
+/* The pin/unpin toggle, made findable.
+ *
+ * The viewlet renders each one as a bare 16px icon link in the header strip
+ * — no hit area beyond the glyph, no hover, and nothing that names it. The
+ * control is there and it works, but people arriving from Volto's
+ * collapsible toolbar look for it, do not see it, and conclude the rail
+ * cannot be collapsed at all. That is a discoverability bug, not a missing
+ * feature, so the fix is size, feedback and a name — not new chrome.
+ *
+ * The state switch is untouched: `display` on .toolbar-expand /
+ * .toolbar-collapse in the lifted delta above still decides WHICH one shows,
+ * and these rules only re-declare it as `flex` for whichever one that is, so
+ * the icon and the label sit on one line. Specificity keeps that honest —
+ * the delta's own hiding rules are equal or higher and still win, including
+ * the phone rule that hides both (`#edit-zone .toolbar-header a`), so
+ * nothing here leaks a control onto a viewport where it would be a no-op.
+ *
+ * The label is the aria-label the viewlet already renders and Plone already
+ * translates ("Unpin" → "Abkoppeln"), so it needs no string of its own and
+ * cannot drift from what a screen reader announces. It shows only in the
+ * expanded rail, the one state with room to read it. */
+#edit-zone .toolbar-header {
+  align-items: center;
+}
+body.plone-toolbar-left .toolbar-expand {
+  display: flex;
+}
+@media (min-width: 768px) {
+  body.plone-toolbar-left.plone-toolbar-left-expanded .toolbar-collapse {
+    display: flex;
+  }
+}
+#edit-zone .toolbar-header a {
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  padding-inline: 0.375rem;
+  margin-inline: -0.375rem;
+  border-radius: var(--plone-radius-s);
+  text-decoration: none;
+}
+#edit-zone .toolbar-header a:hover,
+#edit-zone .toolbar-header a:focus-visible {
+  background: color-mix(
+    in oklch,
+    var(--plone-color-on-primary) 18%,
+    transparent
+  );
+}
+#edit-zone .toolbar-header a svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+@media (min-width: 768px) {
+  body.plone-toolbar-left.plone-toolbar-left-expanded
+    #edit-zone
+    .toolbar-header
+    a::after {
+    content: attr(aria-label);
+    font-size: var(--plone-text-s);
+  }
+}
 }

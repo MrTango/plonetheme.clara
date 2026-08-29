@@ -2,6 +2,20 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Make the toolbar's pin/unpin toggle findable. The viewlet renders it as a
+  bare 16px icon link in the header strip — no hit area past the glyph, no
+  hover, and nothing naming it — so people who know Volto's collapsible
+  toolbar look for it, do not see it and conclude the rail cannot be collapsed
+  at all. The control and its behaviour were never missing, so nothing new was
+  added: whichever toggle the state switch is showing now gets a 32px target,
+  a hover/focus background and, in the 220px expanded rail, its own name. The
+  label is `content: attr(aria-label)` — the string the viewlet already
+  renders and Plone already translates ("Unpin" → "Abkoppeln") — so it cannot
+  drift from what a screen reader announces, and it appears only where there
+  is room to read it: not in the 60px icon rail, and not below 768px, where
+  both toggles stay hidden because the expanded state does not exist there.
+  Pinned by `tests/test_toolbar.py`.
+
 - Step the editor toolbar aside for data entry on a phone. Below 768px the
   toolbar is a 60px icon rail whose expand toggle is already hidden, so it
   takes an eighth of a 390px screen and cannot show a single label in return —
