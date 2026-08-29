@@ -126,3 +126,55 @@ def test_toolbar_chrome_in_components_layer(bundle):
         f"#edit-zone chrome is under @layer {opens[-1]}, not components — it "
         f"would lose to Bootstrap's global .nav-link"
     )
+
+
+# ── focus mode: the rail steps aside for data entry on a phone ───────────────
+#
+# Below 768px the toolbar is a 60px icon rail whose expand toggle is hidden, so
+# it costs an eighth of a 390px screen and cannot show a label in return. On a
+# form holding unsaved data that is the worst trade on the site. What makes
+# hiding a navigation landmark safe is that the trigger IS the escape hatch:
+# the rule only fires where the page carries a Cancel button.
+
+FOCUS_SELECTOR = "body:has(#content-coreform.pat-formunloadalert#form-buttons-cancel)"
+
+
+def _phone_blocks(bundle):
+    """Bodies of every `@media (max-width: 767.98px)` block in the bundle."""
+    return re.findall(
+        r"@media\s*\(max-width:\s*767\.98px\)\s*\{(.*?)\}\s*(?=@|$)",
+        bundle,
+        flags=re.DOTALL,
+    )
+
+
+def test_form_focus_mode_hides_the_rail_on_a_phone(flat):
+    assert f"{FOCUS_SELECTOR}#edit-zone{{display:none}}" in flat, (
+        "no rule hides #edit-zone on a phone-sized data-entry form"
+    )
+    assert f"{FOCUS_SELECTOR}{{padding-left:0}}" in flat, (
+        "hiding the rail without releasing body's padding-left leaves the "
+        "60px gap the rail used to fill"
+    )
+
+
+def test_form_focus_mode_is_gated_on_an_escape_hatch(flat):
+    """`#form-buttons-cancel` in the selector is not decoration: it is the
+    only reason hiding the toolbar is safe. A form with no way out keeps its
+    rail, so the condition must never be loosened to a body class."""
+    hides = re.findall(r"([^{}]*)#edit-zone\{display:none\}", flat)
+    for selector in hides:
+        assert "#form-buttons-cancel" in selector, (
+            f"{selector!r} hides the toolbar without requiring a Cancel "
+            f"button — that can strand a phone user inside a form"
+        )
+
+
+def test_form_focus_mode_is_phone_only(bundle):
+    """Desktop keeps the toolbar: the rule lives inside the same 767.98px
+    band the rest of the toolbar's mobile chrome uses."""
+    assert any(
+        "#form-buttons-cancel" in block for block in _phone_blocks(bundle)
+    ), "the focus-mode rule is not inside a (max-width: 767.98px) block"
+
+

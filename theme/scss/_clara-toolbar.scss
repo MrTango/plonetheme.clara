@@ -290,4 +290,36 @@ body.plone-toolbar-top .toolbar-label {
     margin-top: -2.5rem !important;
   }
 }
+
+/* ─── Clara's own, NOT part of the lifted Barceloneta delta above ─────────
+   Kept in one block at the end so the provenance note at the top of this
+   file stays true and a future re-lift knows what to keep.
+
+   Focus mode for data entry on a phone. Below 768px the toolbar is a 60px
+   icon rail whose expand toggle is hidden (the `#edit-zone .toolbar-header
+   a` rule further up), so it takes an eighth of a 390px screen and cannot
+   show a single label in return. On a form holding unsaved data that is
+   the worst trade on the site: field width IS the page.
+
+   The trigger is the escape hatch, which is what makes hiding a navigation
+   landmark safe here. `pat-formunloadalert` marks a form Plone will warn
+   you about leaving, and `#form-buttons-cancel` is the documented way out
+   of one — so the rail only goes where the page already offers an exit,
+   and Save and Cancel both land on a view that has the toolbar back. A
+   form without a Cancel keeps its rail.
+
+   @@aurora-edit is deliberately NOT covered. It carries no z3c.form
+   buttons so it cannot match, and its exit lives inside the editor's own
+   chrome; taking Plone's toolbar off that surface needs that verified
+   first, not assumed. */
+@media (max-width: 767.98px) {
+  body:has(#content-core form.pat-formunloadalert #form-buttons-cancel) {
+    padding-left: 0;
+  }
+  body:has(#content-core form.pat-formunloadalert #form-buttons-cancel)
+    #edit-zone {
+    display: none;
+  }
+}
+
 }

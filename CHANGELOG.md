@@ -2,6 +2,21 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Step the editor toolbar aside for data entry on a phone. Below 768px the
+  toolbar is a 60px icon rail whose expand toggle is already hidden, so it
+  takes an eighth of a 390px screen and cannot show a single label in return —
+  and it takes it from the one page whose whole job is field width. On a form
+  holding unsaved data the rail is now hidden and `body`'s `padding-left`
+  released, which gave the edit form's fields 358px instead of 298px. What
+  makes hiding a navigation landmark safe is that the trigger IS the escape
+  hatch: the selector requires `form.pat-formunloadalert` *and*
+  `#form-buttons-cancel`, so the rail only goes where the page already offers
+  a documented way out, and Save and Cancel both land on a view that has the
+  toolbar back. Content edit and add forms match; the article view, the search
+  page, the control panel overview and `@@aurora-edit` (no z3c.form buttons,
+  and its exit lives in the editor's own chrome) do not. Desktop is untouched.
+  Pinned by `tests/test_toolbar.py`.
+
 - Let the page-tail sub-navigation stack on a phone. The tiles wrapped
   correctly on their own, but the guard that keeps a wrapped orphan from
   stretching the whole row — `.subnav-list:has(> :nth-child(4)) > li
