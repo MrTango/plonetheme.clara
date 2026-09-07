@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.clara">
+
+  <genericsetup:registerProfile
+      name="1007"
+      title="plonetheme.clara: upgrade to 1007"
+      directory="1007"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1006"
+      destination="1007"
+      profile="plonetheme.clara:default">
+
+    <genericsetup:upgradeStep
+        title="Hide the stock multilingual language selector"
+        description="The pagelet layout bridges plone.portalheader now, so plone.app.multilingual&#39;s own selector renders beside Clara&#39;s element; hide it."
+        handler=".v1007.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1007"
+        import_profile="plonetheme.clara.upgrades:1007"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

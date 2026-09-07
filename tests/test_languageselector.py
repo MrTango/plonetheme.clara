@@ -1,11 +1,15 @@
 """Tests for the header language switch (pagelets.LanguageSelectorChromePagelet).
 
 The element exists because plone.app.multilingual registers its selector for
-``plone.app.layout.viewlets.interfaces.IPortalHeader``, a viewlet manager the
-pagelet layout never renders — so on a Clara site the switch is not styled
-wrong, it is absent. That is what these pin: the element is in the layout
-order, it stays silent on a site with one language, and once a site has two it
-renders both codes with the current one marked.
+``plone.app.layout.viewlets.interfaces.IPortalHeader`` — a manager the pagelet
+layout did not render at all when this element was written, so on a Clara site
+the switch was not styled wrong, it was absent. plone.pageletlayout bridges the
+stock managers now, which turns the same registration into the opposite
+problem: two switches on every page unless the profile hides the stock one.
+
+That is what these pin: the element is in the layout order, the stock selector
+it replaces is hidden, it stays silent on a site with one language, and once a
+site has two it renders both codes with the current one marked.
 """
 
 import pytest
@@ -21,6 +25,11 @@ from plonetheme.clara.testing import INTEGRATION_TESTING
 
 MANAGER = "plone.pageletlayout.layout"
 NAME = "plonetheme.clara.languageselector"
+
+#: The stock selector this element replaces, and the manager the layout
+#: bridges it in through.
+STOCK_MANAGER = "plone.portalheader"
+STOCK = "plone.app.multilingual.languageselector"
 
 
 class TestLanguageSelectorOrder:
@@ -45,6 +54,13 @@ class TestLanguageSelectorOrder:
         order = self._order()
         assert order.index("plone.pageletlayout.globalnav") < order.index(NAME)
         assert order.index(NAME) < order.index("plone.pageletlayout.searchbox")
+
+    def test_the_stock_selector_it_replaces_is_hidden(self):
+        """Otherwise plone.app.multilingual's own switch rides the
+        plone.portalheader bridge onto every page, a row under the header and
+        beside this one."""
+        storage = getUtility(IViewletSettingsStorage)
+        assert STOCK in storage.getHidden(STOCK_MANAGER, "Plone Default")
 
 
 class TestLanguageSelector:

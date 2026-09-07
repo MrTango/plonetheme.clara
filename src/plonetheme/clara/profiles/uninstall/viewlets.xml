@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+  <!-- The mirror of profiles/default/viewlets.xml' hidden node.
+
+       Clara's own elements simply stop rendering when the browser layer goes
+       (the order keeps their names, harmlessly). The hidden set does not: a
+       site that dropped Clara would keep plone.app.multilingual's selector
+       hidden, and with Clara's element gone too it would have no language
+       switch at all — nothing on the page naming the theme that took it.
+
+       `remove="True"` on a `hidden` node is the un-hide (the importer drops
+       the name from the hidden list and, without the attribute, would append
+       it), and it is idempotent: a name that is not hidden is simply not
+       there to remove. -->
+  <hidden manager="plone.portalheader" skinname="Plone Default">
+    <viewlet name="plone.app.multilingual.languageselector" remove="True" />
+  </hidden>
+</object>

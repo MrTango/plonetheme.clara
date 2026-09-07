@@ -2,6 +2,21 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Hide the stock multilingual language selector (profile version 1007).**
+  The element added in 1006 was written against a layout that rendered no
+  stock viewlet manager at all, so `plone.app.multilingual`'s own selector
+  was simply absent. `plone.pageletlayout` bridges the stock managers now,
+  `plone.portalheader` among them, which turns the same registration into the
+  opposite problem: the stock switch renders on every page one row under the
+  header, beside the element that exists to replace it. So Clara hides it, the
+  trade the base package already makes for the logo, the breadcrumbs and the
+  byline -- bridge the manager, hide what we reimplement. Configuration, not a
+  code-level exemption: unhide it and hide
+  `plonetheme.clara.languageselector` instead to get
+  `plone.app.multilingual`'s markup back. The uninstall profile mirrors it:
+  Clara's element goes with the browser layer, so a site that drops the theme
+  has to get the stock switch back rather than be left with none.
+
 - **The page-tail sub-navigation lists sections, not everything in the
   folder.** It is a way DOWN the site tree -- the sections below the one being
   read -- and it was listing a folder's loose Documents, News Items and Images

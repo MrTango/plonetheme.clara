@@ -4,6 +4,8 @@ import pytest
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
+from plone.app.viewletmanager.interfaces import IViewletSettingsStorage
+from zope.component import getUtility
 
 from plonetheme.clara.setuphandlers import post_install
 
@@ -108,6 +110,16 @@ class TestUninstall:
         assert (
             api.portal.get_registry_record(f"{bundle}.jscompilation", default=None)
             is None
+        )
+
+    def test_stock_language_selector_unhidden(self):
+        """Clara hides plone.app.multilingual's selector because its own
+        element replaces it. That element goes with the browser layer, so
+        leaving the stock one hidden would leave a multilingual site with no
+        language switch at all."""
+        storage = getUtility(IViewletSettingsStorage)
+        assert "plone.app.multilingual.languageselector" not in storage.getHidden(
+            "plone.portalheader", "Plone Default"
         )
 
     def test_theming_reenabled(self):

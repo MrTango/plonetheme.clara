@@ -18,4 +18,20 @@
     <viewlet name="plonetheme.clara.languageselector"
              insert-after="plone.pageletlayout.globalnav" />
   </order>
+
+  <!-- The stock selector Clara's own element replaces.
+
+       plone.app.multilingual registers its selector into plone.portalheader,
+       and plone.pageletlayout bridges that manager into the layout — so the
+       stock switch renders on every page of a multilingual site, one row
+       under the header, beside the element that exists to replace it. Which
+       is the same trade the base package makes for the logo, the breadcrumbs
+       and the byline: bridge the manager, hide what we reimplement.
+
+       Configuration, not a code-level exemption: an integrator who prefers
+       plone.app.multilingual's markup unhides this and hides
+       plonetheme.clara.languageselector instead. -->
+  <hidden manager="plone.portalheader" skinname="Plone Default">
+    <viewlet name="plone.app.multilingual.languageselector" />
+  </hidden>
 </object>
