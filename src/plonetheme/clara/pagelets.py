@@ -249,6 +249,15 @@ class SubnavChromePagelet(ChromePagelet):
     site root: without it every top-level section would be listed at the foot
     of the home page, which is the global navigation said twice.
 
+    Only FOLDERISH children are listed. This element is a way DOWN the site
+    tree — the sections below the one being read — not an index of everything
+    filed in the folder. A folder's loose Documents, News Items or Images are
+    leaves of the current page, not branches off it, and listing them turned
+    the tail of a section page into a dump of whatever happened to sit beside
+    its default page. ``is_folderish`` rather than ``portal_type="Folder"``:
+    the test is "does this have a subtree", so a Large Plone Folder or a
+    project's own folderish type qualifies without being enumerated here.
+
     Brain metadata only — rendering never wakes an object.
 
     Markup (templates/subnav.pt), kept comment-free because a chrome template's
@@ -271,6 +280,7 @@ class SubnavChromePagelet(ChromePagelet):
         catalog = getToolByName(self.context, "portal_catalog")
         brains = catalog(
             path={"query": "/".join(folder.getPhysicalPath()), "depth": 1},
+            is_folderish=True,
             is_default_page=False,
             exclude_from_nav=False,
             sort_on="getObjPositionInParent",

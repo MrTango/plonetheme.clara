@@ -6,6 +6,9 @@ the only way down; a folder without one renders a listing view that already
 shows them. Two consequences are pinned here: the element stays silent in the
 listing case, and — because ``context`` IS the default page when one is set —
 the children come from the canonical folder rather than from the context.
+
+What it lists is the folder's FOLDERISH children only: this is a way down the
+tree, not an index of everything filed beside the default page.
 """
 import re
 from pathlib import Path
@@ -36,22 +39,22 @@ class TestSubnav:
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
         # The case the element exists for: a folder with a default page over
-        # three children, so visiting the folder shows none of them.
+        # three sub-sections, so visiting the folder shows none of them.
         odoo = api.content.create(self.portal, "Folder", id="odoo", title="Odoo")
         api.content.create(
             odoo, "Document", id="index", title="Odoo",
             description="Business processes, connected.",
         )
         api.content.create(
-            odoo, "Document", id="dev", title="Development",
+            odoo, "Folder", id="dev", title="Development",
             description="Modules & integrations.",
         )
         api.content.create(
-            odoo, "Document", id="consulting", title="Consulting",
+            odoo, "Folder", id="consulting", title="Consulting",
             description="Clarify goals and processes.",
         )
         api.content.create(
-            odoo, "Document", id="operations", title="Operations",
+            odoo, "Folder", id="operations", title="Operations",
             description="Deployment, backups, updates.",
         )
         odoo.setDefaultPage("index")
@@ -101,6 +104,35 @@ class TestSubnav:
         self.odoo.consulting.reindexObject()
         assert self._titles(self.odoo.index) == ["Development", "Operations"]
 
+    def test_only_folderish_children_are_listed(self):
+        """A way down the tree, not an index of the folder's loose pages.
+
+        Documents, News Items and the rest are leaves of the section being
+        read; before this gate they turned the tail of every section page into
+        a dump of whatever happened to sit beside the default page.
+        """
+        api.content.create(
+            self.odoo, "Document", id="note", title="A loose page"
+        )
+        api.content.create(
+            self.odoo, "News Item", id="news", title="A news item"
+        )
+        assert self._titles(self.odoo.index) == [
+            "Development",
+            "Consulting",
+            "Operations",
+        ]
+
+    def test_a_folder_of_only_loose_pages_renders_nothing(self):
+        leaves = api.content.create(
+            self.portal, "Folder", id="leaves", title="Leaves"
+        )
+        api.content.create(leaves, "Document", id="index", title="Leaves")
+        api.content.create(leaves, "Document", id="one", title="One")
+        api.content.create(leaves, "Document", id="two", title="Two")
+        leaves.setDefaultPage("index")
+        assert self._pagelet(leaves.index).render() == ""
+
     # -- when it stays silent ----------------------------------------------
 
     def test_folder_without_a_default_page_renders_nothing(self):
@@ -109,7 +141,8 @@ class TestSubnav:
 
     def test_leaf_page_renders_nothing(self):
         """A child that is not anybody's default page has nothing below it."""
-        assert self._pagelet(self.odoo.dev).render() == ""
+        api.content.create(self.odoo, "Document", id="leaf", title="Leaf")
+        assert self._pagelet(self.odoo.leaf).render() == ""
 
     def test_portal_root_renders_nothing(self):
         """Otherwise the front page repeats the global navigation at its foot."""
@@ -142,7 +175,7 @@ class TestSubnav:
         assert "Modules & integrations." not in markup
 
     def test_a_child_without_a_description_gets_no_empty_line(self):
-        api.content.create(self.odoo, "Document", id="bare", title="Bare")
+        api.content.create(self.odoo, "Folder", id="bare", title="Bare")
         items = self._pagelet(self.odoo.index).items
         assert items[-1] == {
             "title": "Bare",

@@ -2,6 +2,17 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The page-tail sub-navigation lists sections, not everything in the
+  folder.** It is a way DOWN the site tree -- the sections below the one being
+  read -- and it was listing a folder's loose Documents, News Items and Images
+  beside them, which turned the tail of a section page into a dump of whatever
+  happened to sit next to its default page. Those are leaves of the page being
+  read, not branches off it. The catalog query gains ``is_folderish=True``
+  rather than a ``portal_type`` list: the question is "does this have a
+  subtree", so a project's own folderish type qualifies without being
+  enumerated in Clara. A folder holding nothing but loose pages now renders
+  nothing at all. Pinned by ``tests/test_subnav.py``.
+
 - **Give a multilingual site its language switch back.** `plone.app.multilingual`
   registers its selector for `plone.app.layout.viewlets.interfaces.IPortalHeader`,
   a viewlet manager the pagelet layout never renders — so on a Clara site with
