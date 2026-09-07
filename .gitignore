@@ -99,3 +99,6 @@ src/plonetheme/clara/static/clara.min.css.map
 .DS_Store
 .pi/sandbox.json
 *.pid
+
+# Agent tooling: per-checkout settings, environment-local
+.claude/
