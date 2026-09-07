@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.clara">
+
+  <genericsetup:registerProfile
+      name="1006"
+      title="plonetheme.clara: upgrade to 1006"
+      directory="1006"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1005"
+      destination="1006"
+      profile="plonetheme.clara:default">
+
+    <genericsetup:upgradeStep
+        title="Language switch chrome pagelet"
+        description="Register plonetheme.clara.languageselector in the whole-body layout manager, directly after plone.pageletlayout.globalnav."
+        handler=".v1006.upgrade"
+        />
+
+    <genericsetup:upgradeDepends
+        title="Apply profile version 1006"
+        import_profile="plonetheme.clara.upgrades:1006"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

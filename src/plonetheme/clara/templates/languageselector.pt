@@ -1,0 +1,23 @@
+<nav class="element-language"
+     i18n:domain="plonetheme.clara"
+     i18n:attributes="aria-label language_selector_label"
+     aria-label="Language selection">
+  <ul class="plone-cluster" id="portal-languageselector">
+    <li tal:repeat="language view/languages"
+        tal:attributes="
+          class python:('currentLanguage ' if language['selected'] else '') + 'language-' + language['code'];
+        "
+    >
+      <a tal:attributes="
+           href language/url;
+           hreflang language/code;
+           lang language/code;
+           title language/name;
+           aria-label language/name;
+           aria-current python:'page' if language['selected'] else None;
+         "
+         tal:content="language/label"
+      >EN</a>
+    </li>
+  </ul>
+</nav>

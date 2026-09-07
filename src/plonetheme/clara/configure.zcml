@@ -44,6 +44,32 @@
       permission="zope2.View"
       />
 
+  <!-- Clara's language switch: like the sub-navigation, a NEW element in the
+       whole-body layout rather than an override, so it needs both halves —
+       the chrome pagelet and the PageletViewlet wrapper.
+       profiles/default/viewlets.xml then places it after
+       plone.pageletlayout.globalnav, which is where the header's utility
+       lane begins: language switch, then search.
+
+       It exists because plone.app.multilingual registers its selector for
+       plone.app.layout's IPortalHeader, a manager this layout never renders —
+       so without this element a Clara site with two languages offers no way
+       to switch between them. -->
+  <plone:chromepagelet
+      name="plonetheme.clara.languageselector"
+      class=".pagelets.LanguageSelectorChromePagelet"
+      template="templates/languageselector.pt"
+      layer=".interfaces.IPlonethemeClaraLayer"
+      />
+  <browser:viewlet
+      name="plonetheme.clara.languageselector"
+      pagelet="plonetheme.clara.languageselector"
+      class="plone.pageletlayout.pagelets.layout.PageletViewlet"
+      manager="plone.pageletlayout.pagelets.layout.ILayoutManager"
+      layer=".interfaces.IPlonethemeClaraLayer"
+      permission="zope2.View"
+      />
+
   <!-- Clara's brand token file, served at ++resource++plonetheme.clara/ and
        linked via a registry bundle (profiles/default/registry.xml). -->
   <browser:resourceDirectory

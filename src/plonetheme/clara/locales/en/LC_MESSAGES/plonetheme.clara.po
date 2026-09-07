@@ -58,6 +58,11 @@ msgstr ""
 msgid "Uninstalls plonetheme.clara"
 msgstr ""
 
+#. Default: "Language selection"
+#: ../templates/languageselector.pt:4
+msgid "language_selector_label"
+msgstr "Language selection"
+
 #. Default: "Close menu"
 #: ../pagelets.py:155
 msgid "megamenu_close_label"
@@ -82,6 +87,10 @@ msgstr ""
 #: ../upgrades/1005.zcml:11
 msgid "plonetheme.clara: upgrade to 1005"
 msgstr ""
+
+#: ../upgrades/1006.zcml:11
+msgid "plonetheme.clara: upgrade to 1006"
+msgstr "plonetheme.clara: upgrade to 1006"
 
 #. Default: "More on this topic:"
 #: ../templates/subnav.pt:10

@@ -2,6 +2,38 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Give a multilingual site its language switch back.** `plone.app.multilingual`
+  registers its selector for `plone.app.layout.viewlets.interfaces.IPortalHeader`,
+  a viewlet manager the pagelet layout never renders — so on a Clara site with
+  two languages the switch was not styled wrong, it was absent, at every width
+  and on every page. Nothing short of an element of its own puts it back, and
+  it belongs to Clara for the reason the sub-navigation does: a multilingual
+  site's switch is generic, and a brand layer only re-points its tokens.
+
+  `plonetheme.clara.languageselector` is that element (profile version 1006),
+  placed after `plone.pageletlayout.globalnav` — where the header's utility
+  lane begins: language switch, then search. The lookups are
+  `plone.app.i18n`'s `LanguageSelector` reused, not ported; which selector
+  answers is decided per request, so with `plone.app.multilingual` installed a
+  link goes through `@@multilingual-selector` to the *translation* of the
+  current page, and without it a link is the plain `?set_language=` switch a
+  site with two interface languages wants. Picking by layer inside `update()`
+  rather than by a second registration is deliberate: the two browser layers
+  are siblings, not a chain, so two registrations would be an ambiguous
+  multi-adapter lookup rather than an override.
+
+  It paints codes, not flags: a flag is a country and not a language, and the
+  header row has no place for a 16px raster. The native name rides along as
+  each link's accessible name and title, so nothing is lost to a screen
+  reader, and the current language keeps its link and stays in the row —
+  a switch that shows only the language you are NOT in reads as a label, not
+  as a choice. A site with one language renders nothing at all. Pinned by
+  `tests/test_languageselector.py` and `tests/test_upgrade_1006.py`.
+
+  Two upgrade profiles that were never hidden from the Add-ons panel — 1005
+  and 1006 — join the list `getNonInstallableProfiles` returns, and
+  `test_setup.py` now walks every version rather than the first four.
+
 - Make the toolbar's pin/unpin toggle findable. The viewlet renders it as a
   bare 16px icon link in the header strip — no hit area past the glyph, no
   hover, and nothing naming it — so people who know Volto's collapsible

@@ -1,0 +1,70 @@
+/* clara-language.css — the header's language switch.
+ *
+ * Rendered by LanguageSelectorChromePagelet (plonetheme/clara/pagelets.py) as
+ * one element of the whole-body layout, placed after
+ * plone.pageletlayout.globalnav:
+ *
+ *   <nav class="element-language" aria-label="Language selection">
+ *     <ul class="plone-cluster" id="portal-languageselector">
+ *       <li class="currentLanguage language-de">
+ *         <a hreflang="de" lang="de" aria-current="page" …>DE</a></li>
+ *       <li class="language-en"><a hreflang="en" lang="en" …>EN</a></li>
+ *     </ul>
+ *   </nav>
+ *
+ * A row of codes in the header's utility lane, on the same step and in the
+ * same voice as the login link beside it — this is chrome that has to be
+ * findable and then get out of the way, not a control that competes with the
+ * navigation. The current language stays in the row rather than dropping out
+ * of it: two codes with one of them marked is the whole state, and a switch
+ * that shows only the language you are NOT in reads as a label, not a choice.
+ *
+ * The lane it shares with the login link: `.element-anontools` clears this
+ * element's width, but only on a layout that HAS one — a monolingual site
+ * renders nothing here (render() returns ""), and reserving a lane for an
+ * absent element would move the login link for nothing. `:has()` asks the
+ * question directly.
+ *
+ * Every value is a --plone-/--clara- token, so dark mode and any integrator's
+ * retokenising carry this element without a rule of their own. See
+ * docs/clara-theming-architecture.md §2, §6. */
+@layer components {
+  .element-language {
+    grid-row: 1;
+    align-self: center;
+    justify-self: end;
+    font-size: var(--plone-text-s);
+  }
+  .element-language > ul {
+    --plone-cluster-space: var(--plone-space-xs);
+  }
+  .element-language a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 2.75rem;
+    color: var(--plone-color-muted);
+    font-weight: 650;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .element-language a:hover,
+  .element-language a:focus-visible {
+    color: var(--plone-color-link);
+    text-decoration: underline;
+  }
+  /* The current language: full ink and an underline, so the marker survives
+     a greyscale print and does not rest on colour alone. */
+  .element-language .currentLanguage a {
+    color: var(--plone-color-text);
+    text-decoration: underline;
+  }
+
+  /* The login link steps aside for the switch — only where there is one. */
+  .plone-layout:has(> .element-language) .element-anontools {
+    margin-inline-end: calc(var(--clara-language-lane, 5rem) + var(--plone-space-xs));
+  }
+
+  @media print {
+    .element-language { display: none; }
+  }
+}

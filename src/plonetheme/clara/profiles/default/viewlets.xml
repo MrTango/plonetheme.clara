@@ -13,5 +13,9 @@
   <order manager="plone.pageletlayout.layout" skinname="Plone Default">
     <viewlet name="plonetheme.clara.subnav"
              insert-after="plone.pageletlayout.body" />
+    <!-- The language switch opens the header's utility lane: after the
+         navigation, before the search. -->
+    <viewlet name="plonetheme.clara.languageselector"
+             insert-after="plone.pageletlayout.globalnav" />
   </order>
 </object>

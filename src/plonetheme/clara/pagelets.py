@@ -39,7 +39,10 @@ Data paths (all brain metadata; rendering never wakes objects):
 
 from html import escape
 
+from plone.app.i18n.locales.browser.selector import LanguageSelector
 from plone.app.layout.viewlets.common import GlobalSectionsViewlet
+from plone.app.multilingual.browser.selector import LanguageSelectorViewlet
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 from plone.base.utils import safe_text
 from plone.memoize.view import memoize
 from plone.pageletlayout.chrome import ChromePagelet
@@ -288,5 +291,90 @@ class SubnavChromePagelet(ChromePagelet):
         items, and an empty heading over an empty list is worse than silence.
         """
         if not self.items:
+            return ""
+        return super().render()
+
+
+class LanguageSelectorChromePagelet(ChromePagelet):
+    """The language switch: one row of language codes in the header.
+
+    A NEW element in the whole-body layout, and the reason it has to be one:
+    ``plone.app.multilingual`` registers its selector for
+    ``plone.app.layout.viewlets.interfaces.IPortalHeader``, a manager the
+    pagelet layout never renders. On a Clara site the switch is therefore not
+    styled wrong — it is absent, at every width, however many languages the
+    site has. Nothing short of an element of its own puts it back.
+
+    It belongs to Clara rather than to a brand theme for the reason the
+    sub-navigation does: a multilingual site's switch is generic, and a brand
+    layer only re-points its tokens.
+
+    The lookups are ``plone.app.i18n``'s ``LanguageSelector`` — the languages
+    tool, the bindings, the ordering — REUSED, not ported (the ticket-09
+    rule). Which selector is asked depends on the request: with
+    ``plone.app.multilingual`` installed its subclass answers, so a link goes
+    through ``@@multilingual-selector`` to the *translation* of the current
+    page; without it the base answers and a link is the plain
+    ``?set_language=`` switch. Picking by layer inside ``update()`` rather
+    than by a second registration is deliberate: the two browser layers are
+    siblings, not a chain, so two registrations would be an ambiguous
+    multi-adapter lookup rather than an override.
+
+    Codes, not flags. ``showFlags()`` is honoured to the extent Clara can:
+    the theme draws with type, a flag is a country and not a language, and
+    the header row has no place for a 16px raster. The native name rides
+    along as the link's accessible name, so nothing is lost to a screen
+    reader.
+
+    Markup (templates/languageselector.pt), comment-free because a chrome
+    template's comments ship on every response. Styling:
+    theme/scss/_clara-language.scss.
+    """
+
+    def update(self):
+        selector_class = LanguageSelector
+        if IPloneAppMultilingualInstalled.providedBy(self.request):
+            selector_class = LanguageSelectorViewlet
+        selector = selector_class(self.context, self.request, self.view or self, None)
+        # browser:viewlet stamps __name__ on its synthesized class;
+        # instantiated directly it is None (the ticket-07 wrapper gotcha).
+        selector.__name__ = "plone.app.multilingual.languageselector"
+        selector.update()
+        self.available = selector.available()
+        self.languages = []
+        if not self.available:
+            return
+        # The base selector hands over no link at all — classically the
+        # template built one, and this is that line, kept here so the
+        # template stays a template. plone.app.multilingual's subclass DOES
+        # hand one over (through @@multilingual-selector, to the translation
+        # of this page rather than to this page in another language), and it
+        # wins wherever it is there.
+        view_url = getMultiAdapter(
+            (self.context, self.request), name="plone_context_state"
+        ).view_url()
+        for info in selector.languages():
+            code = info["code"]
+            self.languages.append(
+                {
+                    "code": code,
+                    # the painted label: the code, the way the switch is
+                    # written when there is one row for it and no room for
+                    # "Deutsch · English · Nederlands"
+                    "label": code.upper(),
+                    "name": info.get("native") or info.get("name") or code,
+                    "url": info.get("url") or f"{view_url}?set_language={code}",
+                    "selected": bool(info.get("selected")),
+                }
+            )
+
+    def render(self):
+        """Nothing at all when there is no choice to offer.
+
+        ``available()`` is false on a site with one language, and on one whose
+        languages tool is configured never to show a selector — the setting an
+        integrator reaches for when language comes from the URL alone.
+        """
+        if not self.available:
             return ""
         return super().render()

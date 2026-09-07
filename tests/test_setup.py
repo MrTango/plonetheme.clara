@@ -46,7 +46,7 @@ class TestSetup:
             for name in getattr(utility, "getNonInstallableProfiles", list)()
         ]
         assert "plonetheme.clara.upgrades" in hidden_products
-        for version in ("1001", "1002", "1003", "1004"):
+        for version in ("1001", "1002", "1003", "1004", "1005", "1006"):
             assert f"plonetheme.clara.upgrades:{version}" in hidden_profiles
 
     def test_starter_navigation_and_homepage_are_installed(self):
