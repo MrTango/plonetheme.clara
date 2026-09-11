@@ -32,8 +32,15 @@ class TestSetup:
 
     def test_upgrade_profiles_hidden_from_addons_panel(self):
         """The upgrade profiles are applied by upgrade steps, never offered
-        as installable add-ons."""
+        as installable add-ons.
+
+        Enumerated from the registered profiles rather than from a hardcoded
+        list of versions: scaffolding a step registers a new EXTENSION
+        profile and does not add it to `HiddenProfiles`, and a hardcoded list
+        goes on passing over exactly that gap.
+        """
         from plone.base.interfaces import INonInstallable
+        from Products.GenericSetup import EXTENSION
         from zope.component import getAllUtilitiesRegisteredFor
 
         utilities = getAllUtilitiesRegisteredFor(INonInstallable)
@@ -47,9 +54,16 @@ class TestSetup:
             for utility in utilities
             for name in getattr(utility, "getNonInstallableProfiles", list)()
         ]
+        setup_tool = api.portal.get_tool("portal_setup")
+        registered = [
+            info["id"]
+            for info in setup_tool.listProfileInfo()
+            if info["type"] == EXTENSION and info["product"] == "plonetheme.clara.upgrades"
+        ]
+        assert registered, "no upgrade profile is registered at all"
         assert "plonetheme.clara.upgrades" in hidden_products
-        for version in ("1001", "1002", "1003", "1004", "1005", "1006"):
-            assert f"plonetheme.clara.upgrades:{version}" in hidden_profiles
+        for profile_id in registered:
+            assert profile_id in hidden_profiles
 
     def test_starter_navigation_and_homepage_are_installed(self):
         """A fresh Clara install has the minimal requested information architecture."""

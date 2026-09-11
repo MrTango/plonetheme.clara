@@ -2,6 +2,12 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Hide upgrade profile 1007 from the Add-ons control panel — `HiddenProfiles`
+  enumerated 1001 to 1006 and stopped. The test now derives the expected set
+  from the registered upgrade profiles instead of a hardcoded list of
+  versions, so the next scaffolded step turns it red rather than slipping
+  through.
+
 - **Hide the stock multilingual language selector (profile version 1007).**
   The element added in 1006 was written against a layout that rendered no
   stock viewlet manager at all, so `plone.app.multilingual`'s own selector

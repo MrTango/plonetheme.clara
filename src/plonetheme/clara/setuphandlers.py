@@ -344,6 +344,7 @@ class HiddenProfiles:
             "plonetheme.clara.upgrades:1004",
             "plonetheme.clara.upgrades:1005",
             "plonetheme.clara.upgrades:1006",
+            "plonetheme.clara.upgrades:1007",
         ]
 
 
