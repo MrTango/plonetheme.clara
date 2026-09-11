@@ -52,3 +52,34 @@ jobs:
 
       - name: Run ruff
         run: uvx ruff@0.16.4 check .
+
+  theme:
+    # `src/plonetheme/clara/static/clara.min.css` is compiled from
+    # theme/scss/ and committed — there is no Sass on the deploy host — so it
+    # rots the moment someone edits a partial and forgets to rebuild. The
+    # `git diff --exit-code` is what makes committing it safe.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.3.4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # `postinstall` already runs the build; the explicit step below says so
+      # out loud rather than relying on it.
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the stylesheet
+        run: pnpm run build
+
+      # If this fails, someone edited theme/scss/ and did not rebuild.
+      - name: The committed stylesheet is the one this source builds
+        run: git diff --exit-code -- src/plonetheme/clara/static/clara.min.css
