@@ -229,6 +229,37 @@ keeps the site defaults. This is the sanctioned mechanism for
 "News items are green, Events are amber" — a token scope, never a stylesheet
 fork.
 
+### 1.7 Content header layout
+
+The content header (`.element-contentheader`: the `documentFirstHeading` and
+the `documentDescription`, with the three in-element stock managers around
+them) is an elastic grid with a three-token API:
+
+```css
+:root {
+  --plone-contentheader-column-min: 100%;             /* one column: description under the title */
+  --plone-contentheader-gap: var(--plone-space-m);    /* column gap when they sit side by side */
+  --plone-contentheader-align: start;                 /* block alignment of the two in a row */
+}
+```
+
+`column-min` is the minimum width of a column; the grid lays as many columns
+side by side as fit (`repeat(auto-fit, minmax(...))`). At 100% only one ever
+fits, which is the classic stack. A site sets it to the narrowest the
+description may get — `27rem` puts the description beside the title once the
+content column is about `56rem` wide, and stacks them again below that without
+a media query, in the elastic-first manner of §5. `align: end` bottom-aligns
+the pair, a common page-hero arrangement.
+
+Whatever the stock managers render (`plone.abovecontenttitle`,
+`plone.belowcontenttitle`, `plone.belowcontentdescription`) spans the full
+row, so a lead image or a byline never takes the description's column.
+
+The rule matches both markups the element carries: the pagelet chrome's hooks
+(`h1.documentFirstHeading`, `p.documentDescription`) and the bridged classic
+frame's `context/@@title` and `context/@@description` — a bare `h1` and
+Plone's `p.lead`.
+
 ---
 
 ## 2. Cascade layers

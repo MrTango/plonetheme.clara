@@ -91,6 +91,17 @@
     /* -- measure, radii, borders, interaction ---------------------------- */
     --plone-measure:      65ch;
     --plone-measure-wide: 85ch;
+
+    /* -- content header layout (architecture §1.7) ----------------------- *
+     * The title-and-description element is an elastic grid: a column is at
+     * least `column-min` wide, and as many as fit are laid side by side. At
+     * the default of 100% there is only ever one, so the description sits
+     * under the title — the classic stack. A site that wants them beside each
+     * other lowers the minimum; the pair stacks again on its own where the
+     * two no longer fit. No breakpoint to name, no media query to override. */
+    --plone-contentheader-column-min: 100%;
+    --plone-contentheader-gap: var(--plone-space-m);
+    --plone-contentheader-align: start;
     --plone-radius-0: 0;
     --plone-radius-s: 0.25rem;
     --plone-radius-m: 0.5rem;

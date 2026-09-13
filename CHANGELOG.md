@@ -2,6 +2,16 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **The content header gets a layout API.** `.element-contentheader` is now an
+  elastic grid read from three tokens (`--plone-contentheader-column-min`,
+  `-gap`, `-align`, architecture §1.7). Clara's own defaults keep the classic
+  stack, description under the title; a site lowers the column minimum to put
+  the description beside the title, and the pair stacks again on its own where
+  the two no longer fit — no media query to override. The row gap between the
+  stacked pair now carries the description's spacing, and the title's Bootstrap
+  bottom margin is zeroed inside the element so that spacing is the token's
+  alone. Whatever the in-element managers render spans a full row of its own.
+
 - Hide upgrade profile 1007 from the Add-ons control panel — `HiddenProfiles`
   enumerated 1001 to 1006 and stopped. The test now derives the expected set
   from the registered upgrade profiles instead of a hardcoded list of
