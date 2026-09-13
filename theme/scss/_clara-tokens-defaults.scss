@@ -93,15 +93,19 @@
     --plone-measure-wide: 85ch;
 
     /* -- content header layout (architecture §1.7) ----------------------- *
-     * The title-and-description element is an elastic grid: a column is at
-     * least `column-min` wide, and as many as fit are laid side by side. At
-     * the default of 100% there is only ever one, so the description sits
-     * under the title — the classic stack. A site that wants them beside each
-     * other lowers the minimum; the pair stacks again on its own where the
-     * two no longer fit. No breakpoint to name, no media query to override. */
-    --plone-contentheader-column-min: 100%;
+     * The title-and-description element is a switcher (§3): the pair sits
+     * side by side once the element is at least `threshold` wide and stacks
+     * below that, with no media query. The default threshold is the viewport
+     * itself, which a content column never reaches — the classic stack. A
+     * site names the width at which its page head goes two-up, the two grow
+     * factors set the share of the row each half takes, and `justify` places
+     * the pair once both have reached their measure. */
+    --plone-contentheader-threshold: 100vw;
     --plone-contentheader-gap: var(--plone-space-m);
     --plone-contentheader-align: start;
+    --plone-contentheader-justify: start;
+    --plone-contentheader-title-grow: 1;
+    --plone-contentheader-description-grow: 1;
     --plone-radius-0: 0;
     --plone-radius-s: 0.25rem;
     --plone-radius-m: 0.5rem;

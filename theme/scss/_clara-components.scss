@@ -161,14 +161,15 @@
     font-size: var(--plone-text-s);
   }
 
-  /* Title and description on one elastic grid (architecture §1.7): the
-     `--plone-contentheader-*` tokens decide whether the description stands
-     under the title (Clara's default, one column) or beside it. The row gap
-     carries the space between the two when they stack; the title's own
-     Bootstrap margin is zeroed so that space is the token's and nothing
-     else's. Whatever the in-element managers render (above the title, below
-     it, below the description) takes a full row of its own, so a lead image
-     or a byline never lands in the description's column.
+  /* Title and description on one switcher (architecture §1.7, the §3
+     primitive's idiom): the `--plone-contentheader-*` tokens decide whether
+     the description stands under the title (Clara's default) or beside it,
+     and how the row is shared between the two. The row gap carries the space
+     between the pair when they stack; the title's own Bootstrap margin is
+     zeroed so that space is the token's and nothing else's. Whatever the
+     in-element managers render (above the title, below it, below the
+     description) takes a full row of its own, so a lead image or a byline
+     never lands beside the description.
 
      Two markups reach this element: the pagelet chrome writes the hooks
      (`h1.documentFirstHeading`, `p.documentDescription`), the bridged
@@ -176,24 +177,24 @@
      `context/@@description` — a bare `h1` and Plone's `p.lead`. Both are
      the contract's (§9: Plone's own names, verbatim), so both are matched. */
   .element-contentheader {
-    display: grid;
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(min(var(--plone-contentheader-column-min), 100%), 1fr)
-    );
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--plone-space-s) var(--plone-contentheader-gap);
     align-items: var(--plone-contentheader-align);
+    justify-content: var(--plone-contentheader-justify);
     padding-block: var(--plone-space-xl) var(--plone-space-m);
   }
-  .element-contentheader > * { grid-column: 1 / -1; }
+  .element-contentheader > * { flex-basis: 100%; }
   .element-contentheader > :is(h1, .documentFirstHeading) {
-    grid-column: auto;
+    flex: var(--plone-contentheader-title-grow) 1
+      calc((var(--plone-contentheader-threshold) - 100%) * 999);
     max-inline-size: 15ch;
     margin-block-end: 0;
     font-size: var(--clara-text-heading);
   }
   .element-contentheader > :is(.lead, .documentDescription) {
-    grid-column: auto;
+    flex: var(--plone-contentheader-description-grow) 1
+      calc((var(--plone-contentheader-threshold) - 100%) * 999);
     max-inline-size: 48ch;
     margin-block-end: 0;
     color: var(--plone-color-muted);

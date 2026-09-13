@@ -24,10 +24,14 @@ BUNDLE = (
 )
 
 TOKENS = {
-    "--plone-contentheader-column-min": "100%",
+    "--plone-contentheader-threshold": "100vw",
     "--plone-contentheader-gap": "var(--plone-space-m)",
     "--plone-contentheader-align": "start",
+    "--plone-contentheader-justify": "start",
+    "--plone-contentheader-title-grow": "1",
+    "--plone-contentheader-description-grow": "1",
 }
+SWITCH = "calc((var(--plone-contentheader-threshold) - 100%)*999)".replace(" ", "")
 
 
 @pytest.fixture(scope="module")
@@ -62,12 +66,19 @@ def test_token_is_declared_with_the_classic_default(bundle, name, default):
     assert declared[0].strip() == default
 
 
-def test_header_is_an_elastic_grid_read_from_the_tokens(bundle):
+def test_header_is_a_switcher_read_from_the_tokens(bundle):
+    """The §3 switcher idiom: the pair goes two-up from `threshold`, and each
+    half's share of the row is its grow token."""
     body = _rule(bundle, ".element-contentheader")
-    assert "display:grid" in body
-    assert "repeat(auto-fit,minmax(min(var(--plone-contentheader-column-min),100%),1fr))" in body
+    assert "display:flex" in body
+    assert "flex-wrap:wrap" in body
     assert "var(--plone-contentheader-gap)" in body
     assert "align-items:var(--plone-contentheader-align)" in body
+    assert "justify-content:var(--plone-contentheader-justify)" in body
+    assert f"flex:var(--plone-contentheader-title-grow)1{SWITCH}" in _rule(bundle, TITLE)
+    assert f"flex:var(--plone-contentheader-description-grow)1{SWITCH}" in _rule(
+        bundle, DESCRIPTION
+    )
 
 
 def test_header_reaches_two_columns_without_a_media_query(bundle):
@@ -81,12 +92,12 @@ TITLE = ".element-contentheader>:is(h1,.h1,.documentFirstHeading)"
 DESCRIPTION = ".element-contentheader>:is(.lead,.documentDescription)"
 
 
-def test_title_and_description_take_one_column_each_and_managers_a_row(bundle):
-    """Both markups: the pagelet chrome's hooks and the classic frame's
-    `context/@@title` (a bare h1) and `@@description` (Plone's p.lead)."""
-    assert "grid-column:1/-1" in _rule(bundle, ".element-contentheader>*")
-    assert "grid-column:auto" in _rule(bundle, TITLE)
-    assert "grid-column:auto" in _rule(bundle, DESCRIPTION)
+def test_managers_take_a_full_row(bundle):
+    """Both markups are matched: the pagelet chrome's hooks and the classic
+    frame's `context/@@title` (a bare h1) and `@@description` (Plone's
+    p.lead). Everything else in the element is a manager's output."""
+    assert "flex-basis:100%" in _rule(bundle, ".element-contentheader>*")
+    assert "h1," in TITLE and ".lead," in DESCRIPTION
 
 
 def test_stacked_spacing_is_the_row_gap_alone(bundle):

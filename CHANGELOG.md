@@ -2,15 +2,19 @@
 
 ## 1.0.0a1 (unreleased)
 
-- **The content header gets a layout API.** `.element-contentheader` is now an
-  elastic grid read from three tokens (`--plone-contentheader-column-min`,
-  `-gap`, `-align`, architecture §1.7). Clara's own defaults keep the classic
-  stack, description under the title; a site lowers the column minimum to put
-  the description beside the title, and the pair stacks again on its own where
-  the two no longer fit — no media query to override. The row gap between the
-  stacked pair now carries the description's spacing, and the title's Bootstrap
-  bottom margin is zeroed inside the element so that spacing is the token's
-  alone. Whatever the in-element managers render spans a full row of its own.
+- **The content header gets a layout API.** `.element-contentheader` is now a
+  switcher read from six tokens (`--plone-contentheader-threshold`, `-gap`,
+  `-align`, `-justify`, `-title-grow`, `-description-grow`, architecture
+  §1.7). Clara's
+  own defaults keep the classic stack, description under the title; a site
+  names the element width from which the pair goes two-up and how the row is
+  shared, and the pair stacks again on its own below it — no media query to
+  override. The row gap between the stacked pair now carries the
+  description's spacing, and the title's Bootstrap bottom margin is zeroed
+  inside the element so that spacing is the token's alone. Whatever the
+  in-element managers render takes a full row of its own. The rule also
+  matches the bridged classic frame's markup (a bare `h1` and Plone's
+  `p.lead`), which it never styled before.
 
 - Hide upgrade profile 1007 from the Add-ons control panel — `HiddenProfiles`
   enumerated 1001 to 1006 and stopped. The test now derives the expected set

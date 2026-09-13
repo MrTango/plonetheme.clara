@@ -233,27 +233,31 @@ fork.
 
 The content header (`.element-contentheader`: the `documentFirstHeading` and
 the `documentDescription`, with the three in-element stock managers around
-them) is an elastic grid with a three-token API:
+them) is a switcher in the §3 sense, driven by six tokens:
 
 ```css
 :root {
-  --plone-contentheader-column-min: 100%;             /* one column: description under the title */
+  --plone-contentheader-threshold: 100vw;             /* two-up from this element width; the viewport = never */
   --plone-contentheader-gap: var(--plone-space-m);    /* column gap when they sit side by side */
   --plone-contentheader-align: start;                 /* block alignment of the two in a row */
+  --plone-contentheader-justify: start;               /* where the pair sits once both are at their measure */
+  --plone-contentheader-title-grow: 1;                /* the title's share of the row … */
+  --plone-contentheader-description-grow: 1;          /* … and the description's */
 }
 ```
 
-`column-min` is the minimum width of a column; the grid lays as many columns
-side by side as fit (`repeat(auto-fit, minmax(...))`). At 100% only one ever
-fits, which is the classic stack. A site sets it to the narrowest the
-description may get — `27rem` puts the description beside the title once the
-content column is about `56rem` wide, and stacks them again below that without
-a media query, in the elastic-first manner of §5. `align: end` bottom-aligns
-the pair, a common page-hero arrangement.
+Below the threshold the description stands under the title — Clara's default,
+since a content column is never as wide as the viewport. A site names the
+width at which its page head goes two-up (`56rem`, say) and the pair sits
+side by side from there, sharing the row by the two grow factors (`0.9` and
+`0.75` give the title the wider half), and stacks again on its own below it —
+no media query, in the elastic-first manner of §5. `align: end` bottom-aligns
+the pair and `justify: space-between` parks the description at the far edge
+once both have reached their measure — the common page-hero arrangement.
 
 Whatever the stock managers render (`plone.abovecontenttitle`,
-`plone.belowcontenttitle`, `plone.belowcontentdescription`) spans the full
-row, so a lead image or a byline never takes the description's column.
+`plone.belowcontenttitle`, `plone.belowcontentdescription`) takes a full row,
+so a lead image or a byline never sits beside the description.
 
 The rule matches both markups the element carries: the pagelet chrome's hooks
 (`h1.documentFirstHeading`, `p.documentDescription`) and the bridged classic
