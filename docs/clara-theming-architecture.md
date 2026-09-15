@@ -264,6 +264,12 @@ The rule matches both markups the element carries: the pagelet chrome's hooks
 frame's `context/@@title` and `context/@@description` — a bare `h1` and
 Plone's `p.lead`.
 
+A page that prints its own title and description — a blocks page under
+plone.blicca.auroraeditor (its ADR 0017) fills both slots with nothing — leaves
+the element empty, and an empty element collapses (`:not(:has(*))`), frame and
+all. The six tokens still describe the site's page head; such a page reads
+them through its own layout (Blicca's title row aliases them).
+
 ---
 
 ## 2. Cascade layers

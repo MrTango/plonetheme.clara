@@ -110,3 +110,9 @@ def test_stacked_spacing_is_the_row_gap_alone(bundle):
     assert "gap:var(--plone-space-s)var(--plone-contentheader-gap)" in _rule(
         bundle, ".element-contentheader"
     )
+
+
+def test_an_empty_header_collapses(bundle):
+    """A blocks page fills both slots with nothing (plone.blicca.auroraeditor
+    ADR 0017); the element it leaves behind must not keep its frame."""
+    assert "display:none" in _rule(bundle, ".element-contentheader:not(:has(*))")

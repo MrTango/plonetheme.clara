@@ -2,6 +2,13 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **An empty content header collapses.** A blocks page under
+  plone.blicca.auroraeditor prints its title and description from its own
+  tree (its ADR 0017) and fills both slots with nothing; the element the
+  bridged frame leaves behind kept its `xl`/`m` frame as a blank band above
+  the first block. `.element-contentheader:not(:has(*))` is now
+  `display: none`.
+
 - **The content header gets a layout API.** `.element-contentheader` is now a
   switcher read from six tokens (`--plone-contentheader-threshold`, `-gap`,
   `-align`, `-justify`, `-title-grow`, `-description-grow`, architecture

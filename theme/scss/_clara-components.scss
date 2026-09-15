@@ -202,6 +202,15 @@
     font-weight: inherit;
     line-height: 1.55;
   }
+  /* A blocks page prints its title and description from its own tree
+     (plone.blicca.auroraeditor ADR 0017) and fills both slots with nothing;
+     the bridged frame still emits the element. Nothing inside means nothing
+     to frame: the element goes, padding and all, and the page opens on the
+     first block. `:has(*)` rather than `:empty`, which the frame's
+     whitespace would defeat. */
+  .element-contentheader:not(:has(*)) {
+    display: none;
+  }
   /* The byline pagelet reuses plone.app.layout's viewlet markup wholesale, so
      the live hook is #section-byline (the .element-byline class is kept for
      the future contract sweep). */
