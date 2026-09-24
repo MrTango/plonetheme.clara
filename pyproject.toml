@@ -26,7 +26,6 @@ keywords = ["Plone", "CMS"]
 dependencies = [
     "Plone>=6.2",
     "plone.pageletlayout",
-    "setuptools<81",
     "plone.classicui",
     "Paste",
     "plone.app.caching",
