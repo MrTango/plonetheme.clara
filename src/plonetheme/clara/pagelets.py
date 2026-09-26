@@ -308,12 +308,10 @@ class SubnavChromePagelet(ChromePagelet):
 class LanguageSelectorChromePagelet(ChromePagelet):
     """The language switch: one row of language codes in the header.
 
-    A NEW element in the whole-body layout, and the reason it has to be one:
-    ``plone.app.multilingual`` registers its selector for
-    ``plone.app.layout.viewlets.interfaces.IPortalHeader``, a manager the
-    pagelet layout never renders. On a Clara site the switch is therefore not
-    styled wrong — it is absent, at every width, however many languages the
-    site has. Nothing short of an element of its own puts it back.
+    A layout element of its own rather than a restyle of
+    ``plone.app.multilingual``'s selector: Clara places it in the header's
+    utility lane, next to the navigation and the search, which the stock
+    viewlet's manager and markup do not allow.
 
     It belongs to Clara rather than to a brand theme for the reason the
     sub-navigation does: a multilingual site's switch is generic, and a brand

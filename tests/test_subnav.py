@@ -186,20 +186,27 @@ class TestSubnav:
 
 
 class TestSubnavRegistration:
-    """The element's place in the whole-body layout order."""
+    """The element's slot and its place there."""
 
-    def test_viewlets_xml_anchors_after_the_body(self):
-        """insert-after, so plone.pageletlayout keeps owning the sequence."""
-        import plonetheme.clara
+    layer = INTEGRATION_TESTING
 
-        package_dir = plonetheme.clara.__path__[0]
-        with open(
-            f"{package_dir}/profiles/default/viewlets.xml", encoding="utf-8"
-        ) as fh:
-            xml = fh.read()
-        assert 'manager="plone.pageletlayout.layout"' in xml
-        assert 'name="plonetheme.clara.subnav"' in xml
-        assert 'insert-after="plone.pageletlayout.body"' in xml
+    @pytest.fixture(autouse=True)
+    def _setup(self, integration):
+        self.portal = integration["portal"]
+
+    def test_assigned_below_the_content_body(self):
+        from plone import api
+
+        assignments = api.portal.get_registry_record("plone.pageletlayout.slot_assignments")
+        assert assignments["plonetheme.clara.subnav"] == "plone.belowcontentbody"
+
+    def test_first_in_its_slot(self):
+        from plone.app.viewletmanager.interfaces import IViewletSettingsStorage
+        from zope.component import getUtility
+
+        storage = getUtility(IViewletSettingsStorage)
+        order = storage.getOrder("plone.belowcontentbody", "Plone Default")
+        assert order[0] == "plonetheme.clara.subnav"
 
 
 # --------------------------------------------------------------------------- #

@@ -8,7 +8,7 @@ from zope.component import getUtility
 from plonetheme.clara.testing import INTEGRATION_TESTING
 
 
-MANAGER = "plone.pageletlayout.layout"
+MANAGER = "plone.mainnavigation"
 NAME = "plonetheme.clara.languageselector"
 
 

@@ -1,8 +1,7 @@
 /* clara-subnav.css — the page-tail sub-navigation.
  *
- * Rendered by SubnavChromePagelet (plonetheme/clara/pagelets.py) as one
- * element of the whole-body layout, placed directly after
- * plone.pageletlayout.body:
+ * Rendered by SubnavChromePagelet (plonetheme/clara/pagelets.py) as a layout
+ * element in plone.belowcontentbody, directly after the content body:
  *
  *   <nav class="element-subnav" aria-labelledby="subnav-heading">
  *     <h2 class="subnav-heading" id="subnav-heading">…</h2>

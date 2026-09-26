@@ -2,6 +2,16 @@
 
 ## 1.0.0a1 (unreleased)
 
+- **Clara renders in plone.pageletlayout's slot layout.** The page keeps its
+  semantic landmarks: `header#portal-top`, `main` with `article#content`, and
+  `footer#portal-footer-wrapper`, each a `.plone-region` subgrid on the
+  page's named column lines. Clara's language switch and the searchbox join
+  the navigation in `plone.mainnavigation`; the sub-navigation renders in
+  `plone.belowcontentbody` (registry.xml, viewlets.xml, upgrade step 1008).
+  The empty content header still collapses when only the social-tags
+  microdata sits in it, and drops its frame when it holds no title. Needs
+  plone.pageletlayout 1004.
+
 - **An empty content header collapses.** A blocks page under
   plone.blicca.auroraeditor prints its title and description from its own
   tree (its ADR 0017) and fills both slots with nothing; the element the

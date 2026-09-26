@@ -12,7 +12,7 @@ SKINNAME = "Plone Default"
 STOCK_MANAGER = "plone.portalheader"
 STOCK = "plone.app.multilingual.languageselector"
 
-LAYOUT_MANAGER = "plone.pageletlayout.layout"
+LAYOUT_MANAGER = "plone.mainnavigation"
 OURS = "plonetheme.clara.languageselector"
 
 

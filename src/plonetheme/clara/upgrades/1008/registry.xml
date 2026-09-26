@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+  <!-- Where Clara's elements render (plone.pageletlayout's slot
+       assignment, pagelets/slots.py). purge="false" adds and moves these
+       entries without replacing the base package's others.
+
+       · The language switch and the searchbox join the global navigation in
+         plone.mainnavigation, after it: the header's utility lane reads
+         navigation, language, search — in the DOM and in the tab order.
+       · The sub-navigation renders below the content body, above the
+         content's own footer rows. -->
+  <record name="plone.pageletlayout.slot_assignments">
+    <value purge="false">
+      <element key="plonetheme.clara.languageselector">plone.mainnavigation</element>
+      <element key="plone.pageletlayout.searchbox">plone.mainnavigation</element>
+      <element key="plonetheme.clara.subnav">plone.belowcontentbody</element>
+    </value>
+  </record>
+</registry>

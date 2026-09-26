@@ -114,5 +114,29 @@ def test_stacked_spacing_is_the_row_gap_alone(bundle):
 
 def test_an_empty_header_collapses(bundle):
     """A blocks page fills both slots with nothing (plone.blicca.auroraeditor
-    ADR 0017); the element it leaves behind must not keep its frame."""
-    assert "display:none" in _rule(bundle, ".element-contentheader:not(:has(*))")
+    ADR 0017); the element it leaves behind must not keep its frame. The
+    invisible social-tags microdata inside it does not count."""
+    assert "display:none" in _rule(
+        bundle, ".element-contentheader:not(:has(>:not(.element-socialtags)))"
+    )
+
+
+def test_a_header_without_title_drops_its_frame(bundle):
+    """A lead image or a byline alone keeps its own spacing."""
+    selector = (
+        ".element-contentheader:not(:has(>:is(h1,.documentFirstHeading,.lead,"
+        ".documentDescription)))"
+    )
+    assert "padding-block:0" in _rule(bundle, selector)
+
+
+def test_landmarks_are_subgrids_of_the_layout(bundle):
+    """header, main, footer and the content article keep the page's named
+    column lines (plone.pageletlayout's slot layout)."""
+    body = _rule(
+        bundle,
+        ".plone-layout>.plone-region,.plone-region>.plone-region,"
+        ".plone-region>#content,.plone-region>#content>.plone-region",
+    )
+    assert "grid-template-columns:subgrid" in body
+    assert "grid-column:full-start/full-end" in body

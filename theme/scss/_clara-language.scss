@@ -1,8 +1,8 @@
 /* clara-language.css — the header's language switch.
  *
  * Rendered by LanguageSelectorChromePagelet (plonetheme/clara/pagelets.py) as
- * one element of the whole-body layout, placed after
- * plone.pageletlayout.globalnav:
+ * a layout element in plone.mainnavigation, placed after
+ * plone.pageletlayout.globalnav, inside header#portal-top:
  *
  *   <nav class="element-language" aria-label="Language selection">
  *     <ul class="plone-cluster" id="portal-languageselector">
@@ -60,7 +60,7 @@
   }
 
   /* The login link steps aside for the switch — only where there is one. */
-  .plone-layout:has(> .element-language) .element-anontools {
+  .plone-region:has(> .element-language) .element-anontools {
     margin-inline-end: calc(var(--clara-language-lane, 5rem) + var(--plone-space-xs));
   }
 

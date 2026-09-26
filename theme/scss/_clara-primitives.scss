@@ -103,4 +103,31 @@
     display: grid;
     grid-template-columns: subgrid;
   }
+
+  /* The landmarks (header#portal-top, main, footer#portal-footer-wrapper),
+     the content article inside main and its footer are .plone-region
+     subgrids across the full width: their children sit on the page's named
+     column lines exactly as a direct child of .plone-layout does. The
+     article's children match at zero specificity, so a component rule
+     placing its own element always wins. */
+  .plone-layout > .plone-region,
+  .plone-region > .plone-region,
+  .plone-region > #content,
+  .plone-region > #content > .plone-region {
+    grid-column: full-start / full-end;
+    display: grid;
+    grid-template-columns: subgrid;
+    row-gap: var(--plone-layout-space, var(--plone-space-m));
+    align-content: start;
+  }
+  .plone-region > *,
+  :where(.plone-region > #content) > * { grid-column: content-start / content-end; }
+  .plone-region > .plone-bleed,
+  :where(.plone-region > #content) > .plone-bleed { grid-column: full-start / full-end; }
+  .plone-region > .plone-bleed--contained,
+  :where(.plone-region > #content) > .plone-bleed--contained {
+    grid-column: full-start / full-end;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
 }

@@ -23,7 +23,7 @@ from plonetheme.clara.pagelets import LanguageSelectorChromePagelet
 from plonetheme.clara.testing import INTEGRATION_TESTING
 
 
-MANAGER = "plone.pageletlayout.layout"
+MANAGER = "plone.mainnavigation"
 NAME = "plonetheme.clara.languageselector"
 
 #: The stock selector this element replaces, and the manager the layout
@@ -33,7 +33,7 @@ STOCK = "plone.app.multilingual.languageselector"
 
 
 class TestLanguageSelectorOrder:
-    """The element is IN the whole-body layout, and in the right place."""
+    """The element is assigned to the navigation slot, in the right place."""
 
     layer = INTEGRATION_TESTING
 
@@ -45,7 +45,12 @@ class TestLanguageSelectorOrder:
         storage = getUtility(IViewletSettingsStorage)
         return list(storage.getOrder(MANAGER, "Plone Default"))
 
-    def test_registered_in_the_layout_manager(self):
+    def test_assigned_to_the_navigation_slot(self):
+        from plone import api
+
+        assignments = api.portal.get_registry_record("plone.pageletlayout.slot_assignments")
+        assert assignments[NAME] == MANAGER
+        assert assignments["plone.pageletlayout.searchbox"] == MANAGER
         assert NAME in self._order()
 
     def test_opens_the_header_utility_lane(self):

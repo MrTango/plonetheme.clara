@@ -13,20 +13,4 @@
   <order manager="plone.belowcontentbody" skinname="Plone Default">
     <viewlet name="plonetheme.clara.subnav" insert-before="*" />
   </order>
-
-  <!-- The stock selector Clara's own element replaces.
-
-       plone.app.multilingual registers its selector into plone.portalheader,
-       a slot the layout renders — so the stock switch would render on every
-       page of a multilingual site beside the element that exists to replace
-       it. The same trade the base package makes for the logo, the
-       breadcrumbs and the byline: render the manager, hide what we
-       reimplement.
-
-       Configuration, not a code-level exemption: an integrator who prefers
-       plone.app.multilingual's markup unhides this and hides
-       plonetheme.clara.languageselector instead. -->
-  <hidden manager="plone.portalheader" skinname="Plone Default">
-    <viewlet name="plone.app.multilingual.languageselector" />
-  </hidden>
 </object>

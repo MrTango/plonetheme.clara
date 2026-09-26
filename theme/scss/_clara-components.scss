@@ -204,12 +204,19 @@
   }
   /* A blocks page prints its title and description from its own tree
      (plone.blicca.auroraeditor ADR 0017) and fills both slots with nothing;
-     the bridged frame still emits the element. Nothing inside means nothing
-     to frame: the element goes, padding and all, and the page opens on the
-     first block. `:has(*)` rather than `:empty`, which the frame's
-     whitespace would defeat. */
-  .element-contentheader:not(:has(*)) {
+     the bridged frame still emits the element. Nothing visible inside means
+     nothing to frame: the element goes, padding and all, and the page opens
+     on the first block. The social-tags microdata (plone.abovecontenttitle)
+     is invisible and does not count. `:has()` rather than `:empty`, which
+     the frame's whitespace would defeat. */
+  .element-contentheader:not(:has(> :not(.element-socialtags))) {
     display: none;
+  }
+  /* Without a title and a description the frame has nothing to frame; what
+     the content-header managers render (a lead image, the byline) keeps its
+     own spacing. */
+  .element-contentheader:not(:has(> :is(h1, .documentFirstHeading, .lead, .documentDescription))) {
+    padding-block: 0;
   }
   /* The byline pagelet reuses plone.app.layout's viewlet markup wholesale, so
      the live hook is #section-byline (the .element-byline class is kept for
@@ -233,6 +240,13 @@
   }
 
   .element-body {
+    padding-block-end: var(--plone-space-2xl);
+  }
+  /* The bridged classic frame wraps the whole content article in
+     .element-body; the closing space belongs to the body text, above the
+     content managers that follow it (the sub-navigation among them). */
+  .element-body:has(> #content > #content-core) { padding-block-end: 0; }
+  .element-body > #content > #content-core {
     padding-block-end: var(--plone-space-2xl);
   }
   .element-body > :where(p, ul, ol, blockquote, h2, h3) {
@@ -529,7 +543,9 @@
     .element-searchbox,
     .clara-home-actions,
     .element-siteactions { display: none; }
-    .plone-layout { display: block; }
+    .plone-layout,
+    .plone-region,
+    .plone-region > #content { display: block; }
     .element-copyright,
     .element-colophon {
       padding-inline: 0;

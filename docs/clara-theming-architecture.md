@@ -16,7 +16,7 @@ theme that owns every stylesheet.
 
 | Package | Owns | Ships |
 |---|---|---|
-| `plone.pageletlayout` | The **rendering machinery** and the **markup contract** | Pagelet/layout directives, the single whole-body viewlet manager, the content views, all base templates, and the **class + custom-property vocabulary** those templates author (`.plone-*` primitive classes, `.element-*` hooks, `--plone-*` token references with fallbacks). **No CSS bundle, no Bootstrap.** Staged to prove the layout machinery, then merged upstream into `plone.app.layout`. |
+| `plone.pageletlayout` | The **rendering machinery** and the **markup contract** | Pagelet/layout directives, the slot layout over Plone's stock viewlet managers, the content views, all base templates, and the **class + custom-property vocabulary** those templates author (`.plone-*` primitive classes, `.element-*` hooks, `--plone-*` token references with fallbacks). **No CSS bundle, no Bootstrap.** Staged to prove the layout machinery, then merged upstream into `plone.app.layout`. |
 | `plonetheme.clara` | The **one real theme** | The `--plone-*` token **values**, the Bootstrap 5.3 **Sass compile** driven from those values, the `@layer` declaration, the layout-primitive CSS, the `--bs-*`→`--plone-*` bridge, the `$spacers` remap, dark-mode token flips, Clara's own non-contract extensions (`.clara-megamenu`, brand assets) — **all of it as one compiled bundle**, `clara.min.css`. |
 
 `--plone-*` is the name of the **design language**, not of the theme — exactly
@@ -491,14 +491,27 @@ property on a child or a one-off scope — never to add a utility class.**
 
 ---
 
-## 4. The single viewlet manager and the content views
+## 4. The slot layout and the content views
 
-The base ships **one** `OrderedViewletManager` — `plone.pageletlayout.layout`
-— holding a flat sibling list of ~13 element wrappers (`logo`, `anontools`,
-`globalnav`, `searchbox`, `breadcrumbs`, `statusmessages`, `socialtags`,
-`contentheader`, `byline`, `body`, `copyright`, `colophon`, `siteactions`). The
-whole page is that list; there are no nested managers and no shared wrapper
-markup between elements (each element's markup travels with the element).
+The base renders Plone's **stock viewlet managers** in their classic, semantic
+places: `header#portal-top` (portaltop, portalheader, mainnavigation),
+`main#main-container` (status messages, abovecontent, and `article#content`
+with the content header, abovecontentbody, the body, belowcontentbody and a
+`footer` for belowcontent) and `footer#portal-footer-wrapper` (portalfooter).
+The layout elements (`logo`, `anontools`, `globalnav`, `searchbox`,
+`breadcrumbs`, `socialtags`, `byline`, `copyright`, `colophon`, `siteactions`,
+Clara's `subnav` and `languageselector`) are registered once; the registry
+record `plone.pageletlayout.slot_assignments` decides which manager renders
+each one, and `viewlets.xml` / `@@manage-layout-viewlets` order and hide them
+inside it. Clara assigns its language switch and the searchbox to
+`plone.mainnavigation`, after the navigation, and its sub-navigation to
+`plone.belowcontentbody`.
+
+Every landmark, and the content article, is a `.plone-region`: a **subgrid**
+of `.plone-layout` across the full width. Its children sit on the same named
+column lines a direct child of `.plone-layout` does, so everything below —
+the readable column, `.plone-bleed`, the header's rows — works inside each
+landmark unchanged. Each element's markup still travels with the element.
 
 ### The content views — the payload (Half B)
 
@@ -521,12 +534,12 @@ element.
 
 ### Decision: single content column
 
-Clara is a **single-column** theme (like Volto): the whole-body manager is a
-flat sibling list rendered into one readable content column — there are **no
+Clara is a **single-column** theme (like Volto): every landmark renders into
+one readable content column — there are **no
 portlet side-columns**, no `.row`/`.col` content split. The `.plone-sidebar`
 primitive (§3) exists for components that locally want a rail, but the page
-itself never splits. This falls straight out of the whole-body flat-list
-architecture; there is nothing to switch off. Full-width elements escape the
+itself never splits. The slot layout renders no portlet columns, so there is
+nothing to switch off. Full-width elements escape the
 column with `.plone-bleed` (below), which is how a Volto-style full-bleed header
 band or hero is achieved without a second column.
 
@@ -570,7 +583,7 @@ named-column grid can, and its `row-gap` subsumes everything the
 ### How a viewlet opts into full-bleed
 
 It adds `plone-bleed` (or `plone-bleed--contained`) to its **own outermost
-element** — the markup travels with the element (§ the flat-list rule). No
+element** — the markup travels with the element. No
 parent wrapper, no layout template edit:
 
 ```html
@@ -591,11 +604,10 @@ spacing utility:
 
 ### Visual reordering in CSS, without touching ZCML registration order
 
-Two independent mechanisms, both leaving `viewlets.xml` registration order (and
-the flat twin's code order) untouched:
+Two independent mechanisms, both leaving the `viewlets.xml` order untouched:
 
-- **`order`** for a purely visual swap within the flat flow:
-  `@layer components { .plone-layout > .element-siteactions { order: -1 } }`.
+- **`order`** for a purely visual swap within one landmark:
+  `@layer components { #portal-footer-wrapper > .element-siteactions { order: -1 } }`.
 - **Named grid areas** for a structural regional move. Because the children sit
   on named column lines, a Clara variant can assign `grid-row`/area names to
   hoist, say, `breadcrumbs` above `globalnav` visually while the DOM and the
@@ -1072,9 +1084,8 @@ Blunt about what hurts.
   means Clara cannot defensively reclaim those elements without the add-on
   moving into the `addons` layer. Coordinate with high-footprint add-ons.
 - **Add-ons that assumed Barceloneta's exact DOM** (deep descendant selectors
-  into the old viewlet markup) break — the pagelet layout's DOM is flatter (§4).
-  This is real and unavoidable; it is the cost of retiring `main_template` +
-  nested viewlet managers.
+  into the old viewlet markup) break — the stock managers render in the same
+  landmarks, but the elements' own markup is the pagelet contract's (§4).
 
 ### Where legacy wrapper markup fights the primitives
 

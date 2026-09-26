@@ -18,4 +18,13 @@
     <value>True</value>
   </record>
 
+  <!-- The searchbox goes back to the base package's slot. Clara's own
+       entries stay behind harmlessly: their elements go with the browser
+       layer, and an assignment naming no element renders nothing. -->
+  <record name="plone.pageletlayout.slot_assignments">
+    <value purge="false">
+      <element key="plone.pageletlayout.searchbox">plone.portalheader</element>
+    </value>
+  </record>
+
 </registry>
