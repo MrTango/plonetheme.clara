@@ -331,8 +331,7 @@ class HiddenProfiles:
         ]
 
     def getNonInstallableProfiles(self):
-        """Upgrade profiles are applied by their upgradeDepends steps only."""
+        """Upgrade profiles are applied by their upgrade steps only."""
         return [
             "plonetheme.clara:uninstall",
-            "plonetheme.clara.upgrades:1008",
         ]

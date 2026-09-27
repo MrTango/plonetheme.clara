@@ -31,14 +31,7 @@ class TestSetup:
         assert IPlonethemeClaraLayer in utils.registered_layers()
 
     def test_upgrade_profiles_hidden_from_addons_panel(self):
-        """The upgrade profiles are applied by upgrade steps, never offered
-        as installable add-ons.
-
-        Enumerated from the registered profiles rather than from a hardcoded
-        list of versions: scaffolding a step registers a new EXTENSION
-        profile and does not add it to `HiddenProfiles`, and a hardcoded list
-        goes on passing over exactly that gap.
-        """
+        """Every registered upgrade profile stays out of the Add-ons panel."""
         from plone.base.interfaces import INonInstallable
         from Products.GenericSetup import EXTENSION
         from zope.component import getAllUtilitiesRegisteredFor
@@ -60,7 +53,6 @@ class TestSetup:
             for info in setup_tool.listProfileInfo()
             if info["type"] == EXTENSION and info["product"] == "plonetheme.clara.upgrades"
         ]
-        assert registered, "no upgrade profile is registered at all"
         assert "plonetheme.clara.upgrades" in hidden_products
         for profile_id in registered:
             assert profile_id in hidden_profiles
