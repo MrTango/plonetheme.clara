@@ -11,7 +11,6 @@ What it lists is the folder's FOLDERISH children only: this is a way down the
 tree, not an index of everything filed beside the default page.
 """
 import re
-from pathlib import Path
 
 import pytest
 from plone import api
@@ -217,20 +216,10 @@ class TestSubnavRegistration:
 # there is nothing left to be wrong at one width and right at another.
 # --------------------------------------------------------------------------- #
 
-BUNDLE = (
-    Path(__file__).resolve().parent.parent
-    / "src" / "plonetheme" / "clara" / "static" / "clara.min.css"
-)
-
 
 @pytest.fixture(scope="module")
-def subnav_css():
-    assert BUNDLE.exists(), (
-        f"compiled bundle missing at {BUNDLE} — run `pnpm run build` in "
-        f"plonetheme.clara first."
-    )
-    css = re.sub(r"/\*.*?\*/", "", BUNDLE.read_text(), flags=re.DOTALL)
-    return re.sub(r"\s+", "", css)
+def subnav_css(bundle):
+    return re.sub(r"\s+", "", bundle)
 
 
 @pytest.fixture(scope="module")

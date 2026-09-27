@@ -28,11 +28,9 @@ from pathlib import Path
 
 import pytest
 
+from tests.conftest import strip_block_comments
 
-BUNDLE = (
-    Path(__file__).resolve().parent.parent
-    / "src" / "plonetheme" / "clara" / "static" / "clara.min.css"
-)
+
 SCSS = Path(__file__).resolve().parent.parent / "theme" / "scss"
 
 #: The §7 map authored in clara-bootstrap.scss: Bootstrap spacer step → the
@@ -50,26 +48,10 @@ SPACERS = {
 HEADLINE = (".mb-3", "var(--plone-space-s)")
 
 
-def _strip_block_comments(text):
-    """CSS `/* … */` only. NOT `//` — the compiled bundle has no `//`
-    line-comments (compressed Sass strips them), but it does carry `http://`
-    inside SVG data URIs, so a `//`-to-EOL strip would eat half the file."""
-    return re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
-
-
 def _strip_scss_comments(text):
     """SCSS source: drop both `/* … */` blocks and `//` line comments."""
-    text = _strip_block_comments(text)
+    text = strip_block_comments(text)
     return re.sub(r"//[^\n]*", "", text)
-
-
-@pytest.fixture(scope="module")
-def bundle():
-    assert BUNDLE.exists(), (
-        f"compiled bundle missing at {BUNDLE} — run `pnpm install` (or "
-        f"`pnpm run build`) in plonetheme.clara first."
-    )
-    return _strip_block_comments(BUNDLE.read_text())
 
 
 def _rule(bundle, selector):

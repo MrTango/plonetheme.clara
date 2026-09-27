@@ -23,28 +23,8 @@ hierarchy intact). It pins two things a `:root`-only bridge silently got wrong:
     every button to one size.
 """
 import re
-from pathlib import Path
 
 import pytest
-
-
-BUNDLE = (
-    Path(__file__).resolve().parent.parent
-    / "src" / "plonetheme" / "clara" / "static" / "clara.min.css"
-)
-
-
-def _strip_block_comments(text):
-    return re.sub(r"/\*.*?\*/", "", text, flags=re.DOTALL)
-
-
-@pytest.fixture(scope="module")
-def bundle():
-    assert BUNDLE.exists(), (
-        f"compiled bundle missing at {BUNDLE} — run `pnpm run build` in "
-        f"plonetheme.clara first."
-    )
-    return _strip_block_comments(BUNDLE.read_text())
 
 
 def _rules(bundle, selector):

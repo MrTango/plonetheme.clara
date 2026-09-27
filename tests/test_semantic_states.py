@@ -1,24 +1,7 @@
 """Runtime semantic-state mappings in Clara's compiled bundle."""
 import re
-from pathlib import Path
 
 import pytest
-
-
-BUNDLE = (
-    Path(__file__).resolve().parent.parent
-    / "src"
-    / "plonetheme"
-    / "clara"
-    / "static"
-    / "clara.min.css"
-)
-
-
-@pytest.fixture(scope="module")
-def bundle():
-    assert BUNDLE.exists(), "run `pnpm run build` before pytest"
-    return re.sub(r"/\*.*?\*/", "", BUNDLE.read_text(), flags=re.DOTALL)
 
 
 def _bodies(bundle, selector):

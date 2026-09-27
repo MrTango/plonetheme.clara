@@ -9,19 +9,9 @@ inherits.
 """
 
 import re
-from pathlib import Path
 
 import pytest
 
-
-BUNDLE = (
-    Path(__file__).resolve().parent.parent
-    / "src"
-    / "plonetheme"
-    / "clara"
-    / "static"
-    / "clara.min.css"
-)
 
 TOKENS = {
     "--plone-contentheader-threshold": "100vw",
@@ -32,12 +22,6 @@ TOKENS = {
     "--plone-contentheader-description-grow": "1",
 }
 SWITCH = "calc((var(--plone-contentheader-threshold) - 100%)*999)".replace(" ", "")
-
-
-@pytest.fixture(scope="module")
-def bundle():
-    assert BUNDLE.exists(), f"compiled bundle missing at {BUNDLE}"
-    return re.sub(r"/\*.*?\*/", "", BUNDLE.read_text(), flags=re.DOTALL)
 
 
 def _rule(bundle, selector):

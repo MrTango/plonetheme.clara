@@ -19,19 +19,11 @@ exists in the assembled cascade.
 """
 
 import re
-from pathlib import Path
 
 import pytest
 
+from tests.conftest import BUNDLE
 
-BUNDLE = (
-    Path(__file__).resolve().parent.parent
-    / "src"
-    / "plonetheme"
-    / "clara"
-    / "static"
-    / "clara.min.css"
-)
 
 pytestmark = pytest.mark.skipif(
     not BUNDLE.is_file(),
