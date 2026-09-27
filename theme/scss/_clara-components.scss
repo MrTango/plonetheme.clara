@@ -102,16 +102,6 @@
     border-block: var(--plone-border);
     background: var(--plone-color-bg);
   }
-  #portal-globalnav {
-    min-block-size: 3rem;
-    gap: var(--plone-space-m);
-  }
-  #portal-globalnav > .nav-item > .nav-link {
-    min-block-size: 2.75rem;
-    border-block-end-width: 3px;
-    font-size: var(--clara-text-nav);
-    font-weight: 650;
-  }
   /* Blue is structure: the current/open marker is the brand underline;
      amber stays reserved for the live edge (CTA, published state). */
   #portal-globalnav > .nav-item:has(> .opener:checked) > .nav-link,
