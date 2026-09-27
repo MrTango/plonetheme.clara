@@ -39,7 +39,7 @@
       name="plonetheme.clara.subnav"
       pagelet="plonetheme.clara.subnav"
       class="plone.pageletlayout.pagelets.layout.PageletViewlet"
-      manager="plone.pageletlayout.pagelets.layout.ILayoutManager"
+      manager="plone.pageletlayout.pagelets.slots.ILayoutManager"
       layer=".interfaces.IPlonethemeClaraLayer"
       permission="zope2.View"
       />
@@ -62,7 +62,7 @@
       name="plonetheme.clara.languageselector"
       pagelet="plonetheme.clara.languageselector"
       class="plone.pageletlayout.pagelets.layout.PageletViewlet"
-      manager="plone.pageletlayout.pagelets.layout.ILayoutManager"
+      manager="plone.pageletlayout.pagelets.slots.ILayoutManager"
       layer=".interfaces.IPlonethemeClaraLayer"
       permission="zope2.View"
       />
