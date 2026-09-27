@@ -66,8 +66,8 @@ def _strip_scss_comments(text):
 @pytest.fixture(scope="module")
 def bundle():
     assert BUNDLE.exists(), (
-        f"compiled bundle missing at {BUNDLE} — run `npm install` (or "
-        f"`npm run build`) in plonetheme.clara first."
+        f"compiled bundle missing at {BUNDLE} — run `pnpm install` (or "
+        f"`pnpm run build`) in plonetheme.clara first."
     )
     return _strip_block_comments(BUNDLE.read_text())
 

@@ -2,7 +2,7 @@
 <registry>
 
   <!-- Clara's ONE compiled theme bundle (wayfinder ticket 04). Built by
-       `npm run build` from theme/scss/clara.scss: the @layer declaration +
+       `pnpm run build` from theme/scss/clara.scss: the @layer declaration +
        reset, the clara token defaults + Clara's brand override, Bootstrap
        5.3.8 compiled from those tokens (§6.1/6.2) and wrapped in
        @layer bootstrap, the layout primitives, the bs-to-clara bridge, the

@@ -35,7 +35,7 @@ BUNDLE = (
 
 pytestmark = pytest.mark.skipif(
     not BUNDLE.is_file(),
-    reason="clara.min.css is gitignored; run `npm run build` first",
+    reason="clara.min.css is missing; run `pnpm run build` first",
 )
 
 #: Roles the dark block moves that a later `:root` would otherwise undo.

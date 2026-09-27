@@ -35,7 +35,7 @@ def _strip_block_comments(text):
 @pytest.fixture(scope="module")
 def bundle():
     assert BUNDLE.exists(), (
-        f"compiled bundle missing at {BUNDLE} — run `npm run build` in "
+        f"compiled bundle missing at {BUNDLE} — run `pnpm run build` in "
         f"plonetheme.clara first."
     )
     return _strip_block_comments(BUNDLE.read_text())

@@ -17,7 +17,7 @@ BUNDLE = (
 
 @pytest.fixture(scope="module")
 def bundle():
-    assert BUNDLE.exists(), "run `npm run build` before pytest"
+    assert BUNDLE.exists(), "run `pnpm run build` before pytest"
     return re.sub(r"/\*.*?\*/", "", BUNDLE.read_text(), flags=re.DOTALL)
 
 

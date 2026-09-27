@@ -11,5 +11,6 @@
   "scripts": {
     "build": "sass --load-path=node_modules --style=compressed --no-source-map theme/scss/clara.scss src/plonetheme/clara/static/clara.min.css",
     "postinstall": "pnpm run build"
-  }
+  },
+  "packageManager": "pnpm@12.3.4"
 }
