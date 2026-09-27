@@ -28,3 +28,14 @@ class TestUpgrade1001:
 
         setup_tool = self.portal.portal_setup
         upgrade(setup_tool)
+
+    def test_upgrade_does_not_rerun_post_install(self):
+        """Deleted starter content stays deleted after the upgrade."""
+        from plonetheme.clara.upgrades.v1001 import upgrade
+
+        self.portal.manage_delObjects(["demo-content", "contact"])
+
+        upgrade(self.portal.portal_setup)
+
+        assert "demo-content" not in self.portal.objectIds()
+        assert "contact" not in self.portal.objectIds()

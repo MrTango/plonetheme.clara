@@ -1,16 +1,15 @@
 """Reimport registry.xml (Clara bundle + navigation_depth)."""
 import logging
 
-from .base import reload_gs_profile
+from plone.app.upgrade.utils import loadMigrationProfile
 
 
 logger = logging.getLogger(__name__)
 
+PROFILE = "profile-plonetheme.clara:default"
+
 
 def upgrade(context):
-    """A custom upgrade step
-
-    Upgrade from profile version 1000 to 1001.
-    """
+    """Upgrade from profile version 1000 to 1001: reimport the registry only."""
     logger.info("Running upgrade step: Reimport registry.xml (Clara bundle + navigation_depth)")
-    reload_gs_profile(context)
+    loadMigrationProfile(context, PROFILE, steps=["plone.app.registry"])
