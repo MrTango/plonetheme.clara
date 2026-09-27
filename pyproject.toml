@@ -26,9 +26,6 @@ keywords = ["Plone", "CMS"]
 dependencies = [
     "Plone>=6.2",
     "plone.pageletlayout",
-    "plone.classicui",
-    "Paste",
-    "plone.app.caching",
     "plone.app.upgrade",
 ]
 
@@ -129,4 +126,5 @@ constraint-dependencies = ["Products.CMFPlone==6.2.1"]
 "plone.app.viewletmanager" = { path = "../plone.app.viewletmanager", editable = true }
 
 [dependency-groups]
-dev = ["invoke", "watchdog"]
+# Paste and plone.classicui serve the local dev instance (var/instance).
+dev = ["invoke", "watchdog", "Paste", "plone.classicui"]
