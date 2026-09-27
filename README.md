@@ -36,6 +36,17 @@ mode, set `data-bs-theme` on the `<html>` element:
 - `data-bs-theme="dark"` makes a site dark on a light OS. It also works on any
   inner element to darken just that region.
 
+## Search on demand
+
+Set the registry record `plonetheme.clara.search_on_demand` to `True` to show
+a search toggle in the header instead of an always-open field:
+
+```xml
+<record name="plonetheme.clara.search_on_demand">
+  <value>True</value>
+</record>
+```
+
 ## Design contract
 
 See [docs/clara-theming-architecture.md](docs/clara-theming-architecture.md) —
