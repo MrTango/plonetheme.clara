@@ -1,7 +1,7 @@
 [project]
 name = "plonetheme.clara"
 version = "1.0.0a1"
-description = "A Plone heme based on plone.pageletlayout"
+description = "A Plone theme based on plone.pageletlayout"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "GPL-2.0-or-later"}
@@ -58,7 +58,7 @@ packages = ["src/plonetheme"]
 [tool.plone.backend_addon.settings]
 package_name = "plonetheme.clara"
 package_title = "Plonetheme Clara"
-package_description = "A Plone heme based on plone.pageletlayout"
+package_description = "A Plone theme based on plone.pageletlayout"
 package_folder = "plonetheme/clara"
 plone_version = "6.2"
 is_headless = false
