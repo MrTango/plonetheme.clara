@@ -18,9 +18,9 @@ jobs:
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
-      # plone.pageletlayout is not on PyPI; pyproject resolves it from
-      # ../plone.pageletlayout, so both checkouts have to end up side by side
-      # inside the workspace.
+      # plone.pageletlayout and the plone.app.viewletmanager branch are not on
+      # PyPI; pyproject resolves them from ../, so all checkouts have to end up
+      # side by side inside the workspace.
       - uses: actions/checkout@v5
         with:
           path: plonetheme.clara
@@ -29,6 +29,12 @@ jobs:
         with:
           repository: MrTango/plone.pageletlayout
           path: plone.pageletlayout
+
+      - uses: actions/checkout@v5
+        with:
+          repository: plone/plone.app.viewletmanager
+          ref: additional-viewlets
+          path: plone.app.viewletmanager
 
       - name: Set up uv and Python ${{ matrix.python-version }}
         uses: astral-sh/setup-uv@v10.0.1
