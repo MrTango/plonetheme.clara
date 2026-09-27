@@ -336,8 +336,3 @@ class HiddenProfiles:
             "plonetheme.clara:uninstall",
             "plonetheme.clara.upgrades:1008",
         ]
-
-
-def uninstall(context):
-    """Uninstall script."""
-    pass

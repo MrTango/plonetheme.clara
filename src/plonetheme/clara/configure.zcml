@@ -91,13 +91,6 @@
       directory="profiles/uninstall"
       />
 
-  <genericsetup:importStep
-      name="plonetheme.clara-uninstall"
-      title="Plonetheme Clara uninstall"
-      description="Uninstall plonetheme.clara"
-      handler="plonetheme.clara.setuphandlers.uninstall"
-      />
-
   <!-- Hide the uninstall + upgrade profiles from the Add-ons panel; the
        upgrade profiles are applied by their upgrade steps, never installed
        by hand. -->
