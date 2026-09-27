@@ -2926,10 +2926,7 @@ name = "plone-pageletlayout"
 version = "1.0.0a1"
 source = { editable = "../plone.pageletlayout" }
 dependencies = [
-    { name = "paste" },
     { name = "plone" },
-    { name = "plone-app-caching" },
-    { name = "plone-app-upgrade" },
     { name = "plone-app-viewletmanager" },
     { name = "plone-app-z3cform" },
     { name = "plone-classicui" },
@@ -2940,14 +2937,14 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "paste" },
     { name = "plone", specifier = ">=6.2" },
-    { name = "plone-app-caching" },
+    { name = "plone-app-caching", marker = "extra == 'test'" },
     { name = "plone-app-testing", marker = "extra == 'test'" },
-    { name = "plone-app-upgrade" },
+    { name = "plone-app-theming", marker = "extra == 'test'" },
     { name = "plone-app-viewletmanager", editable = "../plone.app.viewletmanager" },
     { name = "plone-app-z3cform" },
     { name = "plone-classicui" },
+    { name = "plone-restapi", marker = "extra == 'test'" },
     { name = "plone-testing", marker = "extra == 'test'" },
     { name = "plone-z3cform" },
     { name = "pytest", marker = "extra == 'test'" },
@@ -2961,6 +2958,7 @@ provides-extras = ["test"]
 [package.metadata.requires-dev]
 dev = [
     { name = "invoke" },
+    { name = "paste" },
     { name = "watchdog" },
 ]
 
