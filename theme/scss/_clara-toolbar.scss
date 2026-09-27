@@ -30,34 +30,23 @@
 :root,
 [data-bs-theme=light] {
   --plone-link-color: var(--plone-color-link);
-  --plone-link-color-on-dark: #65addc;
+  --plone-link-color-on-dark: var(--clara-brand-fill-hover);
   --plone-link-color-on-grey: var(--plone-color-link);
   --plone-link-hover-color: var(--plone-color-link-hover);
   --plone-portlet-list-hover-bg: var(--plone-color-surface);
   --plone-portlet-footer-bg: var(--plone-color-surface);
   --plone-portlet-list-bullet: var(--plone-color-primary);
-  --plone-state-published: #65addc;
-  --plone-state-draft: #ffc043;
-  --plone-state-pending: #e2e721;
-  --plone-state-private: #f96483;
-  --plone-state-internal: #ffc043;
-  --plone-state-internally-published: #ab75ff;
+  --plone-state-published: var(--clara-brand-fill-hover);
+  --plone-state-draft: var(--clara-amber-bright);
+  --plone-state-pending: var(--clara-lime-bright);
+  --plone-state-private: var(--clara-rose-bright);
+  --plone-state-internal: var(--clara-amber-bright);
+  --plone-state-internally-published: var(--clara-violet-bright);
 }
 
 [data-bs-theme=dark] {
-  --plone-link-color: var(--plone-color-link);
   --plone-link-color-on-dark: var(--plone-color-primary);
-  --plone-link-color-on-grey: var(--plone-color-link);
-  --plone-link-hover-color: var(--plone-color-link-hover);
-  --plone-portlet-list-hover-bg: var(--plone-color-surface);
-  --plone-portlet-footer-bg: var(--plone-color-surface);
-  --plone-portlet-list-bullet: var(--plone-color-primary);
   --plone-state-published: var(--plone-color-primary);
-  --plone-state-draft: #ffc043;
-  --plone-state-pending: #e2e721;
-  --plone-state-private: #f96483;
-  --plone-state-internal: #ffc043;
-  --plone-state-internally-published: #ab75ff;
 }
 
 :root {

@@ -62,6 +62,12 @@
     --clara-amber-text:  #7a4e05; /* darker amber text; ≥5.0:1 on every light ground */
     --clara-on-amber:    var(--clara-ink);
 
+    /* Bright accents for the dark editor toolbar, the same in both modes. */
+    --clara-amber-bright:  #ffc043;
+    --clara-lime-bright:   #e2e721;
+    --clara-rose-bright:   #f96483;
+    --clara-violet-bright: #ab75ff;
+
     /* Semantic state palette. Each state owns fill, text, surface, border,
        and on-fill roles; colour is never the sole signal in component markup. */
     --clara-success:         #2e7d52;

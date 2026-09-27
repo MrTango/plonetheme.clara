@@ -1,5 +1,6 @@
 """Editor-toolbar chrome in the compiled bundle (`_clara-toolbar.scss`)."""
 import re
+from pathlib import Path
 
 import pytest
 
@@ -236,3 +237,29 @@ def test_the_phone_rule_still_hides_both_toggles(bundle):
         "the phone rule that hides both toggles is gone — the 60px rail now "
         "carries a control that cannot change anything"
     )
+
+
+# ── the toolbar's colour tokens ──────────────────────────────────────────────
+
+TOOLBAR_SCSS = Path(__file__).resolve().parent.parent / "theme/scss/_clara-toolbar.scss"
+LIGHT_BLOCK = r':root,\s*\[data-bs-theme="?light"?\]\s*\{([^}]*)\}'
+DARK_BLOCK = r'(?:\[data-bs-theme="?dark"?\]|@include clara-dark(?:\(\))?)\s*\{([^}]*)\}'
+
+
+def _declarations(block):
+    return dict(re.findall(r"(--[\w-]+)\s*:\s*([^;]+);", block))
+
+
+def test_toolbar_hardcodes_no_hex_colour():
+    """Every toolbar colour is a token, never a literal."""
+    literals = re.findall(r":\s*(#[0-9a-fA-F]{3,8})\b", TOOLBAR_SCSS.read_text())
+    assert not literals, f"hardcoded colours in _clara-toolbar.scss: {literals}"
+
+
+def test_toolbar_dark_block_only_restates_what_differs():
+    scss = TOOLBAR_SCSS.read_text()
+    light = _declarations(re.search(LIGHT_BLOCK, scss)[1])
+    dark = _declarations(re.search(DARK_BLOCK, scss)[1])
+    assert dark, "the toolbar has no dark block"
+    same = [name for name, value in dark.items() if light.get(name) == value]
+    assert not same, f"dark block repeats the light values of {same}"
