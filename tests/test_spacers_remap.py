@@ -1,28 +1,4 @@
-"""§7 `$spacers` remap: the end-to-end runtime proof (wayfinder ticket 05).
-
-The spec's §7 promise: *any* third-party `.mb-3` / `.p-2` resolves to a
-`--plone-space-*` value — fluid and on-scale — instead of Bootstrap's flat
-hardcoded rem. Ticket 04 already grep-verified the remapped rule is *present*
-in the compiled bundle. This module is the ticket-05 job: prove the whole
-`.mb-3 → var(--plone-space-s) → clamp(...)` chain is actually *wired* end to
-end, so a browser has a real length to compute — and prove the documented
-§7 tradeoff (utilities shipped, never used in Clara's own markup) holds.
-
-It is deliberately a text-parsing check on the *compiled* `clara.min.css`, in
-the same no-Sass/no-browser harness as test_token_drift.py, because every real
-failure mode here is an *authoring* failure the cascade can't paper over:
-
-  * a typo'd token name (`.mb-3 → var(--plone-spaces-s)`) → dangling var,
-  * the `--plone-space-*` token missing from the shipped `:root`,
-  * a later rule in the cascade redefining `.mb-3` back to a flat rem,
-  * `$spacers` accidentally `map-remove`d, so the utilities never generate.
-
-Each is caught below. The one thing a text check cannot do — watch a browser
-resolve `clamp()` to px at a given viewport — is covered by the sibling
-fixture `tests/fixtures/spacers-proof.html`, which reads back
-`getComputedStyle` live in any real engine (see the module docstring there and
-the ticket answer for the measured values).
-"""
+"""The `$spacers` remap: `.mb-3` and friends resolve to `--plone-space-*` tokens."""
 import re
 from pathlib import Path
 

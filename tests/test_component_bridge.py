@@ -1,26 +1,8 @@
-"""Component-scope `--bs-*`→`--plone-*` bridge (wayfinder ticket 13).
+"""Component-scope `--bs-*` to `--plone-*` bridge in the compiled bundle.
 
-Bootstrap 5.3 pins a component's spacing tokens ON THE COMPONENT ROOT
-(`.btn{--bs-btn-padding-x:.75rem}`, `.card{--bs-card-spacer-x:1rem}`, `.nav`,
-`.alert`, `.breadcrumb`, `.table` striped fill). An element-level declaration
-SHADOWS any `:root` value for its descendants, so the `:root` half of
-_clara-bridge.scss is DEAD for those tokens — the component keeps Bootstrap's
-flat rem, not a Clara token. Ticket 10 caught this on `.card`; ticket 13 fixes
-the rest by rebinding at COMPONENT scope (still in the `components` @layer, which
-beats `bootstrap`).
-
-This is the permanent, no-browser guard (same harness as
-test_content_components.py / test_spacers_remap.py); the live-compute proof is
-tests/fixtures/component-bridge-proof.html (a bare `.btn`/`.nav`/`.alert`/…
-whose computed padding a real engine resolves to the token, with the `.btn` size
-hierarchy intact). It pins two things a `:root`-only bridge silently got wrong:
-
-  * every literal-pinned component token is rebound onto a `--plone-*` token at
-    COMPONENT scope (not merely at `:root`), so it actually wins; and
-  * the `.btn` size variants keep their OWN distinct padding tokens — because
-    the `components` layer beats `bootstrap` regardless of specificity, a lone
-    `.btn` rebind would otherwise override `.btn-lg`/`.btn-sm` too and collapse
-    every button to one size.
+Bootstrap pins component spacing tokens on the component root, which shadows
+any `:root` value, so the bridge rebinds them at component scope. The `.btn`
+size variants must keep their own padding tokens.
 """
 import re
 

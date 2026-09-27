@@ -1,21 +1,4 @@
-"""Editor-toolbar chrome folded into the compiled bundle (wayfinder ticket 15).
-
-Ticket 14 ruled the editor-toolbar CSS a THEME responsibility (as stock Plone
-ships ``barceloneta-toolbar.min.css`` inside the Barceloneta *theme*, not a
-theme-independent layer); ticket 15 moves its ``#edit-zone`` chrome out of the
-now-zero-CSS ``plone.pageletlayout`` base into Clara's one compiled
-``clara.min.css`` (``_clara-toolbar.scss``, ``@layer components``).
-
-Only the TOOLBAR DELTA moved — its own ``--plone-toolbar-*`` / ``--plone-state-*``
-tokens + the ``#edit-zone`` / ``body.plone-toolbar-*`` rules. The vendored
-sheet's first ~723 lines (a full Bootstrap 5.3 ``:root{--bs-*}`` dump + Reboot +
-``.nav`` base) and its trailing ``.flex-*`` utilities were DROPPED: Clara already
-compiles that exact Bootstrap into ``@layer bootstrap``, so folding them in would
-duplicate it and — worse — the un-layered ``:root`` ``--bs-*`` dump would shadow
-Clara's own ``:root`` bridge. This is the no-browser structural guard; the
-sibling fixture ``tests/fixtures/toolbar-proof.html`` is the live-render proof a
-text check can't do.
-"""
+"""Editor-toolbar chrome in the compiled bundle (`_clara-toolbar.scss`)."""
 import re
 
 import pytest

@@ -1,23 +1,7 @@
-"""Content-view component styling in the compiled bundle (wayfinder ticket 10).
+"""Content-view component styling in the compiled bundle.
 
-Ticket 10 ships the CSS that styles Plone's listing / summary / tabular / album
-views — the *styling* half of the view stream (the templates are tickets 11/12,
-not yet built). Because no template emits the clean markup yet, this is a
-structural proof on the *compiled* `clara.min.css`, the same no-Sass/no-browser
-harness as test_spacers_remap.py; the sibling fixture
-`tests/fixtures/content-proof.html` carries hand-written clean markup for the
-live-render proof a text check can't do.
-
-The acceptance the ticket pins (ticket 02 governing principle):
-
-  * Reuse Plone's OWN hooks verbatim — `.entries` / `.item` / `.summary`, the
-    Bootstrap `.card` family (via the `--bs-*`→`--plone-*` bridge), `.table`,
-    `.card.album` — and NEVER invent a parallel `.plone-card` / `.plone-listing`.
-  * Every hook carries a `--plone-*` custom-property API (gap / columns / rhythm),
-    so a site retunes it in CSS without touching a template.
-  * Layout is ELASTIC (grid + minmax, flex-grow, clamp) — a listing reads right
-    in the wide content column AND a narrow rail with NO container queries
-    (§5 deferred to fog).
+Listing, summary, tabular and album views reuse Plone's own hooks, expose
+`--plone-*` custom properties and lay out elastically.
 """
 import re
 
