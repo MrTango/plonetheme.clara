@@ -40,10 +40,10 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/plonetheme/plonetheme.clara"
-Documentation = "https://github.com/plonetheme/plonetheme.clara"
-Repository = "https://github.com/plonetheme/plonetheme.clara.git"
-Issues = "https://github.com/plonetheme/plonetheme.clara/issues"
+Homepage = "https://github.com/MrTango/plonetheme.clara"
+Documentation = "https://github.com/MrTango/plonetheme.clara"
+Repository = "https://github.com/MrTango/plonetheme.clara.git"
+Issues = "https://github.com/MrTango/plonetheme.clara/issues"
 
 [project.entry-points."z3c.autoinclude.plugin"]
 target = "plone"

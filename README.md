@@ -20,12 +20,12 @@ overriding a single template.
   `_clara-tokens.scss` drive Bootstrap's compile-time fallbacks, while
   `_clara-bridge.scss` and `_clara-states.scss` rebind components to runtime
   roles. `$spacers` maps onto Clara's fluid space scale (§6–7).
-- **A Volto-style mega menu** (`static/clara-megamenu.css`) — pure CSS over the
-  **native** `plone.app.layout` global-sections markup (the `.has_subtree`
-  dropdown tree with its CSS-only `.opener` toggle). No template override, no
-  custom JS. Clara sets the native `navigation_depth` so sections carry children
-  into the panel.
-- **Single content column** — inherited from the base's whole-body layout.
+- **A Volto-style mega menu** (`theme/scss/_clara-megamenu.scss`, compiled into
+  `static/clara.min.css`) — the stock global-sections markup with richer panels
+  (section intro, described child links, a proof sentence from the
+  `IMegamenuSection` behavior). A CSS-only `.opener` toggle; `clara.js` only
+  adds the close gestures.
+- **Single content column** — inherited from the base's slot layout.
 
 ## Dark mode
 
@@ -40,7 +40,7 @@ mode, set `data-bs-theme` on the `<html>` element:
 
 See [docs/clara-theming-architecture.md](docs/clara-theming-architecture.md) —
 the decisions-first specification of tokens, cascade layers, primitives, the
-single viewlet manager, container queries, the Bootstrap token bridge, the
+slot layout, container queries, the Bootstrap token bridge, the
 spacer remap, the markup contract, and migration risk.
 
 ## Features
@@ -66,28 +66,26 @@ Then activate the addon in your Plone site's control panel or via GenericSetup.
 ### Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/collective/plonetheme.clara.git
+git clone https://github.com/MrTango/plonetheme.clara.git
 cd plonetheme.clara
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate
-
-# Install in development mode
-pip install -e ".[test]"
+uv sync --extra test
+pnpm install   # fetches Bootstrap and builds static/clara.min.css
 ```
 
-### Running Tests
+`plone.pageletlayout` and `plone.app.viewletmanager` are editable checkouts
+expected next to this repository (see `[tool.uv.sources]`).
+
+### Building the stylesheet
 
 ```bash
-pytest
+pnpm run build
 ```
 
-### Running Tests with Coverage
+### Running tests
 
 ```bash
-pytest --cov=plonetheme.clara --cov-report=html
+uv run pytest
+uv run pytest --cov=plonetheme.clara --cov-report=html
 ```
 
 ## License
