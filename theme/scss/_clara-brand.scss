@@ -162,7 +162,7 @@
      from lighter same-hue surfaces rather than shadows. The selector is doubled
      for the same reason as in _clara-tokens-defaults.scss: 0,2,0 so no later
      `:root` can undo it. */
-  [data-bs-theme="dark"][data-bs-theme="dark"] {
+  @include clara-dark {
     --plone-color-primary: #65addc;       /* oklch(0.72 0.10 238.72) */
     --plone-color-primary-hover: #8abfe2; /* oklch(0.78 0.075 238.72) */
     --plone-color-primary-active: #ddeefa;

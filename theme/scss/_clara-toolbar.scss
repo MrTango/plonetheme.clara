@@ -44,7 +44,7 @@
   --plone-state-internally-published: var(--clara-violet-bright);
 }
 
-[data-bs-theme=dark] {
+@include clara-dark {
   --plone-link-color-on-dark: var(--plone-color-primary);
   --plone-state-published: var(--plone-color-primary);
 }

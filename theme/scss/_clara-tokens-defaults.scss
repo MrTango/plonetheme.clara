@@ -140,7 +140,7 @@
      wins over light regardless of which partial is imported last, WITHOUT
      pinning it to :root — Bootstrap allows [data-bs-theme] on any element, and
      scoped dark regions must keep working. */
-  [data-bs-theme="dark"][data-bs-theme="dark"] {
+  @include clara-dark {
     --plone-color-bg:             var(--plone-gray-900);
     --plone-color-surface:        var(--plone-gray-700);
     --plone-color-text:           var(--plone-gray-050);

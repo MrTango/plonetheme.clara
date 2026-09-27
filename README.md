@@ -27,6 +27,15 @@ overriding a single template.
   into the panel.
 - **Single content column** — inherited from the base's whole-body layout.
 
+## Dark mode
+
+Clara follows the visitor's OS preference (`prefers-color-scheme`). To pin a
+mode, set `data-bs-theme` on the `<html>` element:
+
+- `data-bs-theme="light"` keeps a site light on a dark OS.
+- `data-bs-theme="dark"` makes a site dark on a light OS. It also works on any
+  inner element to darken just that region.
+
 ## Design contract
 
 See [docs/clara-theming-architecture.md](docs/clara-theming-architecture.md) —

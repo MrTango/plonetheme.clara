@@ -82,6 +82,62 @@ $spacers: (
 // this whole file; the $spacers→token remap above is reproduced there as a
 // small hand-written tokens-only utilities file in the `compat` layer (§7).
 // ---------------------------------------------------------------------------
+// Bootstrap's own import stack (bootstrap/scss/bootstrap.scss), split so its
+// color-mode mixin can be replaced by clara-dark before the components use it.
 @layer bootstrap {
-  @import "bootstrap/scss/bootstrap";
+  @import "bootstrap/scss/mixins/banner";
+  @include bsBanner("");
+
+  @import "bootstrap/scss/functions";
+  @import "bootstrap/scss/variables";
+  @import "bootstrap/scss/variables-dark";
+  @import "bootstrap/scss/maps";
+  @import "bootstrap/scss/mixins";
+  @import "bootstrap/scss/utilities";
+
+  @mixin color-mode($mode: light, $root: false) {
+    @if $mode == dark {
+      @include clara-dark {
+        @content;
+      }
+    } @else {
+      [data-bs-theme="#{$mode}"] {
+        @content;
+      }
+    }
+  }
+
+  @import "bootstrap/scss/root";
+  @import "bootstrap/scss/reboot";
+  @import "bootstrap/scss/type";
+  @import "bootstrap/scss/images";
+  @import "bootstrap/scss/containers";
+  @import "bootstrap/scss/grid";
+  @import "bootstrap/scss/tables";
+  @import "bootstrap/scss/forms";
+  @import "bootstrap/scss/buttons";
+  @import "bootstrap/scss/transitions";
+  @import "bootstrap/scss/dropdown";
+  @import "bootstrap/scss/button-group";
+  @import "bootstrap/scss/nav";
+  @import "bootstrap/scss/navbar";
+  @import "bootstrap/scss/card";
+  @import "bootstrap/scss/accordion";
+  @import "bootstrap/scss/breadcrumb";
+  @import "bootstrap/scss/pagination";
+  @import "bootstrap/scss/badge";
+  @import "bootstrap/scss/alert";
+  @import "bootstrap/scss/progress";
+  @import "bootstrap/scss/list-group";
+  @import "bootstrap/scss/close";
+  @import "bootstrap/scss/toasts";
+  @import "bootstrap/scss/modal";
+  @import "bootstrap/scss/tooltip";
+  @import "bootstrap/scss/popover";
+  @import "bootstrap/scss/carousel";
+  @import "bootstrap/scss/spinners";
+  @import "bootstrap/scss/offcanvas";
+  @import "bootstrap/scss/placeholders";
+  @import "bootstrap/scss/helpers";
+  @import "bootstrap/scss/utilities/api";
 }

@@ -1,0 +1,13 @@
+// Dark mode applies on an explicit data-bs-theme="dark", or on the OS
+// preference unless the root sets data-bs-theme="light". Both selectors
+// score 0,2,0, so a later `:root` in the same layer cannot undo them.
+@mixin clara-dark {
+  [data-bs-theme="dark"][data-bs-theme="dark"] {
+    @content;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-bs-theme="light"]) {
+      @content;
+    }
+  }
+}

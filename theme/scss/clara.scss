@@ -22,6 +22,7 @@
 // single-file goal. @import (not @use) is kept because Bootstrap 5.3 is not
 // module-ready and requires `@import "bootstrap/scss/bootstrap"`.
 
+@import "clara-color-mode";       // the clara-dark mixin, no output
 @import "clara-layers";            // @layer decl (MUST be first) + reset layer
 @import "clara-tokens-defaults";   // @layer tokens { :root } — base defaults
 @import "clara-brand";             // @layer tokens { :root } — Clara brand override

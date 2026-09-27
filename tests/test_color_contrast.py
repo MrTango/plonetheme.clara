@@ -49,8 +49,8 @@ def _light_props():
 
 def _dark_props():
     props = _light_props()
-    props.update(_props(BASE, '[data-bs-theme="dark"]'))
-    props.update(_props(BRAND, '[data-bs-theme="dark"]'))
+    props.update(_props(BASE, "@include clara-dark"))
+    props.update(_props(BRAND, "@include clara-dark"))
     return props
 
 

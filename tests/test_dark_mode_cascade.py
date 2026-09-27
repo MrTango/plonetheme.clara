@@ -44,6 +44,28 @@ def _css():
     return BUNDLE.read_text()
 
 
+def _regions(css, opener):
+    """The bodies of every `opener { … }` block, braces balanced."""
+    regions = []
+    for match in re.finditer(opener, css):
+        depth, start = 0, match.end() - 1
+        for index in range(start, len(css)):
+            if css[index] == "{":
+                depth += 1
+            elif css[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    regions.append(css[start + 1 : index])
+                    break
+    return regions
+
+
+def _os_dark_rules(css):
+    """`(selector, body)` pairs applied by the OS dark preference."""
+    media = "\n".join(_regions(css, r"@media\s*\(prefers-color-scheme:\s*dark\)\s*\{"))
+    return re.findall(r"([^{}]+)\{([^{}]*)\}", media)
+
+
 def _token_layer(css):
     """Concatenate every `@layer tokens { … }` region of the bundle.
 
@@ -114,3 +136,36 @@ def test_light_and_dark_disagree_on_the_page_ground():
     )
     assert light and dark
     assert light.group(1).strip() != dark.group(1).strip()
+
+
+@pytest.mark.parametrize("role", DARK_ONLY_ROLES)
+def test_os_dark_preference_moves_the_neutral_roles(role):
+    """Without an explicit `data-bs-theme`, the OS preference picks dark."""
+    declared = [
+        body
+        for selector, body in _os_dark_rules(_token_layer(_css()))
+        if selector.strip() == ":root:not([data-bs-theme=light])"
+        and re.search(rf"{re.escape(role)}\s*:", body)
+    ]
+    assert declared, f"{role} does not follow prefers-color-scheme: dark"
+
+
+EXPLICIT_DARK = re.compile(r"^(?:\[data-bs-theme=[\"']?dark[\"']?\])+")
+
+
+def test_every_explicit_dark_rule_also_follows_the_os_preference():
+    """Tokens, toolbar and Bootstrap: each dark rule has an OS twin."""
+    css = _css()
+    os_rules = {
+        (selector.strip(), body) for selector, body in _os_dark_rules(css)
+    }
+    missing = []
+    for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
+        for selector in selectors.split(","):
+            selector = selector.strip()
+            if not EXPLICIT_DARK.match(selector):
+                continue
+            twin = ":root:not([data-bs-theme=light])" + EXPLICIT_DARK.sub("", selector)
+            if (twin, body) not in os_rules:
+                missing.append(selector)
+    assert not missing, f"dark rules without a prefers-color-scheme twin: {missing}"
