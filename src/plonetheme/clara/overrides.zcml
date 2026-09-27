@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <!-- The searchbox with the opt-in on-demand toggle (search_on_demand).
+       It replaces the base registration on the base layer rather than
+       registering on Clara's, so a theme layer on top of Clara still wins
+       the lookup. Off, it renders the base markup. -->
+  <include package="plone.pageletlayout" file="meta.zcml" />
+  <plone:chromepagelet
+      name="plone.pageletlayout.searchbox"
+      class=".pagelets.ClaraSearchboxChromePagelet"
+      template="templates/searchbox.pt"
+      layer="plone.pageletlayout.interfaces.IPlonePageletlayoutLayer"
+      />
+
+</configure>

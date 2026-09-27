@@ -27,4 +27,6 @@
     </value>
   </record>
 
+  <record name="plonetheme.clara.search_on_demand" remove="True" />
+
 </registry>

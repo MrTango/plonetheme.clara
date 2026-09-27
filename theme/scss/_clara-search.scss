@@ -1,0 +1,104 @@
+/* Search on demand (registry: plonetheme.clara.search_on_demand): the header
+ * shows a toggle; the `.opener` checkbox discloses the form. Every rule keys
+ * on `.searchbox-on-demand`, which only the on-demand markup renders. */
+@layer components {
+  .searchbox-on-demand {
+    --clara-searchbox-toggle: var(--plone-target-min);
+    position: relative;
+  }
+  .searchbox-on-demand > .opener {
+    /* focusable while invisible, so keyboard and AT can drive the label */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .searchbox-on-demand .searchbox-toggle {
+    inline-size: var(--clara-searchbox-toggle);
+    block-size: var(--clara-searchbox-toggle);
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    color: var(--plone-color-text);
+    cursor: pointer;
+  }
+  .searchbox-on-demand .searchbox-toggle:hover,
+  .searchbox-on-demand > .opener:checked ~ .searchbox-toggle {
+    color: var(--plone-color-link);
+  }
+  .searchbox-on-demand > .opener:focus-visible ~ .searchbox-toggle {
+    outline: 3px solid var(--plone-color-focus-ring);
+    outline-offset: 3px;
+  }
+  .searchbox-on-demand .searchbox-toggle__glyph {
+    grid-area: 1 / 1;
+    transition: opacity var(--plone-duration-fast), transform var(--plone-duration-fast);
+  }
+  .searchbox-on-demand .searchbox-toggle__glyph--close,
+  .searchbox-on-demand > .opener:checked ~ .searchbox-toggle .searchbox-toggle__glyph--open {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.8);
+  }
+  .searchbox-on-demand > .opener:checked ~ .searchbox-toggle .searchbox-toggle__glyph--close {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Closed: everything after the toggle goes, the form and the live
+     search results the pattern inserts beside it. */
+  .searchbox-on-demand > .opener:not(:checked) ~ :not(.searchbox-toggle) {
+    display: none;
+  }
+
+  .searchbox-on-demand > .opener ~ form {
+    position: absolute;
+    z-index: var(--plone-z-dropdown);
+    inset-inline-end: 100%;
+    inset-block-start: 50%;
+    inline-size: min(22rem, 60vw);
+    translate: 0 -50%;
+  }
+  .searchbox-on-demand > .opener ~ form .searchField {
+    inline-size: 100%;
+    padding-inline-end: calc(var(--clara-searchbox-toggle) + var(--plone-space-2xs));
+    border-radius: var(--plone-radius-pill);
+  }
+  .searchbox-on-demand > .opener ~ form .searchButton {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: 0;
+    inline-size: var(--clara-searchbox-toggle);
+    block-size: var(--clara-searchbox-toggle);
+    display: inline-grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--plone-color-link);
+  }
+  .searchbox-on-demand > .opener ~ form .searchButton:hover {
+    background: transparent;
+    color: var(--plone-color-link-hover);
+  }
+
+  @media (max-width: 64rem) {
+    .searchbox-on-demand {
+      text-align: end;
+    }
+    .searchbox-on-demand > .opener ~ form {
+      text-align: start;
+      position: relative;
+      inset: auto;
+      inline-size: auto;
+      translate: none;
+      margin-block-start: var(--plone-space-2xs);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    /* the toggle stays in reach while the narrow menu is closed */
+    .plone-layout:has(.element-globalnav > .opener:not(:checked)) .searchbox-on-demand {
+      display: block;
+    }
+  }
+}

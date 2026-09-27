@@ -1,0 +1,27 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plonetheme.clara">
+
+  <genericsetup:registerProfile
+      name="1009"
+      title="plonetheme.clara: upgrade to 1009"
+      directory="1009"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:upgradeSteps
+      source="1008"
+      destination="1009"
+      profile="plonetheme.clara:default">
+
+    <genericsetup:upgradeDepends
+        title="Add the search_on_demand registry record"
+        description="Register plonetheme.clara.search_on_demand (off)."
+        import_profile="plonetheme.clara.upgrades:1009"
+        import_steps="plone.app.registry"
+        />
+
+  </genericsetup:upgradeSteps>
+
+</configure>

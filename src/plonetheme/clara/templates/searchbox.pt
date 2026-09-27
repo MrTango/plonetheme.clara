@@ -1,0 +1,77 @@
+<div class="element-searchbox"
+     id="portal-searchbox"
+     tal:define="navigation_root_url view/navigation_root_url;
+                 on_demand view/on_demand"
+     tal:attributes="class python: on_demand and 'element-searchbox searchbox-on-demand' or 'element-searchbox'"
+     i18n:domain="plone">
+
+  <tal:toggle condition="on_demand">
+  <!-- Search on demand: a pure-CSS `.opener` disclosure; clara.js only adds
+       focus and the close gestures. -->
+  <input class="opener"
+         type="checkbox"
+         id="portal-searchbox-opener" />
+  <label class="searchbox-toggle"
+         for="portal-searchbox-opener">
+    <svg class="searchbox-toggle__glyph searchbox-toggle__glyph--open"
+         viewBox="0 0 24 24" width="22" height="22"
+         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+    <svg class="searchbox-toggle__glyph searchbox-toggle__glyph--close"
+         viewBox="0 0 24 24" width="22" height="22"
+         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+    <span class="visually-hidden"
+          i18n:translate="title_search_site">Search Site</span>
+  </label>
+  </tal:toggle>
+
+  <form class="plone-cluster ${python: view.livesearch and 'pat-livesearch' or ''} ${python: view.show_images and 'show_images' or ''}"
+        id="searchGadget_form"
+        action="@@search"
+        role="search"
+        style="--plone-cluster-space: var(--plone-space-2xs)"
+        tal:attributes="action string:${navigation_root_url}/@@search;
+                        data-pat-livesearch string:ajaxUrl:${navigation_root_url}/@@ajax-search">
+
+    <label class="visually-hidden"
+           for="searchGadget"
+           i18n:translate="text_search">Search Site</label>
+
+    <input class="searchField form-control"
+           id="searchGadget"
+           name="SearchableText"
+           placeholder="Search Site"
+           size="18"
+           title="Search Site"
+           type="text"
+           value=""
+           tal:attributes="value request/form/SearchableText|nothing;
+                           autocomplete python: on_demand and 'off' or None"
+           i18n:attributes="title title_search_site;
+                            placeholder title_search_site" />
+
+    <button class="searchButton"
+            type="submit"
+            tal:condition="on_demand">
+      <svg viewBox="0 0 24 24" width="20" height="20"
+           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.6-4.6"/></svg>
+      <span class="visually-hidden"
+            i18n:translate="label_search">Search</span>
+    </button>
+    <button class="searchButton btn btn-outline-light"
+            type="submit"
+            tal:condition="not:on_demand"
+            i18n:translate="label_search">Search</button>
+
+    <div class="visually-hidden"
+         id="portal-advanced-search">
+      <a href="#"
+         tal:attributes="href string:${navigation_root_url}/@@search"
+         i18n:translate="label_advanced_search">Advanced Search&hellip;</a>
+    </div>
+
+  </form>
+
+</div>

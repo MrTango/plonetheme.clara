@@ -70,4 +70,14 @@
     </value>
   </record>
 
+  <!-- Opt-in: the header shows only a search toggle, the form opens on demand. -->
+  <record name="plonetheme.clara.search_on_demand">
+    <field type="plone.registry.field.Bool">
+      <title>Search opens on demand</title>
+      <description>Show a search toggle in the header instead of an always-open search field.</description>
+      <required>False</required>
+    </field>
+    <value>False</value>
+  </record>
+
 </registry>

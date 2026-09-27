@@ -118,6 +118,10 @@ class TestUninstall:
             is None
         )
 
+    def test_search_on_demand_record_removed(self):
+        record = "plonetheme.clara.search_on_demand"
+        assert api.portal.get_registry_record(record, default=None) is None
+
     def test_stock_language_selector_unhidden(self):
         """Clara hides plone.app.multilingual's selector because its own
         element replaces it. That element goes with the browser layer, so

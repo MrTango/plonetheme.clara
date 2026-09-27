@@ -28,6 +28,7 @@ class PlonethemeClaraLayer(PloneSandboxLayer):
         # Clara's dependency-profile install resolves it (wayfinder ticket 04).
         self.loadZCML(package=plone.pageletlayout)
         self.loadZCML(package=plonetheme.clara)
+        self.loadZCML(name="overrides.zcml", package=plonetheme.clara)
 
     def setUpPloneSite(self, portal):
         """Set up Plone site."""

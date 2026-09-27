@@ -3,4 +3,6 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="plonetheme.clara">
 
+  <include file="1009.zcml" />
+
 </configure>

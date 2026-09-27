@@ -39,6 +39,7 @@ Data paths (all brain metadata; rendering never wakes objects):
 
 from html import escape
 
+from plone import api
 from plone.app.i18n.locales.browser.selector import LanguageSelector
 from plone.app.layout.viewlets.common import GlobalSectionsViewlet
 from plone.app.multilingual.browser.selector import LanguageSelectorViewlet
@@ -47,6 +48,7 @@ from plone.base.utils import safe_text
 from plone.memoize.view import memoize
 from plone.pageletlayout.chrome import ChromePagelet
 from plone.pageletlayout.pagelets.globalnav import GlobalnavChromePagelet
+from plone.pageletlayout.pagelets.header import SearchboxChromePagelet
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -386,3 +388,13 @@ class LanguageSelectorChromePagelet(ChromePagelet):
         if not self.available:
             return ""
         return super().render()
+
+
+class ClaraSearchboxChromePagelet(SearchboxChromePagelet):
+    """The searchbox, optionally behind a toggle (``search_on_demand``)."""
+
+    def update(self):
+        super().update()
+        self.on_demand = api.portal.get_registry_record(
+            "plonetheme.clara.search_on_demand", default=False
+        )

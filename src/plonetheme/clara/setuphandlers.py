@@ -334,4 +334,5 @@ class HiddenProfiles:
         """Upgrade profiles are applied by their upgrade steps only."""
         return [
             "plonetheme.clara:uninstall",
+            "plonetheme.clara.upgrades:1009",
         ]
