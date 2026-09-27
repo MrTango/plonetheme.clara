@@ -1,9 +1,4 @@
-"""WCAG contrast guard for Clara's effective runtime colour roles.
-
-The Quanta research notes contained several optimistic ratios calculated from
-incorrect RGB approximations. This test resolves the actual shipped hex values
-from base ⊕ brand tokens and measures the browser colours directly.
-"""
+"""WCAG contrast of Clara's runtime colour roles, measured from the shipped hex values."""
 import re
 from pathlib import Path
 
