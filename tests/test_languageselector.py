@@ -1,16 +1,4 @@
-"""Tests for the header language switch (pagelets.LanguageSelectorChromePagelet).
-
-The element exists because plone.app.multilingual registers its selector for
-``plone.app.layout.viewlets.interfaces.IPortalHeader`` — a manager the pagelet
-layout did not render at all when this element was written, so on a Clara site
-the switch was not styled wrong, it was absent. plone.pageletlayout bridges the
-stock managers now, which turns the same registration into the opposite
-problem: two switches on every page unless the profile hides the stock one.
-
-That is what these pin: the element is in the layout order, the stock selector
-it replaces is hidden, it stays silent on a site with one language, and once a
-site has two it renders both codes with the current one marked.
-"""
+"""The header language switch (pagelets.LanguageSelectorChromePagelet)."""
 
 import pytest
 from plone import api

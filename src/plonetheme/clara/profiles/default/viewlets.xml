@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object>
-  <!-- Each element's place inside the stock manager registry.xml assigns it
-       to. insert-after / insert-before, not a restated order: Plone and
-       plone.pageletlayout own each manager's sequence, and this file only
-       anchors Clara's names into it — additive and idempotent. -->
+  <!-- Each element's place in its manager, anchored relative to others. -->
   <order manager="plone.mainnavigation" skinname="Plone Default">
     <viewlet name="plonetheme.clara.languageselector"
              insert-after="plone.pageletlayout.globalnav" />
@@ -14,18 +11,7 @@
     <viewlet name="plonetheme.clara.subnav" insert-before="*" />
   </order>
 
-  <!-- The stock selector Clara's own element replaces.
-
-       plone.app.multilingual registers its selector into plone.portalheader,
-       a slot the layout renders — so the stock switch would render on every
-       page of a multilingual site beside the element that exists to replace
-       it. The same trade the base package makes for the logo, the
-       breadcrumbs and the byline: render the manager, hide what we
-       reimplement.
-
-       Configuration, not a code-level exemption: an integrator who prefers
-       plone.app.multilingual's markup unhides this and hides
-       plonetheme.clara.languageselector instead. -->
+  <!-- plone.app.multilingual's selector, replaced by Clara's own. -->
   <hidden manager="plone.portalheader" skinname="Plone Default">
     <viewlet name="plone.app.multilingual.languageselector" />
   </hidden>

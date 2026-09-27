@@ -4,8 +4,7 @@
 // whole @layer cascade in a single file, the way Barceloneta ships one
 // barceloneta.min.css. An integrator restyles the entire site, Bootstrap
 // components included, by overriding --plone-* tokens at runtime; they never
-// open this file. See docs/clara-theming-architecture.md §2, §6, §7 and
-// wayfinder ticket 03 (build shape) / ticket 04 (this wiring).
+// open this file. See docs/clara-theming-architecture.md §2, §6, §7.
 //
 // Import order IS the cascade wiring:
 //   * clara-layers declares `@layer reset, tokens, bootstrap, …` FIRST — a
@@ -31,10 +30,10 @@
 @import "clara-bridge";            // @layer components — --bs-* → --plone-* rebind
 @import "clara-components";        // @layer components — .element-* hooks
 @import "clara-states";            // @layer components — semantic buttons/forms/messages
-@import "clara-content";           // @layer components — content-view hooks (ticket 10)
+@import "clara-content";           // @layer components — content-view hooks
 @import "clara-controlpanel";      // @layer components — Site Setup / control-panel chrome
 @import "clara-megamenu";          // @layer components — Clara's own nav
 @import "clara-subnav";            // @layer components — the page-tail sub-nav
 @import "clara-language";          // @layer components — the header language switch
 @import "clara-search";            // @layer components — the on-demand searchbox
-@import "clara-toolbar";           // @layer components — editor-toolbar chrome (ticket 15)
+@import "clara-toolbar";           // @layer components — editor-toolbar chrome

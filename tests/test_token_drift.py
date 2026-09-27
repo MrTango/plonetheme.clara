@@ -1,19 +1,5 @@
-"""§6.2 literals-drift guard (wayfinder ticket 03 §4, implemented by ticket 04).
-
-Bootstrap's Sass math (color functions, the $theme-colors map, shade/tint of
-$primary) needs COMPILE-TIME literals — a var() cannot enter `shade-color()`.
-So theme/scss/_clara-tokens.scss duplicates a handful of --plone-* default
-values as `$clara-*` literals. Sass cannot read a CSS custom property at build
-time, which is *why* the duplication exists — and also why a pure-Sass @error
-guard is impossible. This pytest is that guard: a text-parsing check, no
-Sass/node, that runs in the normal harness on every commit (+ pre-commit).
-
-Basis = base ⊕ brand, RESOLVED: the literal must equal Clara's effective
-light-mode default, i.e. _clara-tokens-defaults.scss overlaid by
-_clara-brand.scss (brand wins, source order), with role→primitive var()
-indirection resolved. The guard covers primary, neutrals, radius, and all four
-semantic state seeds; no Bootstrap theme colour is compile-only anymore.
-"""
+"""The `$clara-*` Sass literals Bootstrap's compile-time math needs must equal
+the effective runtime `--plone-*` defaults (base overlaid by brand)."""
 import re
 from pathlib import Path
 
@@ -22,10 +8,7 @@ import pytest
 
 SCSS = Path(__file__).resolve().parent.parent / "theme" / "scss"
 
-#: literal $clara-*  ↔  effective runtime --plone-* it must mirror. The Sass
-#: literals stay theme-namespaced ($clara-*, Clara's own brand values feeding
-#: Bootstrap's compile-time math, never emitted); the runtime tokens they guard
-#: are the Plone contract (--plone-*, ticket 09).
+#: literal $clara-*  ↔  effective runtime --plone-* it must mirror.
 OVERLAP = {
     "clara-primary": "plone-color-primary",
     "clara-text": "plone-color-text",

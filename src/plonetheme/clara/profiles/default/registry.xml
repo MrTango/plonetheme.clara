@@ -1,67 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <registry>
 
-  <!-- Clara's ONE compiled theme bundle (wayfinder ticket 04). Built by
-       `pnpm run build` from theme/scss/clara.scss: the @layer declaration +
-       reset, the clara token defaults + Clara's brand override, Bootstrap
-       5.3.8 compiled from those tokens (§6.1/6.2) and wrapped in
-       @layer bootstrap, the layout primitives, the bs-to-clara bridge, the
-       component hooks, the §7 $spacers remap, and the megamenu — all inlined
-       into one file, the way Barceloneta ships one barceloneta.min.css. The
-       whole theme is a runtime :root override of the clara custom-property
-       tokens; nobody edits Sass. See docs/clara-theming-architecture.md §2, §6, §7.
-
-       No `depends`: this bundle is self-contained (it carries its own @layer
-       declaration + Bootstrap). plone.pageletlayout ships ZERO CSS bundles
-       under the two-package re-role (ticket 04), so there is nothing to chain.
-
-       NO EXPRESSION GATE (decision 2026-07-19, superseding the ticket 03 §5
-       gate): Clara styles EVERY Plone page — Diazo is disabled below, and
-       since the plone.pageletlayout main_template bridge every unconverted
-       classic consumer renders pagelet chrome, all styled by this one
-       bundle. The old X-Theme-Disabled gate is retired with it. -->
+  <!-- Clara's one compiled bundle (`pnpm run build` from theme/scss/clara.scss),
+       Bootstrap included. No `depends` and no expression gate: it styles
+       every page, since Diazo is off (below). -->
   <records interface="plone.base.interfaces.IBundleRegistry"
            prefix="plone.bundles/plonetheme-clara">
     <value key="csscompilation">++resource++plonetheme.clara/clara.min.css</value>
-    <!-- clara.js: the mega menu's close gestures (outside click / Escape /
-         one-panel-at-a-time) — the only behavior the CSS-only .opener
-         checkboxes cannot express. Served as-is; small enough to skip the
-         build step. -->
+    <!-- clara.js: close gestures for the CSS-only mega menu and search. -->
     <value key="jscompilation">++resource++plonetheme.clara/clara.js</value>
     <value key="load_defer">True</value>
-    <!-- explicitly empty: clears the retired X-Theme-Disabled gate on
-         upgraded sites (a GS records import never clears omitted keys) -->
+    <!-- explicitly empty: an import never clears omitted keys -->
     <value key="expression"></value>
     <value key="enabled">True</value>
   </records>
 
-  <!-- Clara does the styling — no Diazo at all (decision 2026-07-19).
-       Disabling the theming engine drops the auto-injected `diazo` bundle
-       (barceloneta.min.css); every page — pagelet or bridged classic —
-       renders through Clara's own compiled Bootstrap. -->
+  <!-- No Diazo: Clara styles every page, so barceloneta.min.css goes. -->
   <record name="plone.app.theming.interfaces.IThemeSettings.enabled">
     <value>False</value>
   </record>
 
-  <!-- The mega menu (folded into the bundle above) needs subsections to
-       reveal: drive the NATIVE navigation depth (GlobalSectionsViewlet reads
-       plone.navigation_depth) up to 3 so each top-level section carries its
-       children into the panel. -->
+  <!-- The mega menu panels need the sections' children. -->
   <record field="navigation_depth"
           interface="plone.base.interfaces.INavigationSchema"
           prefix="plone">
     <value>3</value>
   </record>
 
-  <!-- Where Clara's elements render (plone.pageletlayout's slot
-       assignment, pagelets/slots.py). purge="false" adds and moves these
-       entries without replacing the base package's others.
-
-       · The language switch and the searchbox join the global navigation in
-         plone.mainnavigation, after it: the header's utility lane reads
-         navigation, language, search — in the DOM and in the tab order.
-       · The sub-navigation renders below the content body, above the
-         content's own footer rows. -->
+  <!-- Where Clara's elements render; purge="false" keeps the base's others.
+       Navigation, language switch and search share plone.mainnavigation. -->
   <record name="plone.pageletlayout.slot_assignments">
     <value purge="false">
       <element key="plonetheme.clara.languageselector">plone.mainnavigation</element>

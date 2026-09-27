@@ -3,10 +3,7 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     i18n_domain="plonetheme.clara">
 
-  <!-- No factory: the schema's fields live as plain attributes on the
-       content object, which is what lets catalog metadata columns pick
-       them up for the mega menu without waking objects. Without a factory
-       the schema doubles as the marker (plone.behavior's rule). -->
+  <!-- No factory: plain attributes, so catalog metadata can read them. -->
   <plone:behavior
       name="plonetheme.clara.imegamenusection"
       title="Mega menu section"

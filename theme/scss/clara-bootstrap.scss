@@ -16,7 +16,7 @@
 // Bootstrap emits e.g. `--bs-border-color: #{$border-color}` in _root.scss, so
 // a var() here prints through and stays live at runtime.
 //
-// NOTE (wayfinder ticket 04, first real compile): the pass-through only works
+// NOTE: the pass-through only works
 // for $-vars Bootstrap NEVER runs Sass math on. Bootstrap 5.3.8 derives from
 // four of the originally-listed vars at COMPILE time — a var() there is fatal:
 //   * $body-color  → `to-rgb($body-color)` + `rgba($body-color, .75/.5)`

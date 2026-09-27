@@ -1,15 +1,5 @@
-"""IMegamenuSection behavior.
-
-Two optional editorial fields for the mega-menu panel of a top-level
-navigation section (see theme/scss/_clara-megamenu.scss and the Clara
-globalnav pagelet): a proof sentence for the panel's third column and a
-label for the section overview link. Both render only when filled; an
-empty label means no overview link.
-
-Storage is plain attributes on the content object (no factory), so the
-values reach the navigation through catalog metadata columns
-(profiles/default/catalog.xml) without waking objects.
-"""
+"""IMegamenuSection: a section's proof sentence and overview-link label for
+its mega-menu panel. Plain attributes, read through catalog metadata."""
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.supermodel import model
 from zope import schema

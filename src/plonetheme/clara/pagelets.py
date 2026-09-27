@@ -1,41 +1,5 @@
-"""Clara's globalnav chrome pagelet: the mega-panel markup enrichment.
-
-The base pagelet (plone.pageletlayout.pagelets.globalnav) reuses the stock
-GlobalSectionsViewlet unchanged and Clara used to style only that native,
-titles-only markup. The design mockups' panel carries more than titles:
-the opened section's own description, described child links, and a proof
-sentence (plonetheme.derico/docs/design/derico.de/site — the Jahresringe
-mockups' three-zone
-panel). That data cannot be styled into existence, so Clara subclasses the
-viewlet and takes over item rendering.
-
-What stays native, what changes:
-
-* The top-level skeleton is byte-compatible with the stock viewlet: the
-  ``li.nav-item`` items, ``a.state-….nav-link`` links, and the pure-CSS
-  ``input.opener`` + ``label`` toggles are emitted from the inherited
-  templates, so _clara-megamenu.scss's bar/toggle rules and clara.js keep
-  working against the documented contract.
-* A section's first subtree becomes the three-zone panel instead of a bare
-  ``ul``: intro (one link over title and description, like the child links,
-  plus the overview link), described child links with sublink rows, and the
-  proof sentence. Zones render only when
-  their data exists — including the overview link, which appears only when
-  its behavior field is filled. A second ``label.megamenu-backdrop`` bound
-  to the same checkbox provides the pure-CSS click-to-close scrim.
-* Depth 1 and 2 items drop their openers: panels never collapse below the
-  first level, so those checkboxes were dead weight the CSS had to hide.
-
-Data paths (all brain metadata; rendering never wakes objects):
-
-* child descriptions ride the standard ``Description`` column via
-  ``customize_entry``;
-* the top-level sections' description, proof sentence, and overview label
-  come from one extra depth-1 catalog query (``_section_extras``, memoized
-  per request) because ``portal_tabs`` dicts carry no custom columns. The
-  proof/label columns are the IMegamenuSection behavior's
-  (profiles/default/catalog.xml).
-"""
+"""Clara's chrome pagelets: mega-menu globalnav, sub-navigation, language
+switch and the on-demand searchbox."""
 
 from html import escape
 
@@ -56,6 +20,11 @@ from zope.i18n import translate
 from plonetheme.clara.i18n import _
 
 
+def _escaped(template, value):
+    """``template`` filled with escaped ``value``, or '' when it is empty."""
+    return template.format(escape(safe_text(value))) if value else ""
+
+
 def _clean(value):
     """A brain metadata value as a stripped string ('' for Missing.Value)."""
     if not isinstance(value, str):
@@ -64,18 +33,15 @@ def _clean(value):
 
 
 class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
-    """GlobalSectionsViewlet with depth-aware mega-panel item markup."""
+    """GlobalSectionsViewlet with mega-panel markup: the stock top level, a
+    section's panel with intro, described links and proof sentence."""
 
     # -- extra entry data ---------------------------------------------------
 
     @property
     @memoize
     def _section_extras(self):
-        """id -> {description, proof, overview_label} for depth-1 items.
-
-        One catalog query per render on top of the viewlet's own; the
-        portal_tabs dicts don't carry the behavior's metadata columns.
-        """
+        """id -> {description, proof, overview_label} for depth-1 items."""
         catalog = getToolByName(self.context, "portal_catalog")
         brains = catalog.searchResults(
             path={"query": self.navtree_path, "depth": 1},
@@ -148,9 +114,6 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
             )
             return self._item_markup_template.format(**item)
 
-        description = item.get("description", "")
-        proof = item.get("proof", "")
-        overview_label = item.get("overview_label", "")
         panel = self._panel_markup_template.format(
             url=item["url"],
             uid=item["uid"],
@@ -160,23 +123,15 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
                 _("megamenu_close_label", default="Close menu"),
                 context=self.request,
             ),
-            description=(
-                f'<p class="megamenu-description">{escape(safe_text(description))}</p>'
-                if description
-                else ""
+            description=_escaped(
+                '<p class="megamenu-description">{}</p>', item.get("description")
             ),
-            overview=(
+            overview=_escaped(
                 '<p class="megamenu-overview-row">'
-                f'<a class="megamenu-overview" href="{item["url"]}">'
-                f"{escape(safe_text(overview_label))}</a></p>"
-                if overview_label
-                else ""
+                f'<a class="megamenu-overview" href="{item["url"]}">{{}}</a></p>',
+                item.get("overview_label"),
             ),
-            proof=(
-                f'<p class="megamenu-proof">{escape(safe_text(proof))}</p>'
-                if proof
-                else ""
-            ),
+            proof=_escaped('<p class="megamenu-proof">{}</p>', item.get("proof")),
         )
         item.update(
             {
@@ -191,17 +146,12 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
     def _render_child(self, item):
         """A panel link: bold title + optional description, sublink row."""
         sub = self.build_tree(item["path"], first_run=False, depth=2)
-        description = item.get("description", "")
         return self._child_markup_template.format(
             id=item["id"],
             url=item["url"],
             review_state=item["review_state"],
             title=item["title"],
-            description=(
-                f"<span>{escape(safe_text(description))}</span>"
-                if description
-                else ""
-            ),
+            description=_escaped("<span>{}</span>", item.get("description")),
             sub=(
                 f'<ul class="megamenu-sublinks" aria-label="{item["title"]}">'
                 f"{sub}</ul>"
@@ -225,47 +175,16 @@ class ClaraGlobalnavChromePagelet(GlobalnavChromePagelet):
         self.sections = ClaraMegamenuSectionsViewlet(
             self.context, self.request, self.view or self
         )
-        # see the base class: browser:viewlet would stamp this; direct
-        # instantiation must, too.
+        # browser:viewlet would stamp this; direct instantiation must too
         self.sections.__name__ = "plone.global_sections"
         self.sections.update()
 
 
 class SubnavChromePagelet(ChromePagelet):
-    """The page-tail sub-navigation: a folder's children, below its own page.
+    """A folder's folderish children, below the folder's default page.
 
-    Gated on the DEFAULT PAGE, not on a list of view names. A folder that has
-    a default page renders that page, so its children are nowhere on screen and
-    this element is the only way down; a folder WITHOUT one renders a listing
-    view, which already shows them. Reading the content state instead of the
-    layout name means no hardcoded list of listing views to keep current, and
-    no false positive on a custom one.
-
-    That gate also fixes where the children come from. When a folder has a
-    default page, ``self.context`` IS that page — a Document, with no children
-    of its own — so querying the context would render nothing on exactly the
-    pages this element exists for. ``canonical_object()`` resolves back to the
-    folder, and it is only meaningful once ``is_default_page()`` is true.
-
-    ``is_portal_root()`` covers the front page, whose canonical object is the
-    site root: without it every top-level section would be listed at the foot
-    of the home page, which is the global navigation said twice.
-
-    Only FOLDERISH children are listed. This element is a way DOWN the site
-    tree — the sections below the one being read — not an index of everything
-    filed in the folder. A folder's loose Documents, News Items or Images are
-    leaves of the current page, not branches off it, and listing them turned
-    the tail of a section page into a dump of whatever happened to sit beside
-    its default page. ``is_folderish`` rather than ``portal_type="Folder"``:
-    the test is "does this have a subtree", so a Large Plone Folder or a
-    project's own folderish type qualifies without being enumerated here.
-
-    Brain metadata only — rendering never wakes an object.
-
-    Markup (templates/subnav.pt), kept comment-free because a chrome template's
-    comments ship on every response: a labelled <nav> landmark around an <h2>
-    and a list of tiles, one <a> per tile wrapping both lines so there is no
-    nested interactive element to tab past. Styling: theme/scss/_clara-subnav.scss.
+    Only on a default page (other than the front page): there the children
+    are nowhere else on screen. ``canonical_object()`` is the folder.
     """
 
     def update(self):
@@ -297,48 +216,19 @@ class SubnavChromePagelet(ChromePagelet):
         ]
 
     def render(self):
-        """Nothing at all when there is nothing to point at.
-
-        A folder whose only child is its own default page filters down to zero
-        items, and an empty heading over an empty list is worse than silence.
-        """
+        """Nothing at all when there are no children."""
         if not self.items:
             return ""
         return super().render()
 
 
 class LanguageSelectorChromePagelet(ChromePagelet):
-    """The language switch: one row of language codes in the header.
+    """The header language switch: one row of language codes.
 
-    A layout element of its own rather than a restyle of
-    ``plone.app.multilingual``'s selector: Clara places it in the header's
-    utility lane, next to the navigation and the search, which the stock
-    viewlet's manager and markup do not allow.
-
-    It belongs to Clara rather than to a brand theme for the reason the
-    sub-navigation does: a multilingual site's switch is generic, and a brand
-    layer only re-points its tokens.
-
-    The lookups are ``plone.app.i18n``'s ``LanguageSelector`` — the languages
-    tool, the bindings, the ordering — REUSED, not ported (the ticket-09
-    rule). Which selector is asked depends on the request: with
-    ``plone.app.multilingual`` installed its subclass answers, so a link goes
-    through ``@@multilingual-selector`` to the *translation* of the current
-    page; without it the base answers and a link is the plain
-    ``?set_language=`` switch. Picking by layer inside ``update()`` rather
-    than by a second registration is deliberate: the two browser layers are
-    siblings, not a chain, so two registrations would be an ambiguous
-    multi-adapter lookup rather than an override.
-
-    Codes, not flags. ``showFlags()`` is honoured to the extent Clara can:
-    the theme draws with type, a flag is a country and not a language, and
-    the header row has no place for a 16px raster. The native name rides
-    along as the link's accessible name, so nothing is lost to a screen
-    reader.
-
-    Markup (templates/languageselector.pt), comment-free because a chrome
-    template's comments ship on every response. Styling:
-    theme/scss/_clara-language.scss.
+    Reuses plone.app.i18n's ``LanguageSelector``, or plone.app.multilingual's
+    subclass when installed (links to the page's translation). Picked in
+    ``update()`` because the two layers are siblings, so two registrations
+    would be ambiguous. The native name stays as the accessible name.
     """
 
     def update(self):
@@ -347,19 +237,14 @@ class LanguageSelectorChromePagelet(ChromePagelet):
             selector_class = LanguageSelectorViewlet
         selector = selector_class(self.context, self.request, self.view or self, None)
         # browser:viewlet stamps __name__ on its synthesized class;
-        # instantiated directly it is None (the ticket-07 wrapper gotcha).
+        # instantiated directly it is None.
         selector.__name__ = "plone.app.multilingual.languageselector"
         selector.update()
         self.available = selector.available()
         self.languages = []
         if not self.available:
             return
-        # The base selector hands over no link at all — classically the
-        # template built one, and this is that line, kept here so the
-        # template stays a template. plone.app.multilingual's subclass DOES
-        # hand one over (through @@multilingual-selector, to the translation
-        # of this page rather than to this page in another language), and it
-        # wins wherever it is there.
+        # The base selector gives no url; plone.app.multilingual's does.
         view_url = getMultiAdapter(
             (self.context, self.request), name="plone_context_state"
         ).view_url()
@@ -368,9 +253,6 @@ class LanguageSelectorChromePagelet(ChromePagelet):
             self.languages.append(
                 {
                     "code": code,
-                    # the painted label: the code, the way the switch is
-                    # written when there is one row for it and no room for
-                    # "Deutsch · English · Nederlands"
                     "label": code.upper(),
                     "name": info.get("native") or info.get("name") or code,
                     "url": info.get("url") or f"{view_url}?set_language={code}",
@@ -379,12 +261,7 @@ class LanguageSelectorChromePagelet(ChromePagelet):
             )
 
     def render(self):
-        """Nothing at all when there is no choice to offer.
-
-        ``available()`` is false on a site with one language, and on one whose
-        languages tool is configured never to show a selector — the setting an
-        integrator reaches for when language comes from the URL alone.
-        """
+        """Nothing at all when there is no choice to offer."""
         if not self.available:
             return ""
         return super().render()

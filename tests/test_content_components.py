@@ -42,9 +42,7 @@ def test_entries_is_an_elastic_grid_with_plone_api(bundle):
 
 
 def test_no_container_queries_anywhere(bundle):
-    """§5 is deferred to fog: the elastic CSS must NOT reach for container
-    queries. If a later effort needs them they attach to these same reused
-    hooks — but ticket 10 ships without a single `@container` / container-type."""
+    """The elastic layout needs no container queries."""
     assert "@container" not in bundle, "container query found — §5 is deferred"
     assert "container-type" not in bundle, "container-type found — §5 is deferred"
 
@@ -105,18 +103,13 @@ def test_album_container_is_flex(bundle):
 
 @pytest.mark.parametrize("invented", [".plone-card", ".plone-listing", ".plone-entries"])
 def test_does_not_invent_parallel_hooks(flat, invented):
-    """The card/listing hooks are Plone's own; ticket 02 forbade a parallel
-    `.plone-card`. Only structural primitives Plone can't name get `plone-`."""
+    """The card/listing hooks are Plone's own, never a parallel `.plone-card`."""
     assert invented not in flat, f"invented hook {invented!r} — reuse Plone's own"
 
 
 def test_card_restyled_through_the_bridge(bundle):
-    """A bare `.card` spaces itself from Clara tokens because the `--bs-*`→
-    `--plone-*` bridge rebinds its custom properties — not because we hand-wrote
-    `.card` padding. The rebind MUST be at the `.card` COMPONENT scope: Bootstrap
-    5.3 re-declares `--bs-card-spacer-x:1rem` on `.card` itself, shadowing any
-    :root bridge, so a :root-only rebind is dead. This pins the working scope so
-    the shadowing bug (which the ticket-10 runtime proof caught) can't regress."""
+    """The `.card` spacers are rebound at `.card` scope, where Bootstrap pins
+    them; a :root-only rebind would be shadowed."""
     bodies = _rule(bundle, ".card")
     assert bodies, ".card has no own rule"
     joined = "".join(bodies)

@@ -30,8 +30,7 @@ def _plone_token_for(bundle, selector, bs_token):
 
 # --------------------------------------------------------------------------- #
 # 1. Each literal-pinned component token is rebound onto --plone-* at COMPONENT
-#    scope. (A :root-only rebind of these is shadowed by Bootstrap's own
-#    component-root declaration — the defect this ticket fixes.)
+#    scope; a :root-only rebind is shadowed by Bootstrap's component root.
 # --------------------------------------------------------------------------- #
 
 #: selector  →  the --bs-* tokens Bootstrap pins as a LITERAL on that root and

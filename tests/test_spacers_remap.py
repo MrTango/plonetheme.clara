@@ -20,7 +20,7 @@ SPACERS = {
     5: "var(--plone-space-xl)",
 }
 
-#: The spec's named guarantee, called out verbatim in the ticket.
+#: The spec's named guarantee.
 HEADLINE = (".mb-3", "var(--plone-space-s)")
 
 
@@ -55,7 +55,7 @@ def test_margin_utility_remaps_to_clara_token(bundle, step, token):
 
 def test_padding_utility_also_remaps(bundle):
     """The remap is $spacers-wide, not margin-only: a foreign `.p-2` lands on
-    the same fluid token (the ticket names `.p-2` explicitly)."""
+    the same fluid token."""
     bodies = _rule(bundle, ".p-2")
     assert bodies, ".p-2 is not in the compiled bundle"
     assert bodies[0] == "padding:var(--plone-space-2xs) !important", bodies[0]
@@ -97,8 +97,8 @@ def test_referenced_token_is_defined_and_fluid(bundle, token):
 
 def test_utility_api_not_removed(bundle):
     """All six margin-bottom steps exist. If §7 had `map-remove`d the utilities
-    to force use of the raw tokens, the higher steps would vanish; the ticket's
-    tradeoff is the opposite choice — ship the whole utility API, remapped."""
+    to force use of the raw tokens, the higher steps would vanish; the chosen
+    tradeoff is the opposite — ship the whole utility API, remapped."""
     for step in SPACERS:
         assert _rule(bundle, f".mb-{step}"), f".mb-{step} missing — utilities trimmed?"
 

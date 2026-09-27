@@ -1,22 +1,5 @@
-"""Dark mode must actually win over light mode in the SHIPPED bundle.
-
-A plain `[data-bs-theme="dark"]` selector scores 0,1,0 — exactly what `:root`
-scores. Both token partials live in the same `tokens` layer, and
-`_clara-brand.scss` is imported *after* `_clara-tokens-defaults.scss`, so its
-`:root` block used to beat the defaults' dark block on source order alone.
-Every role the brand re-states and the dark block moves — background, surface,
-text, muted, border, on-primary — silently snapped back to its light value the
-moment the switch was flipped.
-
-`tests/test_color_contrast.py` did not catch it: `_dark_props()` overlays the
-partials in import order, which models a cascade the browser never runs. Both
-dark blocks now carry a doubled attribute selector (0,2,0), so dark always wins
-over light regardless of import order — and `[data-bs-theme]` stays usable on
-any element, so scoped dark regions keep working.
-
-This test reads the compiled bundle, not the Sass, because the defect only
-exists in the assembled cascade.
-"""
+"""Dark mode in the compiled bundle: explicit `data-bs-theme="dark"` and the OS
+preference both win over the light `:root`, and `data-bs-theme="light"` opts out."""
 
 import re
 

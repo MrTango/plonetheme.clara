@@ -14,7 +14,7 @@ repos:
       - id: ruff-format
   - repo: local
     hooks:
-      # §6.2 drift guard (wayfinder ticket 03 §4 / ticket 04): the compile-time
+      # §6.2 drift guard: the compile-time
       # $clara-* literals MUST equal the effective runtime --plone-* defaults.
       # Pure text parse, no Sass/node — runs whenever the token files change.
       - id: clara-token-drift

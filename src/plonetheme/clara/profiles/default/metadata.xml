@@ -3,9 +3,6 @@
   <version>1009</version>
   <dependencies>
     <dependency>profile-plone.app.registry:default</dependency>
-    <!-- Clara is the first theme built on the pagelet base: installing Clara
-         installs the whole rendering machinery, markup contract, primitives,
-         and default tokens; Clara then layers its brand tokens on top. -->
     <dependency>profile-plone.pageletlayout:default</dependency>
   </dependencies>
 </metadata>

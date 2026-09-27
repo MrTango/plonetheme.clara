@@ -1,24 +1,4 @@
-"""Site Setup (`@@overview-controlpanel`) chrome in the compiled bundle.
-
-Plone core owns the control-panel markup: `.configlets` is a grid of
-`<a class="d-block text-center py-4 rounded btn btn-light h-100">` tiles, each
-an `.overview-icon` SVG above its label (Products/CMFPlone/controlpanel/browser/
-overview.pt). Barceloneta ships the handful of rules that make that markup read
-as a tile grid; Clara shipped none of them, and two Clara decisions actively
-broke the page:
-
-  * `$theme-colors` is slimmed to five roles (clara-bootstrap.scss §6.2), so
-    Bootstrap never emits `.btn-light` — every tile rendered transparent and
-    edgeless; and
-  * the base reset sets `svg { display: block }` (_clara-layers.scss), which
-    takes the icon out of the tile's `text-align: center` flow and pins it to
-    the inline start.
-
-Same no-Sass/no-browser harness as test_component_bridge.py: a structural proof
-on the COMPILED `clara.min.css`, because that file — not the Sass — is what a
-site loads. The rules live in _clara-controlpanel.scss (layout) and
-_clara-bridge.scss (the `.btn-light` compat variant).
-"""
+"""Site Setup and control-panel chrome in the compiled bundle."""
 import re
 
 import pytest

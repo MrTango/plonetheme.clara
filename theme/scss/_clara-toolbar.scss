@@ -1,30 +1,8 @@
-// _clara-toolbar.scss — the editor-toolbar chrome, now theme-owned by Clara.
-//
-// Wayfinder ticket 14 ruled the editor-toolbar CSS a THEME responsibility (as
-// stock Plone ships barceloneta-toolbar.min.css inside the Barceloneta theme,
-// not a theme-independent layer); ticket 15 executes the move so
-// plone.pageletlayout ships zero CSS and the toolbar renders styled from Clara.
-//
-// PROVENANCE / liftability: this is the TOOLBAR DELTA of Barceloneta's
-// barceloneta-toolbar.css (plonetheme.barceloneta/theme/css/) — its own
-// --plone-toolbar-*/--plone-state-*/--plone-link-*/--plone-portlet-* tokens
-// (lines 724-767) + the #edit-zone / body.plone-toolbar-* chrome (768-983),
-// verbatim. The sheet's first ~723 lines (a full Bootstrap 5.3 :root{--bs-*}
-// dump + Reboot + .nav base) and its trailing .flex-* utilities were DROPPED:
-// Clara already compiles that exact Bootstrap 5.3.8 into @layer bootstrap, so
-// folding them in would only DUPLICATE it and — worse — the un-layered :root
-// --bs-* dump + global Reboot would shadow Clara's own :root bridge and reset.
-// The chrome reads --bs-dark/white/warning/gray-500 straight from Clara's
-// compiled Bootstrap (the bridge leaves those four at their stock values), so
-// the toolbar looks exactly as it did as the standalone bundle. Upstream can
-// reclaim the FULL sheet verbatim from plonetheme.barceloneta if the ticket-14
-// "might change in the future" call ever reverses.
-//
-// @layer components so the #edit-zone overrides of Bootstrap's own .nav-link /
-// .dropdown-* win over @layer bootstrap (later layer beats earlier, regardless
-// of specificity) — the same placement _clara-content.scss / _clara-bridge.scss
-// use. Tokens carry no name collision with Clara's --plone-* set, so their
-// layer is immaterial; they simply add the toolbar's own knobs at :root.
+// Editor-toolbar chrome, owned by the theme as Barceloneta owns
+// barceloneta-toolbar.css. The toolbar delta of that sheet (its tokens and the
+// #edit-zone / body.plone-toolbar-* rules); its Bootstrap dump and Reboot are
+// left out because Clara compiles Bootstrap itself. In @layer components so the
+// #edit-zone overrides beat @layer bootstrap.
 
 @layer components {
 :root,
@@ -280,27 +258,10 @@ body.plone-toolbar-top .toolbar-label {
   }
 }
 
-/* ─── Clara's own, NOT part of the lifted Barceloneta delta above ─────────
-   Kept in one block at the end so the provenance note at the top of this
-   file stays true and a future re-lift knows what to keep.
-
-   Focus mode for data entry on a phone. Below 768px the toolbar is a 60px
-   icon rail whose expand toggle is hidden (the `#edit-zone .toolbar-header
-   a` rule further up), so it takes an eighth of a 390px screen and cannot
-   show a single label in return. On a form holding unsaved data that is
-   the worst trade on the site: field width IS the page.
-
-   The trigger is the escape hatch, which is what makes hiding a navigation
-   landmark safe here. `pat-formunloadalert` marks a form Plone will warn
-   you about leaving, and `#form-buttons-cancel` is the documented way out
-   of one — so the rail only goes where the page already offers an exit,
-   and Save and Cancel both land on a view that has the toolbar back. A
-   form without a Cancel keeps its rail.
-
-   @@aurora-edit is deliberately NOT covered. It carries no z3c.form
-   buttons so it cannot match, and its exit lives inside the editor's own
-   chrome; taking Plone's toolbar off that surface needs that verified
-   first, not assumed. */
+/* ─── Clara's own additions, kept apart from the Barceloneta delta ─────────
+   Focus mode on a phone: a form with unsaved data and a Cancel button hides
+   the icon rail, since Cancel is the way out. @@aurora-edit has no z3c.form
+   buttons and is deliberately not covered. */
 @media (max-width: 767.98px) {
   body:has(#content-core form.pat-formunloadalert #form-buttons-cancel) {
     padding-left: 0;
@@ -311,27 +272,9 @@ body.plone-toolbar-top .toolbar-label {
   }
 }
 
-/* The pin/unpin toggle, made findable.
- *
- * The viewlet renders each one as a bare 16px icon link in the header strip
- * — no hit area beyond the glyph, no hover, and nothing that names it. The
- * control is there and it works, but people arriving from Volto's
- * collapsible toolbar look for it, do not see it, and conclude the rail
- * cannot be collapsed at all. That is a discoverability bug, not a missing
- * feature, so the fix is size, feedback and a name — not new chrome.
- *
- * The state switch is untouched: `display` on .toolbar-expand /
- * .toolbar-collapse in the lifted delta above still decides WHICH one shows,
- * and these rules only re-declare it as `flex` for whichever one that is, so
- * the icon and the label sit on one line. Specificity keeps that honest —
- * the delta's own hiding rules are equal or higher and still win, including
- * the phone rule that hides both (`#edit-zone .toolbar-header a`), so
- * nothing here leaks a control onto a viewport where it would be a no-op.
- *
- * The label is the aria-label the viewlet already renders and Plone already
- * translates ("Unpin" → "Abkoppeln"), so it needs no string of its own and
- * cannot drift from what a screen reader announces. It shows only in the
- * expanded rail, the one state with room to read it. */
+/* The pin/unpin toggle, made findable: a real hit area, hover feedback and,
+ * in the expanded rail, its aria-label as visible text. The delta above still
+ * decides which toggle shows; these rules only make it `flex`. */
 #edit-zone .toolbar-header {
   align-items: center;
 }

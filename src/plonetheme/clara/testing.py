@@ -25,7 +25,7 @@ class PlonethemeClaraLayer(PloneSandboxLayer):
         self.loadZCML(package=plone.restapi)
         # Clara depends on plone.pageletlayout (its integration base); load the
         # base ZCML so profile-plone.pageletlayout:default is registered and
-        # Clara's dependency-profile install resolves it (wayfinder ticket 04).
+        # Clara's dependency-profile install resolves it.
         self.loadZCML(package=plone.pageletlayout)
         self.loadZCML(package=plonetheme.clara)
         self.loadZCML(name="overrides.zcml", package=plonetheme.clara)

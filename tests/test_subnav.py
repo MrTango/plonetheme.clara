@@ -1,15 +1,4 @@
-"""Tests for the page-tail sub-navigation (pagelets.SubnavChromePagelet).
-
-The gate is the DEFAULT PAGE, not a list of view names. A folder that has one
-renders that page, so its children are nowhere on screen and this element is
-the only way down; a folder without one renders a listing view that already
-shows them. Two consequences are pinned here: the element stays silent in the
-listing case, and — because ``context`` IS the default page when one is set —
-the children come from the canonical folder rather than from the context.
-
-What it lists is the folder's FOLDERISH children only: this is a way down the
-tree, not an index of everything filed beside the default page.
-"""
+"""The page-tail sub-navigation (pagelets.SubnavChromePagelet)."""
 import re
 
 import pytest

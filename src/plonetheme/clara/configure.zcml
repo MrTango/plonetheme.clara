@@ -10,9 +10,7 @@
 
   <include file="permissions.zcml" />
 
-  <!-- Clara's mega-panel globalnav: same provider name as the base
-       registration, on Clara's (more specific) layer. The subclass
-       inherits the base's globalnav.pt shell template. -->
+  <!-- The mega-panel globalnav, replacing the base's on Clara's layer. -->
   <include package="plone.pageletlayout" file="meta.zcml" />
   <plone:chromepagelet
       name="plone.pageletlayout.globalnav"
@@ -20,15 +18,8 @@
       layer=".interfaces.IPlonethemeClaraLayer"
       />
 
-  <!-- Clara's page-tail sub-navigation: a NEW layout element, so it needs
-       both halves — the chrome pagelet (the element) and the PageletViewlet
-       wrapper that registers it for the element pool. registry.xml assigns
-       it to plone.belowcontentbody, viewlets.xml gives it the first place
-       there.
-
-       It belongs here rather than in a brand theme because wayfinding into a
-       folder's children is generic: any Clara-based site with a default page
-       over children wants it, and a brand layer only re-points its tokens. -->
+  <!-- The page-tail sub-navigation: a new element, so the chrome pagelet
+       plus its PageletViewlet (registry.xml and viewlets.xml place it). -->
   <plone:chromepagelet
       name="plonetheme.clara.subnav"
       class=".pagelets.SubnavChromePagelet"
@@ -44,14 +35,8 @@
       permission="zope2.View"
       />
 
-  <!-- Clara's language switch: like the sub-navigation, a NEW layout
-       element — the chrome pagelet and the PageletViewlet wrapper.
-       registry.xml assigns it to plone.mainnavigation, viewlets.xml places
-       it after the global navigation: the header's utility lane reads
-       navigation, language switch, search.
-
-       plone.app.multilingual's own selector (plone.portalheader) is hidden
-       in viewlets.xml; this element replaces it with Clara's markup. -->
+  <!-- The header language switch, a new element like the sub-navigation.
+       It replaces plone.app.multilingual's selector (hidden in viewlets.xml). -->
   <plone:chromepagelet
       name="plonetheme.clara.languageselector"
       class=".pagelets.LanguageSelectorChromePagelet"
@@ -67,8 +52,7 @@
       permission="zope2.View"
       />
 
-  <!-- Clara's brand token file, served at ++resource++plonetheme.clara/ and
-       linked via a registry bundle (profiles/default/registry.xml). -->
+  <!-- Static files: the compiled bundle, clara.js, fonts, images. -->
   <browser:resourceDirectory
       name="plonetheme.clara"
       directory="static"
@@ -91,17 +75,13 @@
       directory="profiles/uninstall"
       />
 
-  <!-- Hide the uninstall + upgrade profiles from the Add-ons panel; the
-       upgrade profiles are applied by their upgrade steps, never installed
-       by hand. -->
+  <!-- Hide the uninstall and upgrade profiles from the Add-ons panel. -->
   <utility
       factory=".setuphandlers.HiddenProfiles"
       name="plonetheme.clara-hiddenprofiles"
       />
 
-
   <include package=".upgrades" />
-
 
   <include package=".behaviors" />
 

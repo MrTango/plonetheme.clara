@@ -1,21 +1,7 @@
-/* clara-content.css — component styling for Plone's content-view hooks
- * (listing / summary / tabular / album), wayfinder ticket 10.
- *
- * The STYLING half of the view stream; the templates that emit this markup are
- * tickets 11/12. It reuses Plone's OWN semantic hooks verbatim (ticket 02
- * audit of plone.app.contenttypes) — .entries / .item / .summary, the Bootstrap
- * .card family (themed through the --bs-*→--plone-* bridge), .table, .card.album
- * — and NEVER invents a parallel .plone-card. `plone-` is reserved for the
- * structural primitives Plone can't name; a content hook Plone already names is
- * reused as-is.
- *
- * Every hook carries a --plone-* custom-property API (gap / columns / rhythm),
- * so a site retunes a listing in a CSS :root/scope block without touching a
- * template or this file. Layout is ELASTIC — grid + minmax(), flex-grow,
- * clamp() — so a listing reads right in the wide content column AND in a narrow
- * rail with NO container queries (§5 deferred to fog; if ever needed they
- * attach to these same reused hooks). No spacing utilities: named hooks +
- * tokens only (the §7 tradeoff).
+/* Content views (listing / summary / tabular / album) on Plone's own hooks:
+ * .entries / .item / .summary, the .card family, .table, .card.album. No
+ * parallel .plone-card. Every hook exposes --plone-* knobs, and the layout is
+ * elastic (grid + minmax, flex-grow, clamp) without container queries.
  */
 @layer components {
   /* ===== listing container — one elastic grid, a single column knob ======= */
@@ -77,8 +63,8 @@
 
   /* ===== card family — hand-written styling ============================== *
    * The card's --bs-*→--plone-* token rebind (spacers / border) lives in
-   * _clara-bridge.scss at component scope (ticket 13 folded it there so the
-   * bridge owns ALL --bs-* mapping in one place). This block keeps only the
+   * _clara-bridge.scss at component scope, with all other --bs-* mapping.
+   * This block keeps only the
    * card styling Bootstrap gives no --bs-* knob for. */
   .card-title {
     font-size: var(--plone-text-l);
@@ -96,7 +82,7 @@
 
   /* ===== tabular view — hand-written styling ============================= *
    * The table's --bs-table-* token rebind (striped fill / border) lives in
-   * _clara-bridge.scss at component scope (ticket 13). th/caption are refined
+   * _clara-bridge.scss at component scope. th/caption are refined
    * by hand here since Bootstrap gives them no --bs-* knob. */
   .table > thead th {
     text-align: start;
@@ -124,8 +110,7 @@
     gap: var(--plone-album-gap);
   }
   /* every card in the album justifies (image cards `.card`, folder cards
-     `.card.album`); the folder card is called out so the ticket's named
-     `.card album` hook carries the flexbin sizing explicitly. */
+     `.card.album`); the folder card gets the flexbin sizing explicitly. */
   .entries.album > .card,
   .card.album {
     flex-grow: 1;

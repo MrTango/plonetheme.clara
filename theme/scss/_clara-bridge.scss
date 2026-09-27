@@ -1,4 +1,4 @@
-/* clara-bridge.css — Bootstrap 5.3 token bridge (runtime half).
+/* Bootstrap 5.3 token bridge (runtime half).
  *
  * Rebinds Bootstrap's --bs-* custom properties onto --plone-* tokens so a bare
  * <div class="card">, <button class="btn">, <ul class="nav">… spaces and colours
@@ -7,7 +7,7 @@
  * compile-time half ($primary, $spacers, … set from tokens before
  * @import "bootstrap") lives in clara-bootstrap.scss (§6.1–6.2, §7).
  *
- * ── The two scopes, and WHY (wayfinder ticket 13) ──────────────────────────
+ * ── The two scopes, and why ────────────────────────────────────────────────
  * Bootstrap 5.3 declares its tokens in TWO places, and the bridge must answer
  * each in the matching scope:
  *
@@ -21,8 +21,8 @@
  *      :0.75rem}`, `.nav{…}`, `.alert{…}`, `.breadcrumb{…}`). That element-level
  *      declaration SHADOWS any `:root` value for every descendant, so a
  *      `:root`-only rebind of these is DEAD — the component keeps Bootstrap's
- *      flat rem. Ticket 10's runtime proof caught this (a bare `.card-body`
- *      computed to Bootstrap's 16px, not `--plone-space-m`). The fix: rebind
+ *      flat rem (a bare `.card-body` computed to Bootstrap's 16px, not
+ *      `--plone-space-m`). The fix: rebind
  *      them in a COMPONENT-SCOPE block (still in the `components` layer, which
  *      beats `bootstrap`), where the cascade can actually see them.
  *
@@ -110,9 +110,7 @@
 
   /* card — spacers are literal-pinned; border-color flows from
      --bs-border-color-TRANSLUCENT (not the bridged --bs-border-color), so it is
-     rebound to the solid token here. border-radius flows from :root. Moved from
-     _clara-content.scss (ticket 13): the bridge owns the --bs-* mapping; content
-     keeps only the hand-written card styling Bootstrap gives no knob for. */
+     rebound to the solid token here. border-radius flows from :root. */
   .card {
     --bs-card-spacer-x:     var(--plone-space-m);
     --bs-card-spacer-y:     var(--plone-space-s);
@@ -141,8 +139,7 @@
   }
 
   /* table — striped fill is a literal rgba() pinned on `.table`; rebind it onto
-     a token. border-color flows from :root (var(--bs-border-color)). Moved from
-     _clara-content.scss (ticket 13). */
+     a token. border-color flows from :root (var(--bs-border-color)). */
   .table {
     --bs-table-striped-bg: var(--plone-color-surface);
   }
