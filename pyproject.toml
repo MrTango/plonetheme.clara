@@ -111,6 +111,8 @@ ignore = ["E731"]
 "tests/**" = ["S101"]
 # Locale update helper shells out to fixed translation tools (i18ndude/msginit).
 "src/**/locales/update.py" = ["S603", "S607"]
+# The theme parity test runs node on a script of e2e/.
+"tests/test_theme_parity.py" = ["S603", "S607"]
 
 [tool.ruff.lint.isort]
 # Match the single-import-per-line, alphabetical layout the templates emit.

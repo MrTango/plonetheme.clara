@@ -46,6 +46,96 @@ jobs:
         working-directory: plonetheme.clara
         run: uv run --frozen --extra test pytest -v
 
+  editor-token:
+    # Secrets cannot gate a job, so this one tells theme-parity whether the
+    # AURORA_EDITOR_TOKEN secret is there (it is not on forks).
+    runs-on: ubuntu-latest
+    outputs:
+      present: ${{ steps.check.outputs.present }}
+    steps:
+      - id: check
+        env:
+          TOKEN: ${{ secrets.AURORA_EDITOR_TOKEN }}
+        run: echo "present=$([ -n "$TOKEN" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  theme-parity:
+    # e2e/theme-parity.e2e.js: the Aurora editor's blocks measure the same
+    # under Clara as under Barceloneta. The editor is a private repository,
+    # checked out with the read-only AURORA_EDITOR_TOKEN; without it the job
+    # is skipped.
+    needs: editor-token
+    if: needs.editor-token.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          path: plonetheme.clara
+
+      - uses: actions/checkout@v5
+        with:
+          repository: MrTango/plone.pageletlayout
+          path: plone.pageletlayout
+
+      - uses: actions/checkout@v5
+        with:
+          repository: plone/plone.app.viewletmanager
+          ref: additional-viewlets
+          path: plone.app.viewletmanager
+
+      - uses: actions/checkout@v5
+        with:
+          repository: derico-de/plone.blicca.auroraeditor
+          token: ${{ secrets.AURORA_EDITOR_TOKEN }}
+          persist-credentials: false
+          path: plone.blicca.auroraeditor
+
+      - name: Set up uv and Python 3.12
+        uses: astral-sh/setup-uv@v10.0.1
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      # The editor cannot be a dependency in pyproject.toml (a private path
+      # would break `uv lock` for everyone else), so it is added to this
+      # checkout only. `uv run --with` would not do: it layers a separately
+      # resolved Plone over the locked one.
+      - name: Add the editor
+        working-directory: plonetheme.clara
+        run: uv add --no-sync --optional theme-parity --editable ../plone.blicca.auroraeditor
+
+      # pnpm version comes from package.json's packageManager field.
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: plonetheme.clara/package.json
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: plonetheme.clara/.nvmrc
+          cache: pnpm
+          cache-dependency-path: plonetheme.clara/e2e/pnpm-lock.yaml
+
+      - name: Install playwright-core and Chromium
+        working-directory: plonetheme.clara/e2e
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright-core install --with-deps --no-shell chromium
+
+      - name: Theme parity
+        working-directory: plonetheme.clara
+        run: uv run --frozen --extra test --extra theme-parity pytest -v -rsx tests/test_theme_parity.py
+        env:
+          AURORA_E2E_SMOKE: "1"
+          AURORA_E2E_ARTIFACTS: ${{ runner.temp }}/theme-parity
+
+      - name: Keep the failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-parity-screenshots
+          path: ${{ runner.temp }}/theme-parity
+          if-no-files-found: ignore
+
   lint:
     runs-on: ubuntu-latest
     steps:

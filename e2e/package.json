@@ -1,0 +1,10 @@
+{
+  "name": "plonetheme.clara-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser tests for plonetheme.clara, run by tests/test_theme_parity.py (see README.md).",
+  "license": "GPL-2.0-only",
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}

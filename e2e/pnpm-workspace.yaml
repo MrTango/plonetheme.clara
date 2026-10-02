@@ -1,0 +1,3 @@
+# Its own workspace, apart from the theme build in the repository root.
+packages:
+  - "."

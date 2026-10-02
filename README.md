@@ -99,6 +99,18 @@ uv run pytest
 uv run pytest --cov=plonetheme.clara --cov-report=html
 ```
 
+### Theme parity with the Aurora editor
+
+`tests/test_theme_parity.py` renders the same blocks of the Aurora editor
+(`plone.blicca.auroraeditor`) on a Barceloneta site and on a Clara site. It
+fails when Clara changes a block's size. It needs the editor checked out next
+to this repository, node and Chromium, and is skipped otherwise. See
+[e2e/README.md](e2e/README.md).
+
+The editor is a private repository. CI's `theme-parity` job checks it out
+with the read-only token in the `AURORA_EDITOR_TOKEN` repository secret and
+is skipped when that secret is missing.
+
 ## License
 
 GPL-2.0-or-later

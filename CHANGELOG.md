@@ -3,6 +3,7 @@
 ## 1.0.0a1 (unreleased)
 
 - Initial release.
+- Add the theme parity browser test: the Aurora editor's blocks measure the same under Clara as under Barceloneta (CI job `theme-parity`, needs the `AURORA_EDITOR_TOKEN` secret).
 - Add an opt-in search that opens on demand: the `plonetheme.clara.search_on_demand` registry record (off by default, upgrade step 1009).
 - Follow the OS colour-scheme preference for dark mode; `data-bs-theme="light"` or `"dark"` on `<html>` still pins a mode.
 - Use tokens for the toolbar colours; its dark block only restates what differs.
