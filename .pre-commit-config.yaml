@@ -1,8 +1,12 @@
+# Scaffold metadata and the design sites' build output (pages, fonts,
+# images) stay as their generators wrote them.
+exclude: '^(\.copier-answers.*\.ya?ml$|docs/design/[^/]+/site/(.+\.html|assets/(fonts|images)/.+)$)'
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
       - id: check-yaml
+        args: [--allow-multiple-documents]
       - id: end-of-file-fixer
       - id: trailing-whitespace
       - id: check-merge-conflict
