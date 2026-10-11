@@ -1,5 +1,6 @@
 """The `$clara-*` Sass literals Bootstrap's compile-time math needs must equal
 the effective runtime `--plone-*` defaults (base overlaid by brand)."""
+
 import re
 from pathlib import Path
 
@@ -57,7 +58,7 @@ def _root_block(text):
         elif text[i] == "}":
             depth -= 1
             if depth == 0:
-                return text[brace + 1:i]
+                return text[brace + 1 : i]
     raise AssertionError(":root block not closed")
 
 
@@ -101,9 +102,7 @@ def runtime():
 
 
 @pytest.mark.parametrize("literal_name,prop_name", OVERLAP.items())
-def test_literal_matches_effective_runtime_default(
-    literals, runtime, literal_name, prop_name
-):
+def test_literal_matches_effective_runtime_default(literals, runtime, literal_name, prop_name):
     """Each guarded $clara-* literal equals the resolved base⊕brand default."""
     assert literal_name in literals, f"missing literal ${literal_name}"
     assert prop_name in runtime, f"missing runtime token --{prop_name}"

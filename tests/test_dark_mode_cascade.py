@@ -74,9 +74,7 @@ def _token_layer(css):
 
 def test_no_dark_block_in_the_token_layer_is_left_at_root_specificity():
     """Every dark token block must outscore `:root`, not merely follow it."""
-    weak = re.findall(
-        r"(?<![\]\w])\[data-bs-theme=[\"']?dark[\"']?\]\s*\{", _token_layer(_css())
-    )
+    weak = re.findall(r"(?<![\]\w])\[data-bs-theme=[\"']?dark[\"']?\]\s*\{", _token_layer(_css()))
     assert not weak, (
         f"{len(weak)} dark block(s) in @layer tokens still score 0,1,0 and can "
         "be undone by a later :root in the same layer — double the attribute "
@@ -102,9 +100,7 @@ def test_dark_mode_actually_moves_the_neutral_roles(role):
         css,
     )
     assert dark_blocks, "no doubled dark block found in the bundle"
-    declared = [
-        block for block in dark_blocks if re.search(rf"{re.escape(role)}\s*:", block)
-    ]
+    declared = [block for block in dark_blocks if re.search(rf"{re.escape(role)}\s*:", block)]
     assert declared, f"{role} is never re-declared for dark mode"
 
 
@@ -139,9 +135,7 @@ EXPLICIT_DARK = re.compile(r"^(?:\[data-bs-theme=[\"']?dark[\"']?\])+")
 def test_every_explicit_dark_rule_also_follows_the_os_preference():
     """Tokens, toolbar and Bootstrap: each dark rule has an OS twin."""
     css = _css()
-    os_rules = {
-        (selector.strip(), body) for selector, body in _os_dark_rules(css)
-    }
+    os_rules = {(selector.strip(), body) for selector, body in _os_dark_rules(css)}
     missing = []
     for selectors, body in re.findall(r"([^{}]+)\{([^{}]*)\}", css):
         for selector in selectors.split(","):

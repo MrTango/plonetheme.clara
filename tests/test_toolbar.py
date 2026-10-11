@@ -1,4 +1,5 @@
 """Editor-toolbar chrome in the compiled bundle (`_clara-toolbar.scss`)."""
+
 import re
 from pathlib import Path
 
@@ -12,6 +13,7 @@ def flat(bundle):
 
 
 # ── the chrome landed ─────────────────────────────────────────────────────────
+
 
 def test_edit_zone_chrome_present(flat):
     """The #edit-zone chrome the base used to ship now lives in the bundle."""
@@ -40,6 +42,7 @@ def test_toolbar_tokens_present(flat):
 
 
 # ── the redundant Bootstrap was NOT folded in ────────────────────────────────
+
 
 def test_toolbar_background_uses_clara_semantic_dark(flat):
     """The toolbar now uses Clara's same-hue dark surface directly instead of
@@ -76,6 +79,7 @@ def test_no_toolbar_body_reboot_leaked(bundle):
 
 
 # ── the chrome sits where it can win ─────────────────────────────────────────
+
 
 def test_toolbar_chrome_in_components_layer(bundle):
     """#edit-zone overrides of Bootstrap's .nav-link must sit in @layer
@@ -137,12 +141,13 @@ def test_form_focus_mode_is_gated_on_an_escape_hatch(flat):
 def test_form_focus_mode_is_phone_only(bundle):
     """Desktop keeps the toolbar: the rule lives inside the same 767.98px
     band the rest of the toolbar's mobile chrome uses."""
-    assert any(
-        "#form-buttons-cancel" in block for block in _phone_blocks(bundle)
-    ), "the focus-mode rule is not inside a (max-width: 767.98px) block"
+    assert any("#form-buttons-cancel" in block for block in _phone_blocks(bundle)), (
+        "the focus-mode rule is not inside a (max-width: 767.98px) block"
+    )
 
 
 # ── Clara's own: the pin/unpin toggle is findable ────────────────────────────
+
 
 def _media_blocks(css, condition):
     """Bodies of every ``@media`` block whose prelude carries `condition`,
@@ -156,7 +161,7 @@ def _media_blocks(css, condition):
         while depth and index < len(css):
             depth += {"{": 1, "}": -1}.get(css[index], 0)
             index += 1
-        blocks.append(css[match.end():index - 1])
+        blocks.append(css[match.end() : index - 1])
     return blocks
 
 
@@ -169,25 +174,19 @@ def test_the_toggle_has_a_real_hit_area(bundle):
     sized = [r for r in rules if "min-height" in r]
     assert sized, f"the toggle is still just the glyph: {rules!r}"
     for declaration in ("padding-inline:", "gap:"):
-        assert declaration in sized[0], (
-            f"the toggle has no {declaration.rstrip(':')}: {sized[0]!r}"
-        )
+        assert declaration in sized[0], f"the toggle has no {declaration.rstrip(':')}: {sized[0]!r}"
     assert "width:1.25rem" in bundle, "the toggle's icon was not enlarged"
 
 
 def test_the_toggle_answers_the_pointer_and_the_keyboard(bundle):
     """Feedback is half of an affordance: something has to happen on hover,
     and the same thing on focus, or the strip still reads as decoration."""
-    match = re.search(
-        r"([^{}]*\.toolbar-header a:hover[^{}]*)\{([^}]*)\}", bundle
-    )
+    match = re.search(r"([^{}]*\.toolbar-header a:hover[^{}]*)\{([^}]*)\}", bundle)
     assert match, "nothing paints a hover state on the toolbar header"
     assert ":focus-visible" in match.group(1), (
         f"the hover state is not shared with the keyboard: {match.group(1)!r}"
     )
-    assert "background" in match.group(2), (
-        f"the hover state paints nothing: {match.group(2)!r}"
-    )
+    assert "background" in match.group(2), f"the hover state paints nothing: {match.group(2)!r}"
 
 
 def test_the_expanded_rail_names_the_control(bundle):
@@ -217,9 +216,7 @@ def test_the_state_switch_still_decides_which_toggle_shows(bundle):
     the icon and its label share a line. Re-declaring it unconditionally
     would reveal BOTH toggles at once; every such rule has to carry the body
     class that names the state."""
-    switches = re.findall(
-        r"([^{}]*\.toolbar-(?:expand|collapse))\{display:flex\}", bundle
-    )
+    switches = re.findall(r"([^{}]*\.toolbar-(?:expand|collapse))\{display:flex\}", bundle)
     assert switches, "no toggle is laid out as a row — the label cannot sit "
     for selector in switches:
         assert "body.plone-toolbar-left" in selector, (

@@ -3,6 +3,7 @@
 Listing, summary, tabular and album views reuse Plone's own hooks, expose
 `--plone-*` custom properties and lay out elastically.
 """
+
 import re
 
 import pytest
@@ -23,6 +24,7 @@ def _rule(bundle, selector):
 # --------------------------------------------------------------------------- #
 # 1. The listing container: ONE elastic grid, a --plone-* column API, no query.
 # --------------------------------------------------------------------------- #
+
 
 def test_entries_is_an_elastic_grid_with_plone_api(bundle):
     """`.entries` lays out as a grid whose column behaviour is driven by a
@@ -51,6 +53,7 @@ def test_no_container_queries_anywhere(bundle):
 # 2. The item / summary hooks are Plone's own, reused verbatim (not invented).
 # --------------------------------------------------------------------------- #
 
+
 @pytest.mark.parametrize("selector", [".entries>.item", ".entries>.summary"])
 def test_listing_item_hooks_present(flat, selector):
     """Each listing row is styled through Plone's own `.item` / `.summary`
@@ -67,6 +70,7 @@ def test_description_hook_is_muted(flat):
 # 3. Album: a flexbin-style justified grid on Plone's `.card.album`, elastic.
 # --------------------------------------------------------------------------- #
 
+
 def test_album_card_is_a_flexbin_item(bundle, flat):
     """`.card.album` justifies flexbin-style: it `flex-grow`s to fill each row
     (variable width, equal height) instead of stock's fixed equal-width cols.
@@ -75,8 +79,7 @@ def test_album_card_is_a_flexbin_item(bundle, flat):
     bodies = _rule(bundle, ".card.album")
     assert bodies, ".card.album has no own rule"
     assert "flex-grow" in bodies[0], (
-        ".card.album must flex-grow (flexbin justification); got "
-        f"{bodies[0]!r}"
+        f".card.album must flex-grow (flexbin justification); got {bodies[0]!r}"
     )
     assert "--plone-album" in "".join(bodies) + flat, (
         "album layout must expose a --plone-album-* tuning knob"
@@ -100,6 +103,7 @@ def test_album_container_is_flex(bundle):
 # 4. Reuse over invent: the Bootstrap card/table are restyled through the
 #    bridge; NO parallel .plone-card / .plone-listing is minted.
 # --------------------------------------------------------------------------- #
+
 
 @pytest.mark.parametrize("invented", [".plone-card", ".plone-listing", ".plone-entries"])
 def test_does_not_invent_parallel_hooks(flat, invented):
@@ -125,6 +129,7 @@ def test_card_restyled_through_the_bridge(bundle):
 #    knobs), deliberately in the bundle since the clara-base redesign. The
 #    guard is against DANGLING reads, not against the namespace itself.
 # --------------------------------------------------------------------------- #
+
 
 def test_clara_tokens_read_are_declared(bundle):
     """Every fallback-less var(--clara-…) read must be declared somewhere in

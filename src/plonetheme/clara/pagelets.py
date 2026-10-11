@@ -51,9 +51,7 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
             brain.getId: {
                 "description": _clean(brain.Description),
                 "proof": _clean(getattr(brain, "megamenu_proof", "")),
-                "overview_label": _clean(
-                    getattr(brain, "megamenu_overview_label", "")
-                ),
+                "overview_label": _clean(getattr(brain, "megamenu_overview_label", "")),
             }
             for brain in brains
         }
@@ -109,9 +107,7 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
         """A top-level item: native li/link/opener; panel when it has children."""
         sub = self.build_tree(item["path"], first_run=False, depth=1)
         if not sub:
-            item.update(
-                {"sub": "", "opener": "", "aria_haspopup": "", "has_sub_class": ""}
-            )
+            item.update({"sub": "", "opener": "", "aria_haspopup": "", "has_sub_class": ""})
             return self._item_markup_template.format(**item)
 
         panel = self._panel_markup_template.format(
@@ -123,9 +119,7 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
                 _("megamenu_close_label", default="Close menu"),
                 context=self.request,
             ),
-            description=_escaped(
-                '<p class="megamenu-description">{}</p>', item.get("description")
-            ),
+            description=_escaped('<p class="megamenu-description">{}</p>', item.get("description")),
             overview=_escaped(
                 '<p class="megamenu-overview-row">'
                 f'<a class="megamenu-overview" href="{item["url"]}">{{}}</a></p>',
@@ -133,14 +127,12 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
             ),
             proof=_escaped('<p class="megamenu-proof">{}</p>', item.get("proof")),
         )
-        item.update(
-            {
-                "sub": panel,
-                "opener": self._opener_markup_template.format(**item),
-                "aria_haspopup": ' aria-haspopup="true"',
-                "has_sub_class": " has_subtree",
-            }
-        )
+        item.update({
+            "sub": panel,
+            "opener": self._opener_markup_template.format(**item),
+            "aria_haspopup": ' aria-haspopup="true"',
+            "has_sub_class": " has_subtree",
+        })
         return self._item_markup_template.format(**item)
 
     def _render_child(self, item):
@@ -153,8 +145,7 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
             title=item["title"],
             description=_escaped("<span>{}</span>", item.get("description")),
             sub=(
-                f'<ul class="megamenu-sublinks" aria-label="{item["title"]}">'
-                f"{sub}</ul>"
+                f'<ul class="megamenu-sublinks" aria-label="{item["title"]}">{sub}</ul>'
                 if sub
                 else ""
             ),
@@ -162,19 +153,14 @@ class ClaraMegamenuSectionsViewlet(GlobalSectionsViewlet):
 
     def build_tree(self, path, first_run=True, depth=0):
         """Depth-tracking variant; wrapping happens in the items' renderers."""
-        return "".join(
-            self.render_item(item, path, depth)
-            for item in self.navtree.get(path, [])
-        )
+        return "".join(self.render_item(item, path, depth) for item in self.navtree.get(path, []))
 
 
 class ClaraGlobalnavChromePagelet(GlobalnavChromePagelet):
     """The base globalnav pagelet, rendering Clara's mega-panel viewlet."""
 
     def update(self):
-        self.sections = ClaraMegamenuSectionsViewlet(
-            self.context, self.request, self.view or self
-        )
+        self.sections = ClaraMegamenuSectionsViewlet(self.context, self.request, self.view or self)
         # browser:viewlet would stamp this; direct instantiation must too
         self.sections.__name__ = "plone.global_sections"
         self.sections.update()
@@ -189,9 +175,7 @@ class SubnavChromePagelet(ChromePagelet):
 
     def update(self):
         self.items = []
-        state = getMultiAdapter(
-            (self.context, self.request), name="plone_context_state"
-        )
+        state = getMultiAdapter((self.context, self.request), name="plone_context_state")
         # is_portal_root() already accounts for the default-page case: it is
         # true both for the site root itself and for a default page whose
         # parent is the site root.
@@ -250,15 +234,13 @@ class LanguageSelectorChromePagelet(ChromePagelet):
         ).view_url()
         for info in selector.languages():
             code = info["code"]
-            self.languages.append(
-                {
-                    "code": code,
-                    "label": code.upper(),
-                    "name": info.get("native") or info.get("name") or code,
-                    "url": info.get("url") or f"{view_url}?set_language={code}",
-                    "selected": bool(info.get("selected")),
-                }
-            )
+            self.languages.append({
+                "code": code,
+                "label": code.upper(),
+                "name": info.get("native") or info.get("name") or code,
+                "url": info.get("url") or f"{view_url}?set_language={code}",
+                "selected": bool(info.get("selected")),
+            })
 
     def render(self):
         """Nothing at all when there is no choice to offer."""

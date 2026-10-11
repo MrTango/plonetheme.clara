@@ -4,6 +4,7 @@ Bootstrap pins component spacing tokens on the component root, which shadows
 any `:root` value, so the bridge rebinds them at component scope. The `.btn`
 size variants must keep their own padding tokens.
 """
+
 import re
 
 import pytest
@@ -132,6 +133,7 @@ def test_btn_border_radius_not_rebound_at_component_scope(bundle):
 #    reason a component-scope rebind wins over Bootstrap's own literal.
 # --------------------------------------------------------------------------- #
 
+
 def test_components_layer_beats_bootstrap(bundle):
     """The single `@layer …;` statement orders `components` after `bootstrap`,
     so a same-specificity component rule in `components` wins. Without this the
@@ -150,10 +152,17 @@ def test_components_layer_beats_bootstrap(bundle):
 #    component, so :root — in the winning `components` layer — is correct).
 # --------------------------------------------------------------------------- #
 
-@pytest.mark.parametrize("token", [
-    "--bs-body-bg", "--bs-body-color", "--bs-border-color", "--bs-link-color",
-    "--bs-table-cell-padding-x",
-])
+
+@pytest.mark.parametrize(
+    "token",
+    [
+        "--bs-body-bg",
+        "--bs-body-color",
+        "--bs-border-color",
+        "--bs-link-color",
+        "--bs-table-cell-padding-x",
+    ],
+)
 def test_global_tokens_stay_at_root(bundle, token):
     """Body/border/link and the (non-re-scoped) table cell padding are bridged
     once at :root — moving them to component scope would be needless."""
@@ -166,6 +175,7 @@ def test_global_tokens_stay_at_root(bundle, token):
 # 5. Namespace / mechanism hygiene (mirrors test_content_components.py): the
 #    bridge introduces ONLY --plone-* and reaches for no container queries.
 # --------------------------------------------------------------------------- #
+
 
 def test_no_container_queries(bundle):
     assert "@container" not in bundle and "container-type" not in bundle, (
@@ -220,8 +230,11 @@ def test_named_hook_declared_with_claras_own_default(bundle, hook, default):
     ("selector", "prop", "hook"),
     [
         (".clara-button", "border", "--clara-button-border-color"),
-        (".element-copyright,.element-colophon,.element-siteactions", "background",
-         "--clara-footer-ground"),
+        (
+            ".element-copyright,.element-colophon,.element-siteactions",
+            "background",
+            "--clara-footer-ground",
+        ),
     ],
 )
 def test_component_paints_through_its_hook(bundle, selector, prop, hook):

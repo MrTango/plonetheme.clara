@@ -1,4 +1,5 @@
 """Pytest configuration for plonetheme.clara tests."""
+
 import re
 from pathlib import Path
 
@@ -25,10 +26,8 @@ def bundle():
 
 
 globals().update(
-    fixtures_factory(
-        (
-            (INTEGRATION_TESTING, "integration"),
-            (FUNCTIONAL_TESTING, "functional"),
-        )
-    )
+    fixtures_factory((
+        (INTEGRATION_TESTING, "integration"),
+        (FUNCTIONAL_TESTING, "functional"),
+    ))
 )

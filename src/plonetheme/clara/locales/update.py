@@ -30,38 +30,32 @@ def locale_folder_setup():
             continue
         lc_messages_path = lang + "/LC_MESSAGES/"
         os.mkdir(lc_messages_path)
-        subprocess.call(
-            [
-                "msginit",
-                f"--locale={lang}",
-                f"--input={domain}.pot",
-                f"--output={lang}/LC_MESSAGES/{domain}.po",
-            ]
-        )
+        subprocess.call([
+            "msginit",
+            f"--locale={lang}",
+            f"--input={domain}.pot",
+            f"--output={lang}/LC_MESSAGES/{domain}.po",
+        ])
     os.chdir("../../../../")
 
 
 def _rebuild():
-    subprocess.call(
-        [
-            i18ndude,
-            "rebuild-pot",
-            "--pot",
-            f"{locale_path}/{domain}.pot",
-            "--exclude",
-            excludes,
-            "--create",
-            domain,
-            target_path,
-        ]
-    )
+    subprocess.call([
+        i18ndude,
+        "rebuild-pot",
+        "--pot",
+        f"{locale_path}/{domain}.pot",
+        "--exclude",
+        excludes,
+        "--create",
+        domain,
+        target_path,
+    ])
 
 
 def _sync():
     po_files = glob.glob(f"{locale_path}*/LC_MESSAGES/{domain}.po")
-    subprocess.call(
-        [i18ndude, "sync", "--pot", f"{locale_path}/{domain}.pot", *po_files]
-    )
+    subprocess.call([i18ndude, "sync", "--pot", f"{locale_path}/{domain}.pot", *po_files])
 
 
 def update_locale():

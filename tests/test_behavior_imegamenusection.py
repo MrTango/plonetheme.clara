@@ -1,4 +1,5 @@
 """Tests for IMegamenuSection behavior."""
+
 import pytest
 from plone.behavior.interfaces import IBehavior
 from zope.component import getUtility
@@ -31,4 +32,5 @@ class TestBehaviorMegamenuSection:
             name="plonetheme.clara.imegamenusection",
         )
         from plonetheme.clara.behaviors.imegamenusection import IMegamenuSection
+
         assert behavior.marker == IMegamenuSection

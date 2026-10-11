@@ -1,4 +1,5 @@
 """The page-tail sub-navigation (pagelets.SubnavChromePagelet)."""
+
 import re
 
 import pytest
@@ -30,28 +31,38 @@ class TestSubnav:
         # three sub-sections, so visiting the folder shows none of them.
         odoo = api.content.create(self.portal, "Folder", id="odoo", title="Odoo")
         api.content.create(
-            odoo, "Document", id="index", title="Odoo",
+            odoo,
+            "Document",
+            id="index",
+            title="Odoo",
             description="Business processes, connected.",
         )
         api.content.create(
-            odoo, "Folder", id="dev", title="Development",
+            odoo,
+            "Folder",
+            id="dev",
+            title="Development",
             description="Modules & integrations.",
         )
         api.content.create(
-            odoo, "Folder", id="consulting", title="Consulting",
+            odoo,
+            "Folder",
+            id="consulting",
+            title="Consulting",
             description="Clarify goals and processes.",
         )
         api.content.create(
-            odoo, "Folder", id="operations", title="Operations",
+            odoo,
+            "Folder",
+            id="operations",
+            title="Operations",
             description="Deployment, backups, updates.",
         )
         odoo.setDefaultPage("index")
         self.odoo = odoo
 
         # No default page: this folder renders a listing view of its children.
-        listing = api.content.create(
-            self.portal, "Folder", id="listing", title="Listing"
-        )
+        listing = api.content.create(self.portal, "Folder", id="listing", title="Listing")
         api.content.create(listing, "Document", id="child", title="Child")
         self.listing = listing
 
@@ -99,12 +110,8 @@ class TestSubnav:
         read; before this gate they turned the tail of every section page into
         a dump of whatever happened to sit beside the default page.
         """
-        api.content.create(
-            self.odoo, "Document", id="note", title="A loose page"
-        )
-        api.content.create(
-            self.odoo, "News Item", id="news", title="A news item"
-        )
+        api.content.create(self.odoo, "Document", id="note", title="A loose page")
+        api.content.create(self.odoo, "News Item", id="news", title="A news item")
         assert self._titles(self.odoo.index) == [
             "Development",
             "Consulting",
@@ -112,9 +119,7 @@ class TestSubnav:
         ]
 
     def test_a_folder_of_only_loose_pages_renders_nothing(self):
-        leaves = api.content.create(
-            self.portal, "Folder", id="leaves", title="Leaves"
-        )
+        leaves = api.content.create(self.portal, "Folder", id="leaves", title="Leaves")
         api.content.create(leaves, "Document", id="index", title="Leaves")
         api.content.create(leaves, "Document", id="one", title="One")
         api.content.create(leaves, "Document", id="two", title="Two")
@@ -139,9 +144,7 @@ class TestSubnav:
         assert self._pagelet(self.portal.home).render() == ""
 
     def test_folder_whose_only_child_is_its_default_page_renders_nothing(self):
-        solo = api.content.create(
-            self.portal, "Folder", id="solo", title="Solo"
-        )
+        solo = api.content.create(self.portal, "Folder", id="solo", title="Solo")
         api.content.create(solo, "Document", id="index", title="Solo")
         solo.setDefaultPage("index")
         assert self._pagelet(solo.index).render() == ""
@@ -230,9 +233,7 @@ class TestSubnavLayout:
             "a third wide instead of stretching the whole row)"
         )
 
-    def test_the_track_floor_collapses_to_the_row_on_a_phone(
-        self, subnav_list_rule
-    ):
+    def test_the_track_floor_collapses_to_the_row_on_a_phone(self, subnav_list_rule):
         """`min(100%, 18rem)`, not a bare `18rem`. On a 390px phone the row is
         narrower than one tile; without the `100%` term the track keeps asking
         for 18rem and the tile overflows its own list."""
@@ -248,8 +249,7 @@ class TestSubnavLayout:
         to, and on a phone that count is wrong by three."""
         capped = [
             rule
-            for rule in re.findall(r"([^{}]*\.subnav-list[^{}]*)\{([^}]*)\}",
-                                   subnav_css)
+            for rule in re.findall(r"([^{}]*\.subnav-list[^{}]*)\{([^}]*)\}", subnav_css)
             if "max-inline-size" in rule[1]
         ]
         assert not capped, f"tile width capped by {capped}"

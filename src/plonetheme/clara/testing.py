@@ -1,4 +1,5 @@
 """Testing setup for plonetheme.clara."""
+
 import os
 
 import plone.app.theming

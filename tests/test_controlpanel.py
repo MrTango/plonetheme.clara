@@ -1,4 +1,5 @@
 """Site Setup and control-panel chrome in the compiled bundle."""
+
 import re
 
 import pytest
@@ -69,14 +70,15 @@ def test_neutral_button_states_are_complete_and_token_driven(bundle, variant, to
     a runtime token override moves them with the rest of the site, and the
     dark-mode role swap reaches them for free."""
     body = _neutral_body(bundle, variant)
-    assert re.search(
-        re.escape(token) + r"\s*:\s*var\(--plone-[\w-]+\)", body
-    ), f"{variant} must bind {token} to a --plone-* role; got {body!r}"
+    assert re.search(re.escape(token) + r"\s*:\s*var\(--plone-[\w-]+\)", body), (
+        f"{variant} must bind {token} to a --plone-* role; got {body!r}"
+    )
 
 
 # --------------------------------------------------------------------------- #
 # 2. The tile icon: a 3rem box, re-centred against the reset's block SVGs.
 # --------------------------------------------------------------------------- #
+
 
 def test_overview_icon_has_an_icon_sized_box(bundle):
     """A configlet icon is geometry, not rhythm: Barceloneta pins 3rem, and the
@@ -121,15 +123,14 @@ def test_reset_still_makes_svgs_block(bundle):
 # 3. Panel rhythm on the Clara space ramp, not Barceloneta's flat rem.
 # --------------------------------------------------------------------------- #
 
+
 def test_control_panel_header_uses_the_space_ramp(bundle):
     """Barceloneta separates the panel heading from the tiles with a flat 2rem.
     Clara keeps the same visual break but takes it from the fluid ramp, so the
     panel breathes with the rest of the theme."""
     # Sass drops the attribute-value quotes when compressing, so match either.
     selector = r'body\[class\*="?-controlpanel"?\]\s*\.controlPanel\s*>\s*header'
-    assert re.search(selector, bundle), (
-        "the control-panel header rule is missing from the bundle"
-    )
+    assert re.search(selector, bundle), "the control-panel header rule is missing from the bundle"
     body = "".join(re.findall(selector + r"[^{]*\{([^}]*)\}", bundle))
     assert re.search(r"margin-block-end\s*:\s*var\(--plone-space-[\w-]+\)", body), (
         f"the panel header break must come from a --plone-space-* step; got {body!r}"

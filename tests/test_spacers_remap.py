@@ -1,4 +1,5 @@
 """The `$spacers` remap: `.mb-3` and friends resolve to `--plone-space-*` tokens."""
+
 import re
 from pathlib import Path
 
@@ -39,6 +40,7 @@ def _rule(bundle, selector):
 # 1. The remap: every $spacers step lands on its Clara token, foreign markup.
 # --------------------------------------------------------------------------- #
 
+
 @pytest.mark.parametrize("step,token", SPACERS.items())
 def test_margin_utility_remaps_to_clara_token(bundle, step, token):
     """A foreign Bootstrap `.mb-N` compiles to the Clara space token, not a
@@ -72,6 +74,7 @@ def test_headline_guarantee(bundle):
 #    a concrete fluid clamp() — no dangling var(), the true runtime failure.
 # --------------------------------------------------------------------------- #
 
+
 @pytest.mark.parametrize(
     "token",
     sorted({v for v in SPACERS.values() if v != "0"}),
@@ -95,6 +98,7 @@ def test_referenced_token_is_defined_and_fluid(bundle, token):
 #    set generates — $spacers was not map-remove'd — and nothing shadows it.
 # --------------------------------------------------------------------------- #
 
+
 def test_utility_api_not_removed(bundle):
     """All six margin-bottom steps exist. If §7 had `map-remove`d the utilities
     to force use of the raw tokens, the higher steps would vanish; the chosen
@@ -114,6 +118,7 @@ def test_remap_not_shadowed(bundle):
 #    never authors them itself (declarative hooks + tokens, not utility soup).
 # --------------------------------------------------------------------------- #
 
+
 def test_clara_markup_never_uses_spacing_utilities():
     """Clara's own SCSS authors zero Bootstrap spacing-utility selectors
     (`.m*-N` / `.p*-N`). The utilities exist only for third-party markup; Clara
@@ -127,6 +132,5 @@ def test_clara_markup_never_uses_spacing_utilities():
                 offenders.append(f"{scss.name}:{lineno}: {line.strip()}")
     assert not offenders, (
         "Clara authors Bootstrap spacing utilities in its own SCSS (violates "
-        "the §7 tradeoff — use named hooks + --plone-* tokens instead):\n"
-        + "\n".join(offenders)
+        "the §7 tradeoff — use named hooks + --plone-* tokens instead):\n" + "\n".join(offenders)
     )

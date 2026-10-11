@@ -16,9 +16,7 @@ from plonetheme.clara.testing import INTEGRATION_TESTING
 
 
 RECORD = "plonetheme.clara.search_on_demand"
-BASE_TEMPLATE = (
-    Path(plone.pageletlayout.__file__).parent / "pagelets/templates/searchbox.pt"
-)
+BASE_TEMPLATE = Path(plone.pageletlayout.__file__).parent / "pagelets/templates/searchbox.pt"
 OPENER = 'id="portal-searchbox-opener"'
 
 

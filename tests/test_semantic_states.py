@@ -1,4 +1,5 @@
 """Runtime semantic-state mappings in Clara's compiled bundle."""
+
 import re
 
 import pytest
@@ -12,10 +13,7 @@ def _has_mapping(bundle, selector, component_token, semantic_token):
     body = "".join(_bodies(bundle, selector))
     return bool(
         re.search(
-            re.escape(component_token)
-            + r"\s*:\s*var\("
-            + re.escape(semantic_token)
-            + r"\)",
+            re.escape(component_token) + r"\s*:\s*var\(" + re.escape(semantic_token) + r"\)",
             body,
         )
     )

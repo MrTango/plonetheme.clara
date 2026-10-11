@@ -1,4 +1,5 @@
 """WCAG contrast of Clara's runtime colour roles, measured from the shipped hex values."""
+
 import re
 from pathlib import Path
 
@@ -31,9 +32,7 @@ def _block(text, selector, occurrence=0):
 
 
 def _props(text, selector, occurrence=0):
-    return dict(
-        re.findall(r"--([\w-]+)\s*:\s*([^;]+);", _block(text, selector, occurrence))
-    )
+    return dict(re.findall(r"--([\w-]+)\s*:\s*([^;]+);", _block(text, selector, occurrence)))
 
 
 def _light_props():
@@ -62,9 +61,7 @@ def _luminance(hex_color):
     assert re.fullmatch(r"#[0-9a-f]{6}", hex_color), hex_color
     channels = [int(hex_color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
     linear = [
-        value / 12.92
-        if value <= 0.04045
-        else ((value + 0.055) / 1.055) ** 2.4
+        value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
         for value in channels
     ]
     return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
@@ -80,8 +77,7 @@ def _assert_ratio(props, foreground, background, minimum):
     bg = _resolve(background, props)
     ratio = _contrast(fg, bg)
     assert ratio >= minimum, (
-        f"--{foreground} {fg} on --{background} {bg} is {ratio:.2f}:1; "
-        f"needs {minimum}:1"
+        f"--{foreground} {fg} on --{background} {bg} is {ratio:.2f}:1; needs {minimum}:1"
     )
 
 

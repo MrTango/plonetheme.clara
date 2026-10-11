@@ -1,5 +1,6 @@
 """IMegamenuSection: a section's proof sentence and overview-link label for
 its mega-menu panel. Plain attributes, read through catalog metadata."""
+
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.supermodel import model
 from zope import schema

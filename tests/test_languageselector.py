@@ -99,18 +99,14 @@ class TestLanguageSelector:
         """Nothing is lost to a screen reader by painting the code: the name
         rides along as the link's accessible name and title."""
         self._make_multilingual()
-        names = {
-            language["code"]: language["name"] for language in self._pagelet().languages
-        }
+        names = {language["code"]: language["name"] for language in self._pagelet().languages}
         assert names["de"] == "Deutsch"
         assert names["en"] == "English"
 
     def test_the_current_language_is_marked(self):
         self._make_multilingual()
         selected = [
-            language["code"]
-            for language in self._pagelet().languages
-            if language["selected"]
+            language["code"] for language in self._pagelet().languages if language["selected"]
         ]
         assert len(selected) == 1
 
@@ -131,9 +127,7 @@ class TestLanguageSelector:
         link is the plain `?set_language=` switch — which is what a site with
         two interface languages and no translated content actually wants."""
         self._make_multilingual()
-        urls = {
-            language["code"]: language["url"] for language in self._pagelet().languages
-        }
+        urls = {language["code"]: language["url"] for language in self._pagelet().languages}
         assert "set_language=de" in urls["de"]
         assert "set_language=en" in urls["en"]
 

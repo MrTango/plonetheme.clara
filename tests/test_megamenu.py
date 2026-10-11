@@ -5,6 +5,7 @@ li/link/opener skeleton plus the three-zone panel (intro, described links,
 proof) and the pure-CSS backdrop label. Zones without data are absent —
 including the overview link — and everything arrives escaped.
 """
+
 import pytest
 from plone import api
 from plone.app.testing import setRoles
@@ -46,9 +47,7 @@ class TestMegamenuMarkup:
         api.content.create(odoo, "Document", id="dev", title="Development")
 
         # a bare section: no description, no proof, no custom label
-        bare = api.content.create(
-            self.portal, "Folder", id="bare", title="Bare & Plain"
-        )
+        bare = api.content.create(self.portal, "Folder", id="bare", title="Bare & Plain")
         api.content.create(bare, "Document", id="child", title="Child Page")
 
     def _render(self):
@@ -79,14 +78,11 @@ class TestMegamenuMarkup:
         assert (
             '<h2 class="megamenu-title">Services</h2>'
             '<p class="megamenu-description">What we build and maintain.</p>'
-            "</a>"
-            in panel
+            "</a>" in panel
         )
         assert 'class="megamenu-intro-link"' in panel
         assert ">Browse all services</a>" in panel
-        assert (
-            '<p class="megamenu-proof">Twenty years of experience.</p>' in panel
-        )
+        assert '<p class="megamenu-proof">Twenty years of experience.</p>' in panel
         assert 'aria-label="Close menu"' in panel
         assert 'for="navitem-services"' in panel.split("megamenu-backdrop")[1]
 
@@ -116,7 +112,7 @@ class TestMegamenuMarkup:
         chunk = markup[start : markup.index("</li>", start) + 5]
         assert "megamenu-panel" not in chunk
         assert "opener" not in chunk
-        assert 'aria-haspopup' not in chunk
+        assert "aria-haspopup" not in chunk
 
 
 class TestMegamenuFullPage:
@@ -164,9 +160,7 @@ class TestMegamenuFullPage:
             "Folder",
             id="plone",
             title="Plone",
-            description=(
-                "Inhalte, Workflows und Berechtigungen verlässlich organisieren"
-            ),
+            description=("Inhalte, Workflows und Berechtigungen verlässlich organisieren"),
         )
         api.content.create(
             section,
@@ -175,9 +169,7 @@ class TestMegamenuFullPage:
             title="Django, Pyramid & FastAPI",
             description="Passende Python-Architekturen für individuelle Anwendungen",
         )
-        self.page = api.content.create(
-            self.portal, "Document", id="ueber", title="Über uns"
-        )
+        self.page = api.content.create(self.portal, "Document", id="ueber", title="Über uns")
 
     def test_published_page_carries_the_panel(self, tmp_path):
         import os
@@ -212,5 +204,3 @@ class TestMegamenuFullPage:
                 encoding="utf-8",
             ) as fh:
                 fh.write(html)
-
-
