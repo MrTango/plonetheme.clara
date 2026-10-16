@@ -346,6 +346,16 @@ Bootstrap's place. Nothing above `bootstrap` has to move. The lean bundle stays
 a **future** stage; the architecture must keep honoring it, but building it is a
 later effort.
 
+### A theme's own compile of Clara
+
+Clara ships Bootstrap complete. A site theme that knows which Bootstrap parts
+its pages use can compile its own copy of the bundle from `theme/scss/`: import
+the partials `clara.scss` imports, in the same order, and replace
+`clara-bootstrap` with its own `@layer bootstrap { … }` built on
+`_clara-bootstrap-config.scss`. It serves the result from its own resource
+directory, so it sets `$clara-font-base` to reach Clara's font files, and points
+the `plone.bundles/plonetheme-clara` record at its copy.
+
 ---
 
 ## 3. Layout primitives
@@ -671,18 +681,19 @@ outermost container and legitimately keys off the readable measure.
 
 This is how one `--plone-*` edit moves the whole theme. Three mechanisms, in
 increasing order of "how much Sass is involved". All three live inside Clara's
-single compile (`clara-bootstrap.scss`); there is no base-side half.
+single compile (`clara-bootstrap.scss`, its `$`-variables in
+`_clara-bootstrap-config.scss`); there is no base-side half.
 
 ### 6.1 Sass entry variables set from tokens (where Bootstrap allows a `var()`)
 
 Bootstrap emits many of its `_root.scss` custom properties as
 `--bs-x: #{$x}`. Where `$x` flows straight into a custom property with **no Sass
 math on it**, we set `$x` to a `var(--plone-*)` string and Bootstrap prints the
-`var()` through. `clara-bootstrap.scss` overrides Bootstrap defaults **before**
-`@import "bootstrap"`:
+`var()` through. `_clara-bootstrap-config.scss` overrides Bootstrap defaults
+**before** `@import "bootstrap"`:
 
 ```scss
-// clara-bootstrap.scss — Clara's Bootstrap 5.3 build
+// _clara-bootstrap-config.scss — the $-variables of Clara's Bootstrap build
 // values that pass straight through to --bs-* custom properties:
 $border-color:    var(--plone-color-border);
 $border-radius:   var(--plone-radius-m);
@@ -875,7 +886,7 @@ there is no separate base-owned copy.
 ### The remap (Clara's build) and generated values
 
 ```scss
-// clara-bootstrap.scss — before @import "bootstrap"
+// _clara-bootstrap-config.scss — before @import "bootstrap"
 $spacers: (
   0: 0,
   1: var(--plone-space-3xs),   // was .25rem

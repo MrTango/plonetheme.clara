@@ -3,6 +3,7 @@
 ## 1.0.0a1 (unreleased)
 
 - Initial release.
+- A theme can compile its own copy of Clara's bundle: the Bootstrap `$`-variables moved to `_clara-bootstrap-config.scss`, and `$clara-font-base` points the font URLs at Clara's resource directory. `clara.min.css` is unchanged.
 - pre-commit leaves scaffold metadata and the design sites' generated pages, fonts and images alone; the code is ruff-formatted.
 - Add the theme parity browser test: the Aurora editor's blocks measure the same under Clara as under Barceloneta (CI job `theme-parity`, needs the `AURORA_EDITOR_TOKEN` secret).
 - Add an opt-in search that opens on demand: the `plonetheme.clara.search_on_demand` registry record (off by default, upgrade step 1009).

@@ -11,31 +11,36 @@
  * shared pagelet/layout contract mapped onto it. A theme built on Clara
  * replaces either level at runtime with a later :root {} block — no Sass.
  */
+// Where the font files sit relative to the compiled sheet. A theme that serves
+// its own compile of Clara from another resource directory points it back
+// here, e.g. "../++resource++plonetheme.clara/".
+$clara-font-base: "" !default;
+
 @layer tokens {
   @font-face {
     font-family: "Literata";
-    src: url("literata-latin-wght-normal.woff2") format("woff2");
+    src: url("#{$clara-font-base}literata-latin-wght-normal.woff2") format("woff2");
     font-style: normal;
     font-weight: 400 700;
     font-display: swap;
   }
   @font-face {
     font-family: "Literata";
-    src: url("literata-latin-wght-italic.woff2") format("woff2");
+    src: url("#{$clara-font-base}literata-latin-wght-italic.woff2") format("woff2");
     font-style: italic;
     font-weight: 400 700;
     font-display: swap;
   }
   @font-face {
     font-family: "Source Sans 3";
-    src: url("source-sans-3-latin-wght-normal.woff2") format("woff2");
+    src: url("#{$clara-font-base}source-sans-3-latin-wght-normal.woff2") format("woff2");
     font-style: normal;
     font-weight: 400 700;
     font-display: swap;
   }
   @font-face {
     font-family: "Source Sans 3";
-    src: url("source-sans-3-latin-wght-italic.woff2") format("woff2");
+    src: url("#{$clara-font-base}source-sans-3-latin-wght-italic.woff2") format("woff2");
     font-style: italic;
     font-weight: 400 700;
     font-display: swap;

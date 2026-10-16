@@ -16,7 +16,7 @@ overriding a single template.
   text/control role splits, semantic state families, fluid rhythm and motion.
   A site rebrands by layering one later `:root {}` block; no Sass and no
   competing `--quanta-*` namespace.
-- **The Bootstrap build sources** (`theme/scss/`) — `clara-bootstrap.scss` +
+- **The Bootstrap build sources** (`theme/scss/`) — `_clara-bootstrap-config.scss` +
   `_clara-tokens.scss` drive Bootstrap's compile-time fallbacks, while
   `_clara-bridge.scss` and `_clara-states.scss` rebind components to runtime
   roles. `$spacers` maps onto Clara's fluid space scale (§6–7).
