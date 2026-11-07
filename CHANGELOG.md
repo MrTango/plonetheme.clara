@@ -2,6 +2,9 @@
 
 ## 1.0.0a1 (unreleased)
 
+- Keep compiled CSS and JavaScript out of Git diffs; the generated files
+  remain tracked and ship with the package.
+
 - Initial release.
 - A theme can compile its own copy of Clara's bundle: the Bootstrap `$`-variables moved to `_clara-bootstrap-config.scss`, and `$clara-font-base` points the font URLs at Clara's resource directory. `clara.min.css` is unchanged.
 - pre-commit leaves scaffold metadata and the design sites' generated pages, fonts and images alone; the code is ruff-formatted.
